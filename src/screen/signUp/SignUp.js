@@ -3,10 +3,8 @@ import React from 'react';
 
 export default function SignUp() {
   return (
-    <View>
-      <Text>SignUp</Text>
+    <View style={{flex: 1, justifyContent: 'center'}}>
+      <Text style={{textAlign: 'center'}}>SignUp</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

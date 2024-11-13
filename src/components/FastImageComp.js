@@ -20,11 +20,9 @@ const FastImageComp = ({url = '', imageStyle = {}}) => {
 
 const styles = StyleSheet.create({
   imageStyle: {
-    width: moderateScale(60),
-    height: moderateScale(60),
-    borderRadius: moderateScale(30),
-    borderWidth: 3,
-    borderColor: colors.purple,
+    width: moderateScale(80),
+    height: moderateScale(80),
+    borderRadius: moderateScale(40),
   },
 });
 

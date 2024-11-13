@@ -5,6 +5,7 @@ import AuthStack from './AuthStack';
 import {useSelector} from 'react-redux';
 import DrawerStack from './DrawerStack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import MainStack from './MainStack';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -15,7 +16,7 @@ export default function Routes() {
   return (
     <NavigationContainer>
       {true ? (
-        DrawerStack(Drawer)
+        <Stack.Navigator>{MainStack(Stack)}</Stack.Navigator>
       ) : (
         <Stack.Navigator>{AuthStack(Stack)}</Stack.Navigator>
       )}

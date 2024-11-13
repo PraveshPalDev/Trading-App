@@ -10,6 +10,17 @@ export default {
   emojiBackground: 'rgba(152, 114, 250, 0.08)',
   lightGray: 'rgba(221, 225, 226, 1)',
 
+  blue: '#0000FF',
+  blueOpacity10: 'rgba(0, 0, 255, 0.1)',
+  blueOpacity20: 'rgba(0, 0, 255, 0.2)',
+  blueOpacity30: 'rgba(0, 0, 255, 0.3)',
+  blueOpacity40: 'rgba(0, 0, 255, 0.4)',
+  blueOpacity50: 'rgba(0, 0, 255, 0.5)',
+  blueOpacity60: 'rgba(0, 0, 255, 0.6)',
+  blueOpacity70: 'rgba(0, 0, 255, 0.7)',
+  blueOpacity80: 'rgba(0, 0, 255, 0.8)',
+  blueOpacity90: 'rgba(0, 0, 255, 0.9)',
+
   gray: '#595959',
   grayOpacity10: 'rgba(89, 89, 89,0.1)',
   grayOpacity30: 'rgba(89, 89, 89,0.3)',

@@ -6,10 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 export default function Login() {
   return (
     <WrapperContainer>
-      <Text>Login</Text>
+      <Text style={{color: '#fff', fontSize: 30}}>Login</Text>
       <Icon name="rocket" size={30} color="#900" />
     </WrapperContainer>
   );
 }
-
-const styles = StyleSheet.create({});
