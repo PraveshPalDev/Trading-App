@@ -16,6 +16,8 @@ import styles from './styles';
 import {moderateScale} from '../../styles/responsiveSize';
 import TextComp from '../../components/TextComp';
 import {NewsCategories} from '../../constants/static/staticData';
+import {useNavigation} from '@react-navigation/native';
+import navigationStrings from '../../navigation/navigationStrings';
 
 const newsData = [
   {
@@ -121,6 +123,8 @@ const newsData = [
 ];
 
 export default function News() {
+  const navigation = useNavigation();
+
   const FooterComponents = () => (
     <View style={{...styles.container, marginTop: moderateScale(15)}} />
   );
@@ -185,7 +189,10 @@ export default function News() {
 
       {/* right text and icon and time container */}
       <View style={{flex: 1}}>
-        <TouchableOpacity activeOpacity={0.7} style={styles.stockBtnContainer}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.stockBtnContainer}
+          onPress={() => stockHandler(item)}>
           <Text style={{textAlign: 'center'}}>{item.category}</Text>
         </TouchableOpacity>
         <Text style={styles.justifiedText}>{item.news}</Text>
@@ -209,6 +216,10 @@ export default function News() {
   const settingHandler = () => {};
   const seeAllHandler = () => {};
   const searchHandler = text => {};
+
+  const stockHandler = item => {
+    alert('coming soon');
+  };
 
   return (
     <WrapperContainer>

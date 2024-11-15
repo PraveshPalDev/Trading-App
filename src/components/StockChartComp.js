@@ -4,9 +4,12 @@ import {LineChart} from 'react-native-gifted-charts';
 import colors from '../styles/colors';
 import {height, moderateScale, width} from '../styles/responsiveSize';
 
-export default function StockChartComp() {
+export default function StockChartComp({
+  chartWidth = width,
+  chartHeight = height / 3,
+}) {
   const chartData = [
-    {value: 14032.56}, //label: 'Jan 30'
+    {value: 14032.56},
     {value: 10000},
     {value: 12150},
     {value: 16700},
@@ -19,9 +22,9 @@ export default function StockChartComp() {
     <ScrollView contentContainerStyle={styles.container}>
       <LineChart
         data={chartData}
-        width={width}
-        height={height / 3}
-        thickness={moderateScale(2)}
+        width={chartWidth}
+        height={chartHeight}
+        thickness={moderateScale(1)}
         hideRules
         hideAxesAndRules
         areaChart
@@ -30,7 +33,6 @@ export default function StockChartComp() {
         hideDataPoints={true}
         lineGradient
         yAxisLabel=""
-        pointerConfig={{}}
       />
     </ScrollView>
   );

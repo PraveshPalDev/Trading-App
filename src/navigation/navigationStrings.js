@@ -8,4 +8,6 @@ export default {
   News: 'news',
   More: 'more',
   StockDetails: 'stockDetails',
+  AllStocks: 'allStocks',
+  Analysis: 'analysis',
 };

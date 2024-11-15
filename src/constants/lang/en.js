@@ -12,4 +12,8 @@ export default {
   StockDetails: 'Stock Details',
   LatestNews: 'Latest News',
   Trending: 'Trending',
+  Company: 'Company',
+  Props: 'Prop picks',
+  AllStock: 'AllStocks',
+  Analysis: 'Analysis',
 };

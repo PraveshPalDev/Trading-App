@@ -88,10 +88,11 @@ const styles = StyleSheet.create({
     padding: moderateScale(8),
   },
   headingStyles: {
-    fontSize: textScale(16),
-    fontWeight: '800',
+    fontSize: textScale(18),
+    fontWeight: '700',
     textAlign: 'center',
     justifyContent: 'center',
+    color: colors.blackOpacity50,
   },
   leftContainer: {
     flexDirection: 'row',
