@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    marginTop: moderateScale(10),
+    paddingTop: moderateScale(5),
   },
   iconButton: {
     padding: moderateScale(10),

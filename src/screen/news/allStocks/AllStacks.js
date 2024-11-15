@@ -399,12 +399,7 @@ export default function AllStacks() {
                     size={moderateScale(30)}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.iconButton}
-                  onPress={() => {
-                    setModalVisible(false);
-                    navigation.navigate(navigationStrings.Analysis);
-                  }}>
+                <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
                   <Icon
                     name={'share-all'}
                     color={colors.white}
@@ -412,7 +407,13 @@ export default function AllStacks() {
                   />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.buyButton}>
+              <TouchableOpacity
+                style={styles.buyButton}
+                activeOpacity={0.7}
+                onPress={() => {
+                  setModalVisible(false);
+                  navigation.navigate(navigationStrings.Analysis);
+                }}>
                 <Text style={styles.buyButtonText}>Buy</Text>
               </TouchableOpacity>
             </View>
