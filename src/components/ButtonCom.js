@@ -63,8 +63,7 @@ export default function ButtonComp({
 
 const styles = StyleSheet.create({
   button: {
-    width: moderateScale(206),
-    height: moderateScale(60),
+    height: moderateScale(55),
     paddingHorizontal: moderateScale(30),
     alignItems: 'center',
     justifyContent: 'space-between',

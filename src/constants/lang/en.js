@@ -16,4 +16,39 @@ export default {
   Props: 'Prop picks',
   AllStock: 'AllStocks',
   Analysis: 'Analysis',
+
+  // login page content
+  WelcomeBack: 'Welcome Back',
+  SignInText: 'Sign in to continue',
+  PlaceholderEmail: 'eg:- Eric Johanson',
+  PlaceholderPassword: 'eg:- Testing@123',
+  ForgotPassword: 'Forgot Password',
+  SignInButton: 'Sign in',
+  OrText: 'OR',
+  GoogleSignIn: 'Sign in with Google',
+  FacebookSignIn: 'Sign in with Facebook',
+  CreateAccount: 'Create New Account?',
+  SignUp: 'Sign Up',
+  SignIn: 'Sign In',
+  UserName: 'UserName',
+
+  // register page
+  WelcomeText: 'Welcome User',
+  SignUpText: 'Sign up to continue',
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  email: 'Email Address',
+  password: 'Password',
+  confirmPassword: 'Confirm Password',
+  HaveAnAccount: 'Have an Account?',
+
+  // validation
+  LOGIN_PAGE_VALIDATION: 'Please enter the email and password.',
+  LOGIN_SUCCESS: 'Login Successfully.',
+  SIGNUP_PAGE_ALL_VALIDATION: 'Please fill in all required fields.',
+  VALID_EMAIL_MESSAGE: 'Please enter a valid email address.',
+  REGISTER_USER_SUCCESS: 'User register successfully.',
+  STRONG_PASSWORD_MESSAGE:
+    'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.',
+  VALID_PASSWORD_MATCH: 'Password and Confirm Password do not match',
 };

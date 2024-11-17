@@ -10,12 +10,12 @@ export const userLogin = data => {
   return new Promise((resolve, reject) => {
     apiPost(LOGIN_API, data)
       .then(res => {
-        if (!!res?.data) {
-          storeData('userData', res?.data)
+        if (!!res) {
+          storeData('userData', res)
             .then(value => {
               console.log('user login data saved in AsyncStorage !!');
               resolve(res);
-              dispatch(saveUserData(res?.data));
+              dispatch(saveUserData(res));
             })
             .catch(error => {
               reject(error);

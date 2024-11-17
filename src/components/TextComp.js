@@ -13,7 +13,7 @@ export default function TextComp({text = '', style = {}, children, ...props}) {
       style={{
         ...styles.textStyle,
         ...style,
-        color: selectedTheme === 'dark' ? colors.white : colors.black,
+        // color: selectedTheme === 'dark' ? colors.white : colors.black,
       }}
       {...props}>
       {text} {children}

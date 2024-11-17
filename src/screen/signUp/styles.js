@@ -1,86 +1,96 @@
 import {StyleSheet} from 'react-native';
 import {
-  height,
   moderateScale,
   moderateScaleVertical,
   textScale,
-  width,
 } from '../../styles/responsiveSize';
-import fontFamily from '../../styles/fontFamily';
 import colors from '../../styles/colors';
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: moderateScale(16),
+    flex: 1,
+    paddingHorizontal: moderateScale(20),
+    justifyContent: 'center',
   },
-  headContainer: {
+  welcomeText: {
+    fontSize: textScale(28),
+    fontWeight: 'bold',
+    color: colors.black,
+    marginBottom: moderateScale(10),
+  },
+  signInText: {
+    fontSize: textScale(16),
+    color: colors.gray,
+    marginBottom: moderateScale(20),
+  },
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  welcomeStyles: {
-    fontSize: textScale(32),
-    fontFamily: fontFamily.mornBold,
-    color: colors.purple,
-  },
-  loginYourStyles: {
-    paddingTop: moderateScale(5),
-    fontSize: textScale(22),
-    fontFamily: fontFamily.mornMedium,
-  },
-  button: {
-    width: moderateScale(130),
-    height: moderateScale(48),
-    paddingHorizontal: moderateScale(20),
-  },
-  forgetStyles: {
+  input: {
+    flex: 1,
     fontSize: textScale(16),
-    fontFamily: fontFamily.mornRegular,
     color: colors.black,
-    marginVertical: moderateScale(10),
   },
-  imageStyles: {
-    width: width / 1.1,
-    height: height / 4.7,
-    marginBottom: moderateScale(5),
-    justifyContent: 'center',
-    alignSelf: 'center',
-  },
-  textStyles: {
-    fontFamily: fontFamily.mornRegular,
-    paddingLeft: moderateScale(8),
-  },
-  inputStyles: {
-    width: width / 2.3,
-  },
-  createAccountContainer: {
-    marginVertical: moderateScale(8),
-  },
-  createAccountDesStyles: {
-    fontSize: textScale(14),
-    fontFamily: fontFamily.objectivityRegular,
-    textAlign: 'center',
-    lineHeight: moderateScale(20),
-  },
-  alreadyTextStyles: {
-    marginVertical: moderateScale(15),
-    fontFamily: fontFamily.mornRegular,
-    textAlign: 'center',
-  },
-  alreadyContainer: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    marginVertical: moderateScaleVertical(25),
-  },
-  privacyStyles: {
+  forgotPasswordText: {
+    alignSelf: 'flex-end',
+    color: colors.blueOpacity70,
+    marginBottom: moderateScale(30),
     fontSize: textScale(15),
-    fontFamily: fontFamily.objectivityRegular,
-    textAlign: 'center',
-    color: colors.purple,
-    textDecorationLine: 'underline',
   },
-  socialContainer: {
+  signInButton: {
+    backgroundColor: colors.blueOpacity70,
+    paddingVertical: moderateScaleVertical(15),
+    borderRadius: moderateScale(8),
+    alignItems: 'center',
+    marginVertical: moderateScaleVertical(25),
+    justifyContent: 'center',
+  },
+  signInButtonText: {
+    color: colors.white,
+    fontSize: textScale(18),
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  orText: {
+    textAlign: 'center',
+    fontSize: textScale(14),
+    color: colors.gray,
+    marginBottom: moderateScale(20),
+  },
+  socialButton: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.grayOpacity20,
+    paddingVertical: moderateScaleVertical(8),
+    paddingHorizontal: moderateScale(15),
+    borderRadius: moderateScaleVertical(8),
+    marginBottom: moderateScale(15),
+  },
+  socialButtonText: {
+    paddingLeft: moderateScale(10),
+    fontSize: textScale(16),
+    color: colors.black,
+    textAlign: 'center',
+  },
+  signUpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: moderateScale(20),
+  },
+  createAccountText: {
+    fontSize: textScale(15),
+    color: colors.gray,
+  },
+  signUpText: {
+    fontSize: textScale(15),
+    color: colors.blueOpacity70,
+    fontWeight: '600',
+  },
+  socialButtonImage: {
+    width: moderateScale(33),
+    height: moderateScale(33),
   },
 });
 

@@ -1,3 +1,4 @@
 export default {
-  // icPostImage: require('../assets/images/postReaction/postImage.png'),
+  icGoogle: require('../assets/images/Google.png'),
+  icFaceBook: require('../assets/images/facebook.png'),
 };

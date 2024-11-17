@@ -10,6 +10,7 @@ import {moderateScale, textScale} from '../styles/responsiveSize';
 import colors from '../styles/colors';
 import fontFamily from '../styles/fontFamily';
 import {useSelector} from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function TextInputComp({
   placeholderText = 'update the placeHolderText....',
@@ -17,7 +18,8 @@ export default function TextInputComp({
   style,
   leftIcon,
   rightIcon,
-  secureText,
+  secureText = false,
+  rightIconColor,
   toggleSecureEntry,
   keyboardType = 'default',
   value,
@@ -32,7 +34,13 @@ export default function TextInputComp({
         ...style,
         backgroundColor: selectedTheme === 'dark' ? colors.black : colors.white,
       }}>
-      {leftIcon && <Image source={leftIcon} style={styles.leftImage} />}
+      {leftIcon && (
+        <Icon
+          name={leftIcon}
+          size={moderateScale(27)}
+          style={styles.leftImage}
+        />
+      )}
       <TextInput
         value={value}
         onChangeText={setValue}
@@ -56,11 +64,14 @@ export default function TextInputComp({
           onPress={toggleSecureEntry}
           activeOpacity={0.7}
           style={styles.rightIconStyle}>
-          <Image
-            source={rightIcon}
-            style={{
-              tintColor: selectedTheme === 'dark' ? colors.white : colors.black,
-            }}
+          <Icon
+            name={rightIcon}
+            size={moderateScale(27)}
+            color={
+              selectedTheme === 'dark'
+                ? colors.white
+                : rightIconColor || colors.black
+            }
           />
         </TouchableOpacity>
       )}
@@ -72,11 +83,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: moderateScale(10),
+    marginVertical: moderateScale(8),
     height: moderateScale(55),
+    borderRadius: moderateScale(18),
     borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: moderateScale(5),
+    borderColor: colors.purple,
   },
   leftImage: {
     marginLeft: moderateScale(10),
