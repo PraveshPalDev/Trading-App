@@ -47,10 +47,12 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   title: {
-    fontSize: textScale(16),
+    fontSize: textScale(15),
     color: colors.black,
+    textAlign: 'center',
   },
   innerCircle: {
     width: '90%',

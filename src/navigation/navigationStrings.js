@@ -10,4 +10,5 @@ export default {
   StockDetails: 'stockDetails',
   AllStocks: 'allStocks',
   Analysis: 'analysis',
+  Tracker: 'tracker',
 };

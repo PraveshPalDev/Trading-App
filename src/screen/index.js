@@ -9,3 +9,4 @@ export {default as More} from './more/More';
 export {default as StockDetails} from './stock/stockDetails/StockDetails';
 export {default as AllStocks} from './news/allStocks/AllStacks';
 export {default as Analysis} from './news/analysis/Analysis';
+export {default as Tracker} from './news/tracker/Tracker';

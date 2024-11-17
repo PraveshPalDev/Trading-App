@@ -1,7 +1,7 @@
 import React from 'react';
 import TabRoutes from './TabRoutes';
 import navigationStrings from './navigationStrings';
-import {Analysis, StockDetails} from '../screen';
+import {Analysis, StockDetails, Tracker} from '../screen';
 import AllStacks from '../screen/news/allStocks/AllStacks';
 
 export default function MainStack(Stack) {
@@ -28,6 +28,12 @@ export default function MainStack(Stack) {
       <Stack.Screen
         name={navigationStrings.Analysis}
         component={Analysis}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={navigationStrings.Tracker}
+        component={Tracker}
         options={{headerShown: false}}
       />
     </>

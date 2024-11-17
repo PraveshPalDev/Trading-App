@@ -116,13 +116,20 @@ export default function More() {
   );
 
   const renderBottomCard = ({item}) => {
+    const navigationHandler = () => {
+      navigation.navigate(navigationStrings.AllStocks);
+    };
+
     return (
-      <View style={styles.cardContainer}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.cardContainer}
+        onPress={() => navigationHandler(item)}>
         <View style={styles.priceContainer}>
           <Text style={styles.dayText}>{item?.day}</Text>
           <Text style={styles.plusPrice}>{item.price}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -130,9 +137,6 @@ export default function More() {
   const bellHandler = () => {};
   const settingHandler = () => {};
   const searchHandler = text => {};
-  const FooterComponents = () => {
-    return <></>;
-  };
 
   return (
     <WrapperContainer>
@@ -140,7 +144,6 @@ export default function More() {
         <FlatList
           data={stocks}
           ListHeaderComponent={HeaderComponents}
-          ListFooterComponent={FooterComponents}
           renderItem={renderItem}
           numColumns={2}
           showsVerticalScrollIndicator={false}

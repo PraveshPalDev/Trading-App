@@ -11,7 +11,7 @@ export default {
   Events: 'Events',
   StockDetails: 'Stock Details',
   LatestNews: 'Latest News',
-  Trending: 'Trending',
+  Trending: 'Technicals',
   Company: 'Company',
   Props: 'Prop picks',
   AllStock: 'AllStocks',

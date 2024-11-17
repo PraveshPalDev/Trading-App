@@ -10,20 +10,11 @@ import {
   CollapseHeader,
   CollapseBody,
 } from 'accordion-collapse-react-native';
-import CustomDropdown from '../../../components/CustomDropdown';
 import colors from '../../../styles/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
-import navigationStrings from '../../../navigation/navigationStrings';
-import {useNavigation} from '@react-navigation/native';
-
-const data = [
-  {label: 'Report Source', value: '1'},
-  {label: 'Financial Reports', value: '2'},
-  {label: 'Marketing Reports', value: '3'},
-  {label: 'Operational Reports', value: '4'},
-  {label: 'Customer Reports', value: '5'},
-];
+import {Table, Row, Rows} from 'react-native-table-component';
+import Speedometer from '../../../components/Speedometer';
 
 const accordionData = [
   {
@@ -208,9 +199,32 @@ const accordionData = [
   },
 ];
 
-export default function Analysis() {
+const tableHead = ['Ticker', 'AAAK.AT', 'ASCO.AT', 'ALPHA.AT', 'AIA.AT'];
+const tableData = [
+  ['Today', '1.5%', '-1%', '1.5%', '-1%'],
+  ['YTD', '7.1%', '7.1%', '7.1%', '7.1%'],
+  ['Volatility', '43.59%', '43.59%', '43.59%', '43.59%'],
+  ['Reversion', 'Buy', 'Buy', 'Buy', 'Buy'],
+  ['Trend', 'Buy', 'Buy', 'Buy', 'Buy'],
+];
+
+const stats = [
+  {label: 'Total : 5', color: '#2C3E50'},
+  {label: 'Buy : 2', color: '#7AC74F'},
+  {label: 'Sell : 5', color: '#E74C3C'},
+  {label: 'Hold : 0', color: '#F1C40F'},
+  {label: 'Score : 100%', color: '#E74C3C'},
+];
+
+const signals = [
+  {id: 1, indicator: 'EMA-30', signal: 'Sell'},
+  {id: 2, indicator: 'EMA-30', signal: 'Sell'},
+  {id: 3, indicator: 'EMA-30', signal: 'Sell'},
+  {id: 4, indicator: 'EMA-30', signal: 'Sell'},
+];
+
+export default function Tracker() {
   const [activeAccordion, setActiveAccordion] = useState(null);
-  const navigation = useNavigation();
 
   const toggleAccordion = id => {
     setActiveAccordion(activeAccordion === id ? null : id);
@@ -220,9 +234,19 @@ export default function Analysis() {
     if (item.buttonText === 'See Report') {
       alert('coming soon');
     } else {
-      navigation.navigate(navigationStrings.Tracker);
+      //   navigation.navigate(navigationStrings.)
     }
   };
+
+  const renderRow = ({item}) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{item.indicator}</Text>
+      <Text style={styles.cell}>{item.signal}</Text>
+      <TouchableOpacity style={styles.infoButton}>
+        <Text style={styles.infoText}>i</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   const renderAccordionItem = useCallback(
     ({item}) => (
@@ -251,29 +275,35 @@ export default function Analysis() {
           </CollapseHeader>
 
           <CollapseBody>
-            {item.details.map((detail, index) => (
-              <View style={styles.body} key={index}>
-                <Text style={{...styles.headerText, color: detail.textColor}}>
-                  {detail.name}
-                </Text>
+            <View style={styles.accordionButtonContainer}>
+              {stats?.map((stats, index) => (
                 <TouchableOpacity
                   style={{
-                    ...styles.button,
-                    backgroundColor: index === 0 ? 'transparent' : colors.blue,
-                    borderColor: colors.blue,
-                    borderWidth: index === 0 ? 2 : 0,
+                    ...styles.accordionButtonContainerStyles,
+                    backgroundColor: stats.color,
                   }}
-                  onPress={() => reportHandler(detail)}>
-                  <Text
-                    style={{
-                      ...styles.buttonText,
-                      color: index === 0 ? colors.blue : colors.white,
-                    }}>
-                    {detail.buttonText}
+                  activeOpacity={0.7}
+                  key={index}>
+                  <Text style={styles.accordionButtonContainerText}>
+                    {stats.label}
                   </Text>
                 </TouchableOpacity>
-              </View>
-            ))}
+              ))}
+            </View>
+
+            <View style={styles.tableHeader}>
+              {['Indicator', 'Signal', 'Info'].map(item => (
+                <Text style={[styles.tableHeaderText, styles.headerCell]}>
+                  {item}
+                </Text>
+              ))}
+            </View>
+
+            <FlatList
+              data={signals}
+              renderItem={renderRow}
+              keyExtractor={(item, index) => index.toString() || item}
+            />
           </CollapseBody>
         </Collapse>
       </View>
@@ -281,30 +311,96 @@ export default function Analysis() {
     [activeAccordion],
   );
 
-  const handleDropdownChange = item => {
-    console.log('Selected item:', item);
+  const renderTableData = () => {
+    return (
+      <View style={styles.tableContainer}>
+        <Table borderStyle={styles.tableBorder}>
+          <Row
+            data={tableHead.map((item, index) => (
+              <Text
+                key={index}
+                style={[
+                  styles.headText,
+                  index === 0 && {
+                    ...styles.headText,
+                    fontWeight: 'bold',
+                  },
+                ]}>
+                {item}
+              </Text>
+            ))}
+            style={styles.head}
+          />
+          <Rows
+            data={tableData.map((row, rowIndex) =>
+              row.map((cell, cellIndex) => {
+                const isButtonRow =
+                  rowIndex === tableData.length - 2 ||
+                  rowIndex === tableData.length - 1;
+
+                const buttonStyles =
+                  isButtonRow && cellIndex !== 0
+                    ? styles.greenButtonContainer
+                    : {};
+
+                const isTodayRow = rowIndex === 0;
+                const isValueCell = cellIndex > 0;
+                const isNegative =
+                  isTodayRow &&
+                  isValueCell &&
+                  parseFloat(cell.replace('%', '')) < 0;
+
+                return (
+                  <Text
+                    key={cellIndex}
+                    style={[
+                      styles.text,
+                      cellIndex === 0 && {
+                        ...styles.text,
+                        fontWeight: 'bold',
+                      },
+                      isTodayRow &&
+                        isValueCell && {
+                          color: isNegative ? 'red' : 'green',
+                        },
+                      buttonStyles,
+                    ]}>
+                    {cell}
+                  </Text>
+                );
+              }),
+            )}
+          />
+        </Table>
+      </View>
+    );
+  };
+
+  const HeaderComponents = () => {
+    return (
+      <>
+        <SearchComp placeholderText={strings.SearchText} />
+        {renderTableData()}
+        <View style={styles.meterContainer}>
+          <Speedometer title={'Trend Following'} value={10} />
+          <Speedometer title={'Mean Reversion'} value={60} />
+          <Speedometer title={'Volume'} value={80} />
+        </View>
+      </>
+    );
   };
 
   return (
     <WrapperContainer>
       <HeaderComp
-        title={strings.Analysis}
+        title={strings.Trending}
         notificationIcon
         bellIcon="bell-plus-outline"
         settingIcon="settings"
       />
-      <SearchComp placeholderText={strings.SearchText} />
-      <View style={styles.container}>
-        <CustomDropdown
-          data={data}
-          placeholder="Report Source"
-          onChange={handleDropdownChange}
-          containerStyle={styles.dropdownContainerStyle}
-          dropdownStyle={styles.dropdownStyle}
-        />
-      </View>
 
       <FlatList
+        ListHeaderComponent={HeaderComponents}
         data={accordionData}
         renderItem={renderAccordionItem}
         keyExtractor={item => item.id.toString()}
