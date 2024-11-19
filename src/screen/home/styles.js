@@ -3,6 +3,14 @@ import {moderateScale, textScale, width} from '../../styles/responsiveSize';
 import colors from '../../styles/colors';
 
 const styles = StyleSheet.create({
+  itemSeparator: {
+    marginBottom: moderateScale(10),
+  },
+  listContainer: {
+    flexGrow: 1,
+    marginBottom: moderateScale(20),
+  },
+
   container: {
     flex: 1,
     marginHorizontal: moderateScale(12),
@@ -16,8 +24,10 @@ const styles = StyleSheet.create({
     padding: moderateScale(18),
   },
   stylesText: {
-    fontSize: textScale(15),
-    color: colors.grayOpacity50,
+    fontSize: textScale(16),
+    color: colors.black,
+    fontWeight: '300',
+    lineHeight: moderateScale(26),
   },
   stylesTextName: {
     fontSize: textScale(18),
@@ -28,7 +38,6 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(12),
   },
   seeAllStyles: {
-    marginBottom: moderateScale(12),
     textDecorationColor: colors.blue,
     color: colors.blue,
     textDecorationLine: 'underline',
@@ -38,7 +47,6 @@ const styles = StyleSheet.create({
     marginHorizontal: moderateScale(12),
     justifyContent: 'space-between',
     flexDirection: 'row',
-    marginVertical: moderateScale(10),
   },
 
   // flatList styles here
@@ -68,16 +76,20 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   symbol: {
     color: colors.white,
     fontSize: textScale(15),
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: moderateScale(5),
+    lineHeight: moderateScale(30),
   },
   priceRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    lineHeight: moderateScale(30),
   },
   price: {
     color: colors.white,
@@ -95,6 +107,12 @@ const styles = StyleSheet.create({
     padding: moderateScale(10),
     backgroundColor: colors.grayOpacity10,
     borderRadius: moderateScale(10),
+  },
+
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
 });
 

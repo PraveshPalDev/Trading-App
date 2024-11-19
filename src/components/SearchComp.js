@@ -7,20 +7,22 @@ import {moderateScale, textScale} from '../styles/responsiveSize';
 export default function SearchComp({
   leftIconName = 'magnify',
   placeholderText = 'Search...',
-  searchHandler = () => {},
-  style = {},
+  value,
+  searchHandler,
+  containerStyle = {},
   inputStyle = {},
 }) {
   return (
-    <View style={{...styles.container, style}}>
-      <TouchableOpacity style={styles.iconContainer} onPress={searchHandler}>
+    <View style={[styles.container, containerStyle]}>
+      <TouchableOpacity style={styles.iconContainer}>
         <Icon name={leftIconName} size={28} color={colors.gray} />
       </TouchableOpacity>
       <TextInput
-        style={{...styles.input, ...inputStyle}}
-        placeholderTextColor={colors.gray}
-        placeholder={placeholderText}
+        value={value}
         onChangeText={searchHandler}
+        placeholder={placeholderText}
+        style={[styles.input, inputStyle]}
+        placeholderTextColor={colors.gray}
         autoCapitalize="none"
       />
     </View>
@@ -43,7 +45,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     borderWidth: moderateScale(1),
     borderColor: colors.gray,
-    paddingLeft: moderateScale(15),
   },
   iconContainer: {
     justifyContent: 'center',

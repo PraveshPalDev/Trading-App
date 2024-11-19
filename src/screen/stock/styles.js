@@ -23,11 +23,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: moderateScale(10),
   },
-
   // flatList styles here
   card: {
     width: width / 2.1,
-    backgroundColor: colors.black,
     borderRadius: moderateScale(30),
     flexDirection: 'row',
     alignItems: 'center',
@@ -51,19 +49,20 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   symbol: {
-    color: colors.white,
     fontSize: textScale(15),
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: moderateScale(5),
+    lineHeight: moderateScale(30),
   },
   priceRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   price: {
-    color: colors.white,
     fontSize: textScale(13),
     marginRight: 4,
   },
@@ -71,13 +70,17 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontSize: textScale(13),
   },
-
   eventContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: moderateScale(10),
     backgroundColor: colors.grayOpacity10,
     borderRadius: moderateScale(10),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
 });
 

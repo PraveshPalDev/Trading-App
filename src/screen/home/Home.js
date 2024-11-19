@@ -1,55 +1,185 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
-import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import TextComp from '../../components/TextComp';
 import FastImageComp from '../../components/FastImageComp';
 import styles from './styles';
 import SearchComp from '../../components/SearchComp';
-import ImageCarouselComp from '../../components/ImageCarouselComp';
 import {moderateScale} from '../../styles/responsiveSize';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import colors from '../../styles/colors';
-
-const stocks = [
-  {id: 1, symbol: 'AMZN', price: '84.33', change: '(+3.51)'},
-  {id: 2, symbol: 'AMZN', price: '84.33', change: '(+3.51)'},
-  {id: 3, symbol: 'AMZN', price: '84.33', change: '(+3.51)'},
-  {id: 4, symbol: 'AMZN', price: '84.33', change: '(+3.51)'},
-  {id: 5, symbol: 'AMZN', price: '84.33', change: '(+3.51)'},
-  {id: 6, symbol: 'AMZN', price: '84.33', change: '(+3.51)'},
-];
-
-const events = [
-  {
-    id: 1,
-    title: 'Financial Results Announcement',
-    time: '08:00 - 10:00',
-    company: 'Apple Inc',
-    symbol: 'AAPL',
-    color: '#728ef1',
-  },
-  {
-    id: 2,
-    title: 'Financial Results Announcement',
-    time: '08:00 - 10:00',
-    company: 'Apple Inc',
-    symbol: 'AAPL',
-    color: '#e1a867',
-  },
-  {
-    id: 3,
-    title: 'Financial Results Announcement',
-    time: '08:00 - 10:00',
-    company: 'Apple Inc',
-    symbol: 'AAPL',
-    color: '#6ecf7f',
-  },
-];
+import {useSelector} from 'react-redux';
+import {GetAllNews, GetAllStocks} from '../../redux/actions/news';
+import NewsCard from '../../components/NewsCard';
+import navigationStrings from '../../navigation/navigationStrings';
+import {useNavigation} from '@react-navigation/native';
+import moment from 'moment';
 
 export default function Home() {
+  const navigation = useNavigation();
   const [openCalendar, setOpenCalendar] = useState(false);
+  const userData = useSelector(state => state.auth.userData);
+  const [news, setNews] = useState([]);
+  const [stocks, setStocks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [stockLoading, setStockLoading] = useState(false);
+
+  useEffect(() => {
+    fetchAllNews();
+    fetchAllStock();
+  }, []);
+
+  const fetchAllStock = async () => {
+    try {
+      setStockLoading(true);
+      const response = await GetAllStocks();
+
+      if (response) {
+        const sortedStocks = response?.sort((a, b) => b.volume - a.volume);
+        setStocks(sortedStocks.slice(0, 10));
+      }
+    } catch (error) {
+      console.log('Error fetching stocks:', error);
+    } finally {
+      setStockLoading(false);
+    }
+  };
+
+  const fetchAllNews = async (page = 1) => {
+    try {
+      setLoading(true);
+
+      const response = await GetAllNews(page);
+      if (response) {
+        setNews(response);
+      }
+    } catch (error) {
+      console.log('Error fetching news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const UserInformation = () => (
+    <View style={styles.userInformationContainer}>
+      <FastImageComp url="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" />
+      <View style={styles.userInfoNameContainer}>
+        <TextComp text="Welcome Back" style={styles.stylesText} />
+        <TextComp
+          text={`${userData.firstName}${userData.lastName}`}
+          style={styles.stylesTextName}
+        />
+      </View>
+    </View>
+  );
+
+  const HeaderComponents = () => {
+    return (
+      <>
+        <HeaderComp
+          title={strings.Home}
+          bellHandler={bellHandler}
+          settingHandler={settingHandler}
+          notificationIcon
+        />
+        <UserInformation />
+
+        <SearchComp
+          placeholderText={strings.SearchText}
+          searchHandler={searchHandler}
+        />
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: moderateScale(15),
+          }}>
+          <TextComp text={strings.News} style={styles.heading} />
+          <Text style={styles.seeAllStyles} onPress={newsSeeAllHandler}>
+            {strings.SeeAll}
+          </Text>
+        </View>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <NewsCard newsItems={news} />
+        )}
+
+        <View style={{...styles.stockStyles}}>
+          <TextComp text={strings.PapularStocks} style={styles.heading} />
+          <Text style={styles.seeAllStyles} onPress={seeAllHandler}>
+            {strings.SeeAll}
+          </Text>
+        </View>
+      </>
+    );
+  };
+
+  const renderItem = ({item}) => {
+    const changeColor = item.change.startsWith('-')
+      ? colors.red
+      : colors.lightGreen2;
+    const formattedDate = moment().format('YYYY-MM-DD');
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => stocksHandler(item)}
+        style={{
+          ...styles.card,
+          backgroundColor:
+            item.timestamp !== formattedDate ? colors.yellow : colors.black,
+        }}>
+        <View style={styles.textContainer}>
+          <Text
+            style={{
+              ...styles.symbol,
+              color:
+                item.timestamp !== formattedDate ? colors.black : colors.white,
+            }}>
+            {item?.ticker}
+          </Text>
+          <View style={styles.priceRow}>
+            <Text
+              style={{
+                ...styles.price,
+                color:
+                  item.timestamp !== formattedDate
+                    ? colors.black
+                    : colors.white,
+              }}>
+              ${item?.price}{' '}
+            </Text>
+            <Text style={[styles.change, {color: changeColor}]}>
+              {`(${item?.change})`}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const bellHandler = () => {};
+  const settingHandler = () => {};
+  const searchHandler = text => {};
+
+  const seeAllHandler = () => {
+    navigation.navigate(navigationStrings.Stock);
+  };
+
+  const newsSeeAllHandler = () => {
+    navigation.navigate(navigationStrings.News);
+  };
 
   const renderEvent = ({item}) => (
     <View style={[styles.eventCard, {backgroundColor: item.color}]}>
@@ -66,39 +196,6 @@ export default function Home() {
         <Text style={styles.symbolText}>{item.symbol}</Text>
       </View>
     </View>
-  );
-
-  const UserInformation = () => (
-    <View style={styles.userInformationContainer}>
-      <FastImageComp url="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" />
-      <View style={styles.userInfoNameContainer}>
-        <TextComp text="Welcome Back" style={styles.stylesText} />
-        <TextComp text="Pravesh Kumar!" style={styles.stylesTextName} />
-      </View>
-    </View>
-  );
-
-  const HeaderComponents = () => (
-    <>
-      <HeaderComp
-        title={strings.Home}
-        bellHandler={bellHandler}
-        settingHandler={settingHandler}
-        notificationIcon
-      />
-      <UserInformation />
-      <SearchComp
-        placeholderText={strings.SearchText}
-        searchHandler={searchHandler}
-      />
-      <ImageCarouselComp title={strings.News} />
-      <View style={styles.stockStyles}>
-        <TextComp text={strings.PapularStocks} style={styles.heading} />
-        <Text style={styles.seeAllStyles} onPress={seeAllHandler}>
-          {strings.SeeAll}
-        </Text>
-      </View>
-    </>
   );
 
   const FooterComponents = () => (
@@ -123,42 +220,25 @@ export default function Home() {
     </View>
   );
 
-  const renderItem = ({item}) => (
-    <View style={styles.card}>
-      <Image
-        source={{
-          uri: 'https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Amazon-512.png',
-        }}
-        style={styles.iconContainer}
-      />
-      <View style={styles.textContainer}>
-        <Text style={styles.symbol}>{item.symbol}</Text>
-        <View style={styles.priceRow}>
-          <Text style={styles.price}>${item.price}</Text>
-          <Text style={styles.change}>{item.change}</Text>
-        </View>
-      </View>
+  const renderLoading = () => (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#005aef" />
     </View>
   );
 
-  const bellHandler = () => {};
-  const settingHandler = () => {};
-  const searchHandler = text => {};
-  const seeAllHandler = () => {};
+  const renderSeparator = () => <View style={styles.itemSeparator} />;
 
   return (
     <WrapperContainer>
       <FlatList
         data={stocks}
-        ListHeaderComponent={HeaderComponents}
+        ListHeaderComponent={() => <HeaderComponents news={news} />}
         ListFooterComponent={FooterComponents}
-        renderItem={renderItem}
+        renderItem={stockLoading ? renderLoading : renderItem}
         numColumns={2}
-        keyExtractor={item => item.id.toString()}
-        ItemSeparatorComponent={() => (
-          <View style={{marginBottom: moderateScale(10)}} />
-        )}
-        style={{flex: 1, marginBottom: moderateScale(20)}}
+        keyExtractor={(item, index) => item?.volume || index}
+        ItemSeparatorComponent={renderSeparator}
+        contentContainerStyle={styles.listContainer}
       />
     </WrapperContainer>
   );

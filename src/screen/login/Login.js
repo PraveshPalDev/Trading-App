@@ -15,8 +15,8 @@ import {userLogin} from '../../redux/actions/auth';
 
 export default function Login({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState('praveshpal707823@gmail.com');
-  const [password, setPassword] = useState('Testing@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const toggleSecureEntryHandler = () => {

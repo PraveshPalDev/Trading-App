@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Image, Text} from 'react-native';
+import {StyleSheet, View, Image, Text, ImageBackground} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import {
   height,
@@ -9,28 +9,28 @@ import {
 } from '../styles/responsiveSize';
 import TextComp from './TextComp';
 import colors from '../styles/colors';
+import strings from '../constants/lang';
 
-const images = [
-  {
-    title: 'Image 1 sakldfja kdfjla sdfkja sdlfahds',
-    uri: 'https://cdn.pixabay.com/photo/2016/11/27/21/42/stock-1863880_1280.jpg',
-  },
-  {
-    title: 'Image 2 asd asd asdasd asdasd',
-    uri: 'https://cdn.pixabay.com/photo/2024/08/23/15/49/ai-generated-8992203_1280.jpg',
-  },
-  {
-    title: 'Image 3 asdasdasda s asd ads',
-    uri: 'https://cdn.pixabay.com/photo/2024/04/23/05/41/ai-generated-8714005_1280.jpg',
-  },
-];
-
-export default function ImageCarouselComp({title, dotStyles, activeDotStyles}) {
+export default function ImageCarouselComp({
+  title,
+  data,
+  dotStyles,
+  activeDotStyles,
+  seeAllHandler = () => {},
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
     <View style={{flex: 1}}>
-      <TextComp text={title} style={styles.heading} />
+      <View style={styles.titleContainer}>
+        <TextComp text={title} style={styles.heading} />
+        <TextComp
+          text={strings.SeeAll}
+          style={styles.seeAllStyles}
+          onPress={seeAllHandler}
+        />
+      </View>
+
       <View style={styles.container}>
         <Carousel
           loop
@@ -38,19 +38,36 @@ export default function ImageCarouselComp({title, dotStyles, activeDotStyles}) {
           height={height / 3.8}
           autoPlay={true}
           autoPlayInterval={3000}
-          data={images}
+          data={data}
           scrollAnimationDuration={1000}
           onSnapToItem={index => setCurrentIndex(index)}
-          renderItem={({item}) => (
-            <View style={styles.slide}>
-              <Image source={{uri: item.uri}} style={styles.image} />
-              <Text style={styles.title}>{item.title}</Text>
-            </View>
-          )}
+          renderItem={({item}) => {
+            return (
+              <>
+                <View style={styles.slide}>
+                  <ImageBackground
+                    source={{uri: item.imageUrl}}
+                    style={styles.image}>
+                    <View
+                      style={{
+                        // backgroundColor: 'red',
+                        justifyContent: 'center',
+                      }}>
+                      <Text style={{color: colors.black, borderWidth: 1}}>
+                        {item.sourceName}
+                      </Text>
+                      <Text style={styles.title}>{item.pubDate}</Text>
+                    </View>
+                    <Text style={styles.title}>{item.title}</Text>
+                  </ImageBackground>
+                </View>
+              </>
+            );
+          }}
         />
         {/* Dot navigation */}
         <View style={styles.dotContainer}>
-          {images?.map((_, index) => (
+          {data?.map((_, index) => (
             <View
               key={index}
               style={[
@@ -80,7 +97,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   title: {
-    fontSize: textScale(16),
+    fontSize: textScale(13),
     fontWeight: 'bold',
     color: colors.white,
     position: 'absolute',
@@ -118,5 +135,17 @@ const styles = StyleSheet.create({
   heading: {
     marginBottom: moderateScale(12),
     marginHorizontal: moderateScale(12),
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: moderateScale(6),
+  },
+  seeAllStyles: {
+    marginBottom: moderateScale(12),
+    textDecorationColor: colors.blue,
+    color: colors.blue,
+    textDecorationLine: 'underline',
+    fontSize: textScale(16),
   },
 });

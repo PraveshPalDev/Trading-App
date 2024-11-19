@@ -11,9 +11,13 @@ export default function Routes() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {!!userData?.token ? MainStack(Stack) : AuthStack(Stack)}
-      </Stack.Navigator>
+      {!!userData?.token ? (
+        <Stack.Navigator>{MainStack(Stack)}</Stack.Navigator>
+      ) : (
+        <Stack.Navigator initialRouteName="Login">
+          {AuthStack(Stack)}
+        </Stack.Navigator>
+      )}
     </NavigationContainer>
   );
 }

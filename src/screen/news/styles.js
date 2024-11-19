@@ -163,55 +163,65 @@ const styles = StyleSheet.create({
 
   // card styles
   card: {
-    width: width / 1.08,
-    marginHorizontal: moderateScale(12),
-    alignSelf: 'center',
-    justifyContent: 'space-between',
     flexDirection: 'row',
-  },
-  justifiedText: {
-    textAlign: 'justify',
-    fontSize: textScale(14),
-    lineHeight: moderateScale(18),
-    marginVertical: moderateScale(5),
-  },
-  imageContainer: {
-    paddingRight: moderateScale(8),
-    alignSelf: 'center',
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(20),
+    padding: moderateScale(10),
+    marginBottom: moderateScale(10),
+    marginHorizontal: moderateScale(10),
   },
   image: {
     width: moderateScale(120),
-    height: moderateScale(150),
-    borderRadius: moderateScale(20),
-  },
-  stockBtnContainer: {
-    marginRight: moderateScale(130),
-    height: moderateScale(28),
-    borderRadius: moderateScale(15),
-    borderWidth: 1,
-    borderColor: colors.black,
-    alignItems: 'center',
+    height: moderateScale(140),
+    borderRadius: moderateScale(12),
     justifyContent: 'center',
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: moderateScale(5),
-  },
-  timeImageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignSelf: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    marginLeft: moderateScale(12),
+    justifyContent: 'space-between',
+  },
+  categoryContainer: {
+    width: width / 1.7,
+    backgroundColor: colors.white,
+    paddingHorizontal: moderateScale(12),
+    paddingVertical: moderateScale(4),
+    borderRadius: moderateScale(16),
+    alignSelf: 'flex-start',
+  },
+  categoryText: {
+    fontSize: textScale(14),
+    color: colors.black,
+  },
+  title: {
+    fontSize: textScale(14),
+    color: colors.black,
+    marginVertical: moderateScaleVertical(8),
+    lineHeight: moderateScale(20),
+  },
+  sourceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  timeLogo: {
+  sourceInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sourceLogo: {
     width: moderateScale(20),
     height: moderateScale(20),
+    borderRadius: moderateScale(10),
   },
-  timeName: {
+  sourceName: {
     fontSize: textScale(14),
     color: colors.gray,
-    textAlign: 'center',
+    marginLeft: moderateScale(6),
+  },
+  timeText: {
+    fontSize: textScale(12),
+    color: colors.gray,
   },
 });
 

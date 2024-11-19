@@ -5,7 +5,7 @@ import {Provider} from 'react-redux';
 import Routes from './src/navigation/Routes';
 import FlashMessage from 'react-native-flash-message';
 import {textScale} from './src/styles/responsiveSize';
-import {useColorScheme} from 'react-native';
+import {LogBox, useColorScheme} from 'react-native';
 import {
   initiateLang,
   initiateTheme,
@@ -19,6 +19,7 @@ export default function App() {
   useEffect(() => {
     // initiateLang(dispatch);
     //initiateTheme(dispatch, theme);
+    LogBox.ignoreAllLogs();
     initUserData(dispatch);
   }, []);
 

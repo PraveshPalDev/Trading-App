@@ -5,128 +5,119 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import SearchComp from '../../components/SearchComp';
-import ImageCarouselComp from '../../components/ImageCarouselComp';
 import strings from '../../constants/lang';
 import styles from './styles';
 import {moderateScale} from '../../styles/responsiveSize';
 import TextComp from '../../components/TextComp';
 import {NewsCategories} from '../../constants/static/staticData';
-import {useNavigation} from '@react-navigation/native';
-import navigationStrings from '../../navigation/navigationStrings';
-
-const newsData = [
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Stock',
-    news: `Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in classical Latin literature dating back to 45 BC.`,
-    source: 'Economics Times',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '9 hours ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Finance',
-    news: `New financial reforms are being introduced to ensure stability amid global economic uncertainties.`,
-    source: 'Finance Daily',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '12 hours ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/4386396/pexels-photo-4386396.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Technology',
-    news: `Breakthroughs in AI and machine learning are transforming industries at an unprecedented pace.`,
-    source: 'Tech World',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '5 hours ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/3184631/pexels-photo-3184631.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Health',
-    news: `Recent studies emphasize the importance of mental well-being in overall health care.`,
-    source: 'Health Line',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '2 days ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/276517/pexels-photo-276517.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'World News',
-    news: `Global leaders convene to discuss strategies for combating climate change.`,
-    source: 'Global Times',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '3 hours ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/3184395/pexels-photo-3184395.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Sports',
-    news: `The latest championship sees an unexpected turn as underdogs secure a surprising victory.`,
-    source: 'Sports Weekly',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '6 hours ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/2101187/pexels-photo-2101187.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Entertainment',
-    news: `A blockbuster movie breaks records, becoming the highest-grossing film of the year.`,
-    source: 'Hollywood Insider',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '1 day ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/3184455/pexels-photo-3184455.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Science',
-    news: `A new discovery in astrophysics challenges our understanding of black holes.`,
-    source: 'Science Daily',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '8 hours ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/373076/pexels-photo-373076.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Travel',
-    news: `Top destinations to explore in 2023 for adventure seekers and nature lovers.`,
-    source: 'Travel Guide',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '4 days ago',
-  },
-  {
-    imageUrl:
-      'https://images.pexels.com/photos/3182768/pexels-photo-3182768.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'Business',
-    news: `Market analysts predict a strong quarter for the tech sector amid global uncertainties.`,
-    source: 'Business Daily',
-    sourceIcon:
-      'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b5/71/b6/b571b6ff-c42c-558a-a6a8-58d3a7f1d223/AppIcon-0-0-1x_U007emarketing-0-8-0-sRGB-85-220.png/1200x630wa.png',
-    time: '10 hours ago',
-  },
-];
+import NewsCard from '../../components/NewsCard';
+import {GetAllNews, GetAllNewsTypes} from '../../redux/actions/news';
+import moment from 'moment';
+import colors from '../../styles/colors';
 
 export default function News() {
-  const navigation = useNavigation();
+  const [news, setNews] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [trendingNews, setTrendingNews] = useState([]);
+
+  useEffect(() => {
+    fetchAllNews(page);
+    getAllTrendingNews(page, 'Trending');
+  }, []);
+
+  useEffect(() => {
+    fetchAllNews(page);
+  }, [page]);
+
+  const fetchAllNews = async currentPage => {
+    try {
+      setLoading(true);
+      const response = await GetAllNews(currentPage);
+
+      const SortedData = response?.sort(
+        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+      );
+
+      if (response?.length) {
+        setNews(prevNews => [...prevNews, ...SortedData]);
+        setHasMore(response.length > 0);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAllNewsTypes = async (tab, index) => {
+    if (tab === 'All') {
+      setActiveTab(index);
+      setNews([]);
+      setPage(1);
+      return;
+    }
+
+    try {
+      setActiveTab(index);
+      setLoading(true);
+      setNews([]);
+      const response = await GetAllNewsTypes(page, tab);
+      const SortedData = response?.sort(
+        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+      );
+
+      if (response?.length) {
+        setNews(prevNews => [...prevNews, ...SortedData]);
+        setHasMore(response.length > 0);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Error new types error news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAllTrendingNews = async (page, type) => {
+    try {
+      const response = await GetAllNewsTypes(page, type);
+      const SortedData = response?.sort(
+        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+      );
+
+      if (response?.length) {
+        setTrendingNews(SortedData);
+      }
+    } catch (error) {
+      console.error('Error new types error news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMore = () => {
+    if (!isLoading && hasMore) {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
 
   const FooterComponents = () => (
-    <View style={{...styles.container, marginTop: moderateScale(15)}} />
+    <View style={styles.loginYourStyles}>
+      <ActivityIndicator size="large" color={colors.blue} />
+    </View>
   );
 
   const HeaderComponents = () => (
@@ -143,13 +134,11 @@ export default function News() {
         searchHandler={searchHandler}
       />
 
-      <ImageCarouselComp
-        title={strings.LatestNews}
-        dotStyles={{
-          marginBottom: moderateScale(-250),
-        }}
-        activeDotStyles={styles.activeDotStyles}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <NewsCard newsItems={trendingNews} />
+      )}
 
       <ScrollView
         horizontal
@@ -158,8 +147,14 @@ export default function News() {
         {NewsCategories?.map((tab, index) => (
           <TouchableOpacity
             key={index}
-            style={[styles.tab, index === 0 && styles.activeTab]}>
-            <Text style={[styles.tabText, index === 0 && styles.activeTabText]}>
+            style={[styles.tab, index === activeTab && styles.activeTab]}
+            activeOpacity={0.7}
+            onPress={() => fetchAllNewsTypes(tab, index)}>
+            <Text
+              style={[
+                styles.tabText,
+                index === activeTab && styles.activeTabText,
+              ]}>
               {tab}
             </Text>
           </TouchableOpacity>
@@ -175,59 +170,61 @@ export default function News() {
     </>
   );
 
-  const renderItem = ({item}) => (
-    <View style={styles.card}>
-      {/* left image container */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={{
-            uri: item.imageUrl,
-          }}
-          style={styles.image}
-        />
-      </View>
+  const TrendingNewsCard = ({item}) => {
+    const formattedDate = moment(item?.pubDate).fromNow();
 
-      {/* right text and icon and time container */}
-      <View style={{flex: 1}}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.stockBtnContainer}
-          onPress={() => stockHandler(item)}>
-          <Text style={{textAlign: 'center'}}>{item.category}</Text>
-        </TouchableOpacity>
-        <Text style={styles.justifiedText}>{item.news}</Text>
-        <View style={styles.timeContainer}>
-          <View style={styles.timeImageContainer}>
-            <Image
-              source={{
-                uri: item.sourceIcon,
-              }}
-              style={styles.timeLogo}
-            />
-            <Text style={styles.timeName}>{item.source}</Text>
+    return (
+      <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+        <Image source={{uri: item.imageUrl}} style={styles.image} />
+        {/* Right Content */}
+        <View style={styles.contentContainer}>
+          <View style={styles.categoryContainer}>
+            <Text style={styles.categoryText}>
+              {' '}
+              {item?.title?.length > 80
+                ? `${item.title.slice(0, 80)}...`
+                : item?.title}
+            </Text>
           </View>
-          <Text style={styles.timeName}>{item.time}</Text>
+
+          {/* News Title */}
+          <View style={styles.categoryContainer}>
+            <Text style={styles.title}>
+              {item?.description?.length > 80
+                ? `${item.description.slice(0, 80)}...`
+                : item?.description}
+            </Text>
+          </View>
+
+          {/* Bottom Source and Time */}
+          <View style={styles.categoryContainer}>
+            <View style={styles.sourceContainer}>
+              <View style={styles.sourceInfo}>
+                <Text style={styles.sourceName}>{item?.sourceName}</Text>
+              </View>
+              <Text style={styles.timeText}>{formattedDate}</Text>
+            </View>
+          </View>
         </View>
-      </View>
-    </View>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   const bellHandler = () => {};
   const settingHandler = () => {};
   const seeAllHandler = () => {};
   const searchHandler = text => {};
-
-  const stockHandler = item => {
-    alert('coming soon');
-  };
+  const renderItem = ({item}) => <TrendingNewsCard item={item} />;
 
   return (
     <WrapperContainer>
       <FlatList
-        data={newsData}
+        data={news}
         ListHeaderComponent={HeaderComponents}
-        ListFooterComponent={FooterComponents}
+        ListFooterComponent={loading && FooterComponents}
         renderItem={renderItem}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.2}
         keyExtractor={(item, index) => item?.id?.toString() || index}
         ItemSeparatorComponent={() => (
           <View style={{marginBottom: moderateScale(10)}} />

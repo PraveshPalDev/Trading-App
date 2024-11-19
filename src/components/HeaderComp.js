@@ -49,11 +49,7 @@ export default function HeaderComp({
           style={styles.iconLeftStyles}
           activeOpacity={0.5}
           onPress={bellHandler}>
-          <Icon
-            name={bellIcon}
-            size={moderateScale(25)}
-            color={colors.blueOpacity70}
-          />
+          <Icon name={bellIcon} size={moderateScale(25)} color={colors.blue} />
           {notificationIcon && <View style={styles.notificationStyles} />}
         </TouchableOpacity>
 
@@ -92,7 +88,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     justifyContent: 'center',
-    color: colors.blackOpacity50,
+    color: colors.blackOpacity90,
   },
   leftContainer: {
     flexDirection: 'row',
@@ -116,7 +112,7 @@ const styles = StyleSheet.create({
   iconStyles: {
     width: moderateScale(40),
     height: moderateScale(40),
-    backgroundColor: colors.blueOpacity70,
+    backgroundColor: colors.blue,
     borderRadius: moderateScale(20),
     alignItems: 'center',
     justifyContent: 'center',
