@@ -20,6 +20,7 @@ import NewsCard from '../../components/NewsCard';
 import {GetAllNews, GetAllNewsTypes} from '../../redux/actions/news';
 import moment from 'moment';
 import colors from '../../styles/colors';
+import FlashListComp from '../../components/FlashListComp';
 
 export default function News() {
   const [news, setNews] = useState([]);
@@ -29,6 +30,7 @@ export default function News() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [trendingNews, setTrendingNews] = useState([]);
+  const [trendingLoading, setTrendingLoading] = useState(false);
 
   useEffect(() => {
     fetchAllNews(page);
@@ -93,6 +95,7 @@ export default function News() {
 
   const getAllTrendingNews = async (page, type) => {
     try {
+      setTrendingLoading(true);
       const response = await GetAllNewsTypes(page, type);
       const SortedData = response?.sort(
         (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
@@ -100,11 +103,12 @@ export default function News() {
 
       if (response?.length) {
         setTrendingNews(SortedData);
+        setTrendingLoading(false);
       }
     } catch (error) {
       console.error('Error new types error news:', error);
     } finally {
-      setLoading(false);
+      setTrendingLoading(false);
     }
   };
 
@@ -120,6 +124,15 @@ export default function News() {
     </View>
   );
 
+  const renderDropdown = () => {
+    return (
+      <SearchComp
+        placeholderText={strings.SearchText}
+        searchHandler={searchHandler}
+      />
+    );
+  };
+
   const HeaderComponents = () => (
     <>
       <HeaderComp
@@ -129,12 +142,8 @@ export default function News() {
         notificationIcon
       />
 
-      <SearchComp
-        placeholderText={strings.SearchText}
-        searchHandler={searchHandler}
-      />
-
-      {loading ? (
+      {renderDropdown()}
+      {trendingLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <NewsCard newsItems={trendingNews} />
@@ -218,18 +227,19 @@ export default function News() {
 
   return (
     <WrapperContainer>
-      <FlatList
-        data={news}
+      <FlashListComp
+        DATA={news}
+        renderItem={renderItem}
         ListHeaderComponent={HeaderComponents}
         ListFooterComponent={loading && FooterComponents}
-        renderItem={renderItem}
         onEndReached={loadMore}
         onEndReachedThreshold={0.2}
-        keyExtractor={(item, index) => item?.id?.toString() || index}
         ItemSeparatorComponent={() => (
           <View style={{marginBottom: moderateScale(10)}} />
         )}
-        style={{flex: 1, marginBottom: moderateScale(20)}}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        containerStyle={{flex: 1, marginBottom: moderateScale(20)}}
       />
     </WrapperContainer>
   );

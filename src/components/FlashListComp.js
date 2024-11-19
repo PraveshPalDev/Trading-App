@@ -9,6 +9,7 @@ export default function FlashListComp({
   numColumns = 1,
   ItemSeparatorComponent = () => {},
   ListHeaderComponent = null,
+  containerStyle = {},
   ...props
 }) {
   return (
@@ -29,6 +30,7 @@ export default function FlashListComp({
       )}
       ItemSeparatorComponent={ItemSeparatorComponent}
       ListHeaderComponent={ListHeaderComponent}
+      style={styles.containerStyle}
     />
   );
 }

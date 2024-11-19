@@ -18,6 +18,7 @@ import navigationStrings from '../../navigation/navigationStrings';
 import {GetAllStocks} from '../../redux/actions/news';
 import colors from '../../styles/colors';
 import moment from 'moment';
+import FlashListComp from '../../components/FlashListComp';
 
 export default function Stock() {
   const navigation = useNavigation();
@@ -151,17 +152,24 @@ export default function Stock() {
         placeholderText={strings.SearchText}
       />
 
-      <FlatList
-        data={filterStack}
-        ListHeaderComponent={HeaderComponents}
-        renderItem={stockLoading ? renderLoading : renderItem}
-        numColumns={2}
-        keyExtractor={(item, index) => index}
-        ItemSeparatorComponent={() => (
-          <View style={{marginBottom: moderateScale(10)}} />
-        )}
-        style={{flex: 1, marginBottom: moderateScale(20)}}
-      />
+      {stockLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#005aef" />
+        </View>
+      ) : (
+        <FlashListComp
+          DATA={filterStack}
+          renderItem={renderItem}
+          ListHeaderComponent={HeaderComponents}
+          numColumns={2}
+          ItemSeparatorComponent={() => (
+            <View style={{marginBottom: moderateScale(10)}} />
+          )}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          containerStyle={{flex: 1, marginBottom: moderateScale(20)}}
+        />
+      )}
     </WrapperContainer>
   );
 }

@@ -16,7 +16,7 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "@reduxjs/toolkit": "^2.2.7",
-    "@shopify/flash-list": "github:shopify/flash-list",
+    "@shopify/flash-list": "^1.7.2",
     "accordion-collapse-react-native": "^1.1.1",
     "axios": "^1.7.3",
     "is_js": "^0.9.0",

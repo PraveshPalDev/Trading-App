@@ -22,6 +22,7 @@ import NewsCard from '../../components/NewsCard';
 import navigationStrings from '../../navigation/navigationStrings';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
+import FlashListComp from '../../components/FlashListComp';
 
 export default function Home() {
   const navigation = useNavigation();
@@ -30,7 +31,7 @@ export default function Home() {
   const [news, setNews] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [stockLoading, setStockLoading] = useState(false);
+  const [stockLoading, setStockLoading] = useState(true);
 
   useEffect(() => {
     fetchAllNews();
@@ -39,11 +40,10 @@ export default function Home() {
 
   const fetchAllStock = async () => {
     try {
-      setStockLoading(true);
       const response = await GetAllStocks();
-
       if (response) {
         const sortedStocks = response?.sort((a, b) => b.volume - a.volume);
+        setStockLoading(false);
         setStocks(sortedStocks.slice(0, 10));
       }
     } catch (error) {
@@ -225,20 +225,20 @@ export default function Home() {
       <ActivityIndicator size="large" color="#005aef" />
     </View>
   );
-
   const renderSeparator = () => <View style={styles.itemSeparator} />;
 
   return (
     <WrapperContainer>
-      <FlatList
-        data={stocks}
-        ListHeaderComponent={() => <HeaderComponents news={news} />}
-        ListFooterComponent={FooterComponents}
+      <FlashListComp
+        DATA={stocks}
         renderItem={stockLoading ? renderLoading : renderItem}
+        ListHeaderComponent={HeaderComponents}
+        ListFooterComponent={FooterComponents}
         numColumns={2}
-        keyExtractor={(item, index) => item?.volume || index}
         ItemSeparatorComponent={renderSeparator}
-        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        containerStyle={styles.listContainer}
       />
     </WrapperContainer>
   );
