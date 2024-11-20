@@ -52,7 +52,7 @@ const CustomDropdown = ({
         renderRightIcon={() => (
           <Icon
             name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
-            size={moderateScale(28)}
+            size={moderateScale(40)}
             color={colors.gray}
             style={iconStyle}
           />
@@ -65,16 +65,24 @@ const CustomDropdown = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: moderateScale(16),
-    marginVertical: moderateScale(10),
+    flex: 1,
   },
   dropdown: {
-    height: moderateScale(50),
-    borderColor: colors.white,
-    borderWidth: 1,
-    borderRadius: moderateScale(8),
-    paddingHorizontal: moderateScale(8),
+    marginHorizontal: moderateScale(12),
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.white,
+    borderRadius: moderateScale(30),
+    paddingHorizontal: moderateScale(10),
+    height: moderateScale(55),
+    marginVertical: moderateScale(10),
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    borderWidth: moderateScale(1),
+    borderColor: colors.gray,
+    paddingLeft: moderateScale(25),
   },
   dropdownOpen: {
     backgroundColor: colors.white,

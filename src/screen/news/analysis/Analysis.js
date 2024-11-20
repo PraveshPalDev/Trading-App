@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
 import navigationStrings from '../../../navigation/navigationStrings';
 import {useNavigation} from '@react-navigation/native';
+import FlashListComp from '../../../components/FlashListComp';
 
 const data = [
   {label: 'Report Source', value: '1'},
@@ -251,7 +252,7 @@ export default function Analysis() {
           </CollapseHeader>
 
           <CollapseBody>
-            {item.details.map((detail, index) => (
+            {item?.details?.map((detail, index) => (
               <View style={styles.body} key={index}>
                 <Text style={{...styles.headerText, color: detail.textColor}}>
                   {detail.name}
@@ -285,29 +286,33 @@ export default function Analysis() {
     console.log('Selected item:', item);
   };
 
-  return (
-    <WrapperContainer>
-      <HeaderComp
-        title={strings.Analysis}
-        notificationIcon
-        bellIcon="bell-plus-outline"
-        settingIcon="settings"
-      />
-      <SearchComp placeholderText={strings.SearchText} />
-      <View style={styles.container}>
+  const HeaderComponents = () => {
+    return (
+      <>
+        <HeaderComp
+          title={strings.Analysis}
+          notificationIcon
+          bellIcon="bell-plus-outline"
+          settingIcon="settings"
+        />
+        <SearchComp placeholderText={strings.SearchText} />
+
         <CustomDropdown
           data={data}
           placeholder="Report Source"
           onChange={handleDropdownChange}
-          containerStyle={styles.dropdownContainerStyle}
-          dropdownStyle={styles.dropdownStyle}
         />
-      </View>
+      </>
+    );
+  };
 
-      <FlatList
-        data={accordionData}
+  return (
+    <WrapperContainer>
+      <FlashListComp
+        DATA={accordionData}
         renderItem={renderAccordionItem}
         keyExtractor={item => item.id.toString()}
+        ListHeaderComponent={HeaderComponents}
       />
     </WrapperContainer>
   );

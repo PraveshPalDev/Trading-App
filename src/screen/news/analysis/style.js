@@ -4,6 +4,7 @@ import colors from '../../../styles/colors';
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: width / 1,
     alignSelf: 'center',
     marginHorizontal: moderateScale(20),

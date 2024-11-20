@@ -1,6 +1,5 @@
 import {
   View,
-  FlatList,
   Text,
   ScrollView,
   TouchableOpacity,
@@ -10,17 +9,21 @@ import {
 import React, {useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
-import SearchComp from '../../components/SearchComp';
 import strings from '../../constants/lang';
 import styles from './styles';
 import {moderateScale} from '../../styles/responsiveSize';
 import TextComp from '../../components/TextComp';
 import {NewsCategories} from '../../constants/static/staticData';
 import NewsCard from '../../components/NewsCard';
-import {GetAllNews, GetAllNewsTypes} from '../../redux/actions/news';
+import {
+  GetAllNews,
+  GetAllNewsTypes,
+  GetTickerBasicInfo,
+} from '../../redux/actions/news';
 import moment from 'moment';
 import colors from '../../styles/colors';
 import FlashListComp from '../../components/FlashListComp';
+import CustomDropdown from '../../components/CustomDropdown';
 
 export default function News() {
   const [news, setNews] = useState([]);
@@ -31,6 +34,8 @@ export default function News() {
   const [activeTab, setActiveTab] = useState(0);
   const [trendingNews, setTrendingNews] = useState([]);
   const [trendingLoading, setTrendingLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [dropdownData, setDropdownData] = useState([]);
 
   useEffect(() => {
     fetchAllNews(page);
@@ -40,6 +45,34 @@ export default function News() {
   useEffect(() => {
     fetchAllNews(page);
   }, [page]);
+
+  useEffect(() => {
+    fetchStockFilterData();
+  }, []);
+
+  const fetchStockFilterData = async () => {
+    try {
+      const response = await GetTickerBasicInfo();
+      const sortedData = response?.sort(
+        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+      );
+
+      const temp = [];
+      sortedData?.forEach(x => {
+        temp.push({
+          label: `${x?.ticker} - ${x.eN_Name}`,
+          value: `${x?.ticker} ${x.eN_Name}`,
+          ticker: x?.ticker,
+        });
+      });
+
+      if (response?.length) {
+        setDropdownData(temp);
+      }
+    } catch (error) {
+      console.error('Error fetching getTickerBasic information :', error);
+    }
+  };
 
   const fetchAllNews = async currentPage => {
     try {
@@ -124,13 +157,9 @@ export default function News() {
     </View>
   );
 
-  const renderDropdown = () => {
-    return (
-      <SearchComp
-        placeholderText={strings.SearchText}
-        searchHandler={searchHandler}
-      />
-    );
+  const handleDropdownChange = item => {
+    setSelectedOption(item.value);
+    // navigate with value another page
   };
 
   const HeaderComponents = () => (
@@ -142,7 +171,14 @@ export default function News() {
         notificationIcon
       />
 
-      {renderDropdown()}
+      <CustomDropdown
+        data={dropdownData}
+        placeholder={strings.SearchText}
+        onChange={handleDropdownChange}
+        enableSearch={true}
+        value={selectedOption}
+      />
+
       {trendingLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -222,7 +258,6 @@ export default function News() {
   const bellHandler = () => {};
   const settingHandler = () => {};
   const seeAllHandler = () => {};
-  const searchHandler = text => {};
   const renderItem = ({item}) => <TrendingNewsCard item={item} />;
 
   return (
