@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: moderateScale(20),
     justifyContent: 'center',
+    marginVertical: moderateScale(8),
   },
   welcomeText: {
     fontSize: textScale(28),
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
     paddingVertical: moderateScaleVertical(15),
     borderRadius: moderateScale(8),
     alignItems: 'center',
-    marginVertical: moderateScaleVertical(25),
+    marginVertical: moderateScaleVertical(15),
     justifyContent: 'center',
   },
   signInButtonText: {
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   signUpContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: moderateScale(20),
+    marginTop: moderateScale(10),
   },
   createAccountText: {
     fontSize: textScale(15),
@@ -87,6 +88,7 @@ const styles = StyleSheet.create({
     fontSize: textScale(15),
     color: colors.blueOpacity70,
     fontWeight: '600',
+    marginBottom: moderateScale(20),
   },
   socialButtonImage: {
     width: moderateScale(33),

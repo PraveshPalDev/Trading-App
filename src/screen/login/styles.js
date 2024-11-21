@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: moderateScale(20),
     justifyContent: 'center',
+    marginVertical: moderateScale(25),
   },
   welcomeText: {
     fontSize: textScale(28),
@@ -89,6 +90,7 @@ const styles = StyleSheet.create({
     fontSize: textScale(15),
     color: colors.blueOpacity70,
     fontWeight: '600',
+    marginBottom: moderateScale(20),
   },
   socialButtonImage: {
     width: moderateScale(33),

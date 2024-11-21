@@ -57,7 +57,7 @@ export default function Login({navigation}) {
     <WrapperContainer>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{flex: 1}}>
+        style={{flex: 1}}>
         <View style={styles.container}>
           <TextComp text={strings.WelcomeBack} style={styles.welcomeText} />
           <TextComp text={strings.SignInText} style={styles.signInText} />

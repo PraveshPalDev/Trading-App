@@ -1,4 +1,4 @@
 export default {
-  icGoogle: require('../assets/images/Google.png'),
-  icFaceBook: require('../assets/images/facebook.png'),
+  icGoogle: require('../assets/images/google.png'),
+  icFaceBook: require('../assets/images/fb.png'),
 };
