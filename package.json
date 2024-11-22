@@ -28,6 +28,7 @@
     "react-native-element-dropdown": "^2.12.2",
     "react-native-fast-image": "^8.6.3",
     "react-native-flash-message": "^0.4.2",
+    "react-native-floating-action": "^1.22.0",
     "react-native-gesture-handler": "^2.19.0",
     "react-native-gifted-charts": "^1.4.47",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",

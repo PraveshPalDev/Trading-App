@@ -17,6 +17,8 @@ export default function HeaderComp({
   backBtn = false,
   style = {},
   titleStyle = {},
+  rightBellIconVisible = true,
+  rightSettingIconVisible = true,
 }) {
   const navigation = useNavigation();
   return (
@@ -45,32 +47,40 @@ export default function HeaderComp({
       </View>
 
       <View style={styles.rightContainer}>
-        <TouchableOpacity
-          style={styles.iconLeftStyles}
-          activeOpacity={0.5}
-          onPress={bellHandler}>
-          <Icon name={bellIcon} size={moderateScale(25)} color={colors.blue} />
-          {notificationIcon && <View style={styles.notificationStyles} />}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.iconStyles}
-          activeOpacity={0.5}
-          onPress={settingHandler}>
-          {settingIcon === 'heart' ? (
+        {rightBellIconVisible && (
+          <TouchableOpacity
+            style={{...styles.iconLeftStyles}}
+            activeOpacity={0.5}
+            onPress={bellHandler}>
             <Icon
-              name={settingIcon}
+              name={bellIcon}
               size={moderateScale(25)}
-              color={colors.white}
+              color={colors.blue}
             />
-          ) : (
-            <Icon2
-              name={settingIcon}
-              size={moderateScale(25)}
-              color={colors.white}
-            />
-          )}
-        </TouchableOpacity>
+            {notificationIcon && <View style={styles.notificationStyles} />}
+          </TouchableOpacity>
+        )}
+
+        {rightSettingIconVisible && (
+          <TouchableOpacity
+            style={styles.iconStyles}
+            activeOpacity={0.5}
+            onPress={settingHandler}>
+            {settingIcon === 'heart' ? (
+              <Icon
+                name={settingIcon}
+                size={moderateScale(25)}
+                color={colors.white}
+              />
+            ) : (
+              <Icon2
+                name={settingIcon}
+                size={moderateScale(25)}
+                color={colors.white}
+              />
+            )}
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

@@ -1,7 +1,15 @@
 import React from 'react';
 import TabRoutes from './TabRoutes';
 import navigationStrings from './navigationStrings';
-import {Analysis, StockDetails, Tracker} from '../screen';
+import {
+  Analysis,
+  CompanyProfile,
+  Research,
+  ShareList,
+  StockDetails,
+  Tracker,
+  TradeLinkAnalysis,
+} from '../screen';
 import AllStacks from '../screen/news/allStocks/AllStacks';
 
 export default function MainStack(Stack) {
@@ -34,6 +42,30 @@ export default function MainStack(Stack) {
       <Stack.Screen
         name={navigationStrings.Tracker}
         component={Tracker}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={navigationStrings.CompanyProfile}
+        component={CompanyProfile}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={navigationStrings.ShareList}
+        component={ShareList}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={navigationStrings.Research}
+        component={Research}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={navigationStrings.TradeLinkAnalysis}
+        component={TradeLinkAnalysis}
         options={{headerShown: false}}
       />
     </>

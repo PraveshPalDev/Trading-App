@@ -1,3 +1,7 @@
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {moderateScale} from '../../styles/responsiveSize';
+import colors from '../../styles/colors';
+
 const appearanceData = [
   {
     id: 1,
@@ -40,4 +44,35 @@ const months = ['All', '1D', '1W', '1M', '3M', '1Y'];
 const financial = ['Revenue', 'Profit', 'Net Worth'];
 const NewsCategories = ['All', 'Whats New', 'Most Popular', 'Events & More'];
 
-export {appearanceData, symbols, months, financial, NewsCategories};
+const actions = [
+  {
+    text: 'Company Profile',
+    icon: (
+      <Icon name="business" size={moderateScale(25)} color={colors.white} />
+    ),
+    name: 'companyProfile',
+    position: 1,
+  },
+  {
+    text: 'Stock Lists',
+    icon: <Icon name="list" size={moderateScale(25)} color={colors.white} />,
+    name: 'stockLists',
+    position: 2,
+  },
+  {
+    text: 'Technical Analysis',
+    icon: (
+      <Icon name="analytics" size={moderateScale(25)} color={colors.white} />
+    ),
+    name: 'technicalAnalysis',
+    position: 3,
+  },
+  {
+    text: 'Research',
+    icon: <Icon name="search" size={moderateScale(25)} color={colors.white} />,
+    name: 'research',
+    position: 4,
+  },
+];
+
+export {appearanceData, symbols, months, financial, NewsCategories, actions};

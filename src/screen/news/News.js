@@ -6,7 +6,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
@@ -24,6 +24,8 @@ import moment from 'moment';
 import colors from '../../styles/colors';
 import FlashListComp from '../../components/FlashListComp';
 import CustomDropdown from '../../components/CustomDropdown';
+import navigationStrings from '../../navigation/navigationStrings';
+import {useNavigation} from '@react-navigation/native';
 
 export default function News() {
   const [news, setNews] = useState([]);
@@ -36,6 +38,7 @@ export default function News() {
   const [trendingLoading, setTrendingLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [dropdownData, setDropdownData] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetchAllNews(page);
@@ -54,14 +57,14 @@ export default function News() {
     try {
       const response = await GetTickerBasicInfo();
       const sortedData = response?.sort(
-        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+        (a, b) => new Date(b?.pubDate) - new Date(a?.pubDate),
       );
 
       const temp = [];
       sortedData?.forEach(x => {
         temp.push({
-          label: `${x?.ticker} - ${x.eN_Name}`,
-          value: `${x?.ticker} ${x.eN_Name}`,
+          label: `${x?.ticker} - ${x?.eN_Name}`,
+          value: `${x?.ticker} ${x?.eN_Name}`,
           ticker: x?.ticker,
         });
       });
@@ -159,7 +162,7 @@ export default function News() {
 
   const handleDropdownChange = item => {
     setSelectedOption(item.value);
-    // navigate with value another page
+    navigation.navigate(navigationStrings.CompanyProfile, {item});
   };
 
   const HeaderComponents = () => (

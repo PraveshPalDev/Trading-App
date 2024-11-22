@@ -16,6 +16,10 @@ export default {
   Props: 'Prop picks',
   AllStock: 'AllStocks',
   Analysis: 'Analysis',
+  CompanyProfile: 'CompanyProfile',
+  TradeLinkAnalysis: 'TradeLinkAnalysis',
+  Research: 'Research',
+  ShareList: 'ShareList',
 
   // login page content
   WelcomeBack: 'Welcome Back',

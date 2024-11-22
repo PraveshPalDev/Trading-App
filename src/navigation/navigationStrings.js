@@ -11,4 +11,10 @@ export default {
   AllStocks: 'allStocks',
   Analysis: 'analysis',
   Tracker: 'tracker',
+
+  // Here all screen to news inside
+  CompanyProfile: 'companyProfile',
+  Research: 'research',
+  ShareList: 'shareList',
+  TradeLinkAnalysis: 'tradeLinkAnalysis',
 };
