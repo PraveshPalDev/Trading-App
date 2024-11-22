@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   stylesTextName: {
     fontSize: textScale(18),
     fontWeight: '600',
-    color: colors.black,
+    color: colors.blueOpacity90,
   },
   heading: {
     marginBottom: moderateScale(12),
@@ -94,10 +94,10 @@ const styles = StyleSheet.create({
   price: {
     color: colors.white,
     fontSize: textScale(13),
-    marginRight: 4,
+    marginRight: moderateScale(4),
   },
   change: {
-    color: '#4CAF50',
+    color: colors.green,
     fontSize: textScale(13),
   },
 
@@ -113,6 +113,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignSelf: 'center',
+  },
+
+  imageContainer: {
+    width: moderateScale(80),
+    height: moderateScale(80),
+    borderRadius: moderateScale(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: moderateScale(1.5),
+    borderColor: colors.blue,
+    alignSelf: 'center',
+    marginLeft: moderateScale(8),
   },
 });
 

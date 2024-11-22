@@ -5,7 +5,7 @@ import {
   BottomTabBar,
 } from '@react-navigation/bottom-tabs';
 import colors from '../styles/colors';
-import {textScale} from '../styles/responsiveSize';
+import {moderateScale, textScale} from '../styles/responsiveSize';
 import * as Screens from '../screen';
 import navigationStrings from './navigationStrings';
 import {useSelector} from 'react-redux';
@@ -57,6 +57,7 @@ const MainNavigator = () => {
           name={iconSource}
           color={focused ? colors.blue : colors.blackOpacity70}
           size={textScale(25)}
+          style={{paddingTop: moderateScale(3)}}
         />
         <Text
           style={{
@@ -155,9 +156,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: moderateScale(8),
+    paddingVertical: moderateScale(8),
   },
   tabLabel: {
     fontSize: textScale(12),
     textAlign: 'center',
+    fontWeight: '500',
   },
 });

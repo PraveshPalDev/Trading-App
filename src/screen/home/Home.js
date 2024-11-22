@@ -2,18 +2,11 @@ import React, {useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import TextComp from '../../components/TextComp';
-import FastImageComp from '../../components/FastImageComp';
 import styles from './styles';
 import SearchComp from '../../components/SearchComp';
-import {moderateScale} from '../../styles/responsiveSize';
+import {moderateScale, textScale} from '../../styles/responsiveSize';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import colors from '../../styles/colors';
 import {useSelector} from 'react-redux';
@@ -70,12 +63,27 @@ export default function Home() {
 
   const UserInformation = () => (
     <View style={styles.userInformationContainer}>
-      <FastImageComp url="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" />
+      {/* <FastImageComp url="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" /> */}
+
+      {/* image styles here  */}
+      <View style={styles.imageContainer}>
+        <TextComp
+          text={`${userData.firstName?.charAt(0)}.${userData.lastName?.charAt(
+            0,
+          )}.`}
+          style={{
+            ...styles.stylesTextName,
+            fontSize: textScale(28),
+            textAlign: 'center',
+          }}
+        />
+      </View>
+
       <View style={styles.userInfoNameContainer}>
         <TextComp text="Welcome Back" style={styles.stylesText} />
         <TextComp
           text={`${userData.firstName}${userData.lastName}`}
-          style={styles.stylesTextName}
+          style={{...styles.stylesTextName}}
         />
       </View>
     </View>
