@@ -223,7 +223,11 @@ export default function News() {
 
     return (
       <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-        <Image source={{uri: item.imageUrl}} style={styles.image} />
+        <Image
+          source={{uri: item.imageUrl}}
+          style={styles.image}
+          resizeMode="cover"
+        />
         {/* Right Content */}
         <View style={styles.contentContainer}>
           <View style={styles.categoryContainer}>

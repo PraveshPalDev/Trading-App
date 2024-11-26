@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: moderateScale(120),
-    height: moderateScale(140),
+    height: moderateScale(200),
     borderRadius: moderateScale(12),
     justifyContent: 'center',
     alignSelf: 'center',
