@@ -100,31 +100,161 @@ const styles = StyleSheet.create({
     color: colors.green,
     fontSize: textScale(13),
   },
-
-  eventContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: moderateScale(10),
-    backgroundColor: colors.grayOpacity10,
-    borderRadius: moderateScale(10),
-  },
-
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignSelf: 'center',
   },
-
   imageContainer: {
-    width: moderateScale(80),
-    height: moderateScale(80),
+    width: moderateScale(75),
+    height: moderateScale(75),
     borderRadius: moderateScale(40),
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: moderateScale(1.5),
     borderColor: colors.blue,
-    alignSelf: 'center',
     marginLeft: moderateScale(8),
+    alignSelf: 'center',
+  },
+
+  // modal styles here
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: width / 1.05,
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(15),
+    padding: moderateScale(15),
+  },
+  cardBorderContainer: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: width / 1.12,
+    padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.grayOpacity80,
+    borderRadius: moderateScale(10),
+  },
+  title: {
+    fontSize: textScale(18),
+    fontWeight: 'bold',
+    marginBottom: moderateScale(10),
+  },
+
+  optionButton: {
+    backgroundColor: colors.white,
+    padding: moderateScale(8),
+    borderRadius: moderateScale(5),
+    marginVertical: moderateScale(5),
+    borderWidth: 1,
+    borderColor: colors.blue,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: colors.blue,
+    fontSize: textScale(16),
+    fontWeight: '500',
+  },
+  sectionTitle: {
+    fontSize: textScale(16),
+    fontWeight: 'bold',
+    marginBottom: moderateScale(10),
+    textAlign: 'center',
+  },
+  dateInputsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: moderateScale(20),
+  },
+  dateInputWrapper: {
+    flex: 1,
+    marginHorizontal: moderateScale(5),
+  },
+  dateInput: {
+    borderWidth: moderateScale(1),
+    borderColor: colors.gray,
+    borderRadius: moderateScale(5),
+    padding: moderateScale(10),
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  applyButton: {
+    backgroundColor: colors.blue,
+    padding: moderateScale(10),
+    borderRadius: moderateScale(5),
+    alignItems: 'center',
+    marginBottom: moderateScale(10),
+  },
+  disabledButton: {
+    padding: moderateScale(12),
+    backgroundColor: colors.blue,
+  },
+  applyButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.blue,
+    alignItems: 'center',
+    borderRadius: moderateScale(5),
+  },
+  closeButtonText: {
+    color: colors.blue,
+    fontWeight: 'bold',
+  },
+
+  //table styles here
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.grayOpacity10,
+    height: moderateScale(50),
+    borderTopLeftRadius: moderateScale(10),
+    borderTopRightRadius: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.grayOpacity20,
+    paddingHorizontal: moderateScale(10),
+  },
+  headerText: {
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: colors.black,
+    fontSize: textScale(14),
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.grayOpacity20,
+  },
+  lastRow: {
+    borderBottomLeftRadius: moderateScale(10),
+    borderBottomRightRadius: moderateScale(10),
+  },
+  cell: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: textScale(12),
+    color: colors.black,
+  },
+  colorIndicator: {
+    width: moderateScale(20),
+    height: moderateScale(20),
+    borderRadius: moderateScale(10),
+    alignSelf: 'center',
+  },
+  flashListContainer: {
+    marginBottom: moderateScale(12),
+    borderBottomLeftRadius: moderateScale(10),
+    borderBottomRightRadius: moderateScale(10),
   },
 });
 

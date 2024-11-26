@@ -15,6 +15,7 @@ const CustomDropdown = ({
   containerStyle,
   dropdownStyle,
   iconStyle,
+  arrowIconColor = colors.gray,
   ...extraProps
 }) => {
   const [value, setValue] = useState(null);
@@ -53,7 +54,7 @@ const CustomDropdown = ({
           <Icon
             name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
             size={moderateScale(40)}
-            color={colors.gray}
+            color={arrowIconColor}
             style={iconStyle}
           />
         )}

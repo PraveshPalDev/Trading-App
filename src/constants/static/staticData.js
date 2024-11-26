@@ -1,6 +1,7 @@
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {moderateScale} from '../../styles/responsiveSize';
 import colors from '../../styles/colors';
+import strings from '../lang';
 
 const appearanceData = [
   {
@@ -75,4 +76,35 @@ const actions = [
   },
 ];
 
-export {appearanceData, symbols, months, financial, NewsCategories, actions};
+const modalAllButton = [
+  {
+    id: 1,
+    name: strings.Today,
+    type: strings.Today,
+  },
+  {
+    id: 2,
+    name: strings.ThisWeek,
+    type: strings.ThisWeek,
+  },
+  {
+    id: 3,
+    name: strings.NextWeek,
+    type: strings.NextWeek,
+  },
+  {
+    id: 4,
+    name: strings.CurrentMonth,
+    type: strings.CurrentMonth,
+  },
+];
+
+export {
+  appearanceData,
+  symbols,
+  months,
+  financial,
+  NewsCategories,
+  actions,
+  modalAllButton,
+};

@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, Platform} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Animated, {
@@ -220,7 +220,8 @@ const styles = StyleSheet.create({
     width: moderateScale(12),
     height: moderateScale(12),
     borderRadius: moderateScale(6),
-    marginBottom: moderateScale(-170),
+    marginBottom:
+      Platform.OS === 'ios' ? moderateScale(-170) : moderateScale(-120),
   },
   activeDot: {
     width: moderateScale(50),
