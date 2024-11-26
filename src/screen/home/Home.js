@@ -530,7 +530,11 @@ export default function Home() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => setIsVisible(false)}
+                onPress={() => {
+                  setIsVisible(false);
+                  setHandleApplyStartDate(null);
+                  setHandleApplyEndDate(null);
+                }}
                 style={styles.closeButton}
                 activeOpacity={0.7}>
                 <Text style={styles.closeButtonText}>{strings.Close}</Text>
