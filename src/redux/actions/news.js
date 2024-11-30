@@ -14,9 +14,17 @@ export const GetAllNews = (page, isTagFilter = false) => {
   return apiGet(url);
 };
 
-export const GetAllNewsTypes = (page, newSectionType, IsAdminPanel = false) => {
+export const GetAllNewsTypes = (newSectionType, IsAdminPanel = false) => {
+  const url = `${GET_ALL_NEWS_TYPES}?NewsSectionType=${newSectionType}&IsAdminPanel=${IsAdminPanel}`;
+  return apiGet(url);
+};
+
+export const GetAllEventsAnnouncement = page => {
   const limit = 10;
-  const url = `${GET_ALL_NEWS_TYPES}?PageSize=${limit}&PageNo=${page}&NewsSectionType=${newSectionType}&IsAdminPanel=${IsAdminPanel}`;
+  const url = `${GET_ALL_NEWS_TYPES}?PageSize=${limit}&PageNo=${page}$NewsSourceIds${20}`;
+
+  console.log('ukl one ->', url, page);
+
   return apiGet(url);
 };
 

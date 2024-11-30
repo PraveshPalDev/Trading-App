@@ -43,7 +43,14 @@ const symbols = [
 
 const months = ['All', '1D', '1W', '1M', '3M', '1Y'];
 const financial = ['Revenue', 'Profit', 'Net Worth'];
-const NewsCategories = ['All', 'Whats New', 'Most Popular', 'Events & More'];
+const NewsCategories = [
+  {type: 'All', name: 'All'},
+  {type: 'Events&More', name: 'Events & More'},
+  {type: 'Trending', name: 'Trending'},
+  {type: 'WhatsNew', name: 'Whats New'},
+  {type: 'MostPopular', name: 'Most Popular'},
+  ,
+];
 
 const actions = [
   {

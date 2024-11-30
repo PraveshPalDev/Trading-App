@@ -16,3 +16,6 @@ export const GetTickerBasicInformation = getApiURL('RDS/GetTickerBasicInfo');
 // events
 export const GET_ALL_EVENT_CATEGORY = getApiURL('Event/GetAllEventCategory');
 export const GET_EVENT = getApiURL('Event/GetBetweenDate');
+export const GET_ALL_EVENT_More = getApiURL(
+  'EventsAnnouncement/GetPaginatedEventsAnnouncement',
+);

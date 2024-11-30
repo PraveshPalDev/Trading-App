@@ -3,11 +3,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import RNSpeedometer from 'react-native-speedometer';
 import colors from '../styles/colors';
 import {moderateScale, textScale} from '../styles/responsiveSize';
+import CurvedText from './CurvedText';
 
-export default function Speedometer({title, value = 0, meterSize = 100}) {
+export default function Speedometer({value = 0, meterSize = 100}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
       <RNSpeedometer
         value={value}
         size={meterSize}
@@ -27,8 +27,8 @@ export default function Speedometer({title, value = 0, meterSize = 100}) {
           },
           {
             name: 'Buy',
-            labelColor: '#ffae00',
-            activeBarColor: '#ffae00',
+            labelColor: colors.yellow,
+            activeBarColor: colors.yellow,
             labelStyle: styles.labelMedium,
           },
           {

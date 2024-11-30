@@ -5,8 +5,9 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
@@ -16,6 +17,7 @@ import TextComp from '../../components/TextComp';
 import {NewsCategories} from '../../constants/static/staticData';
 import NewsCard from '../../components/NewsCard';
 import {
+  GetAllEventsAnnouncement,
   GetAllNews,
   GetAllNewsTypes,
   GetTickerBasicInfo,
@@ -26,10 +28,12 @@ import FlashListComp from '../../components/FlashListComp';
 import CustomDropdown from '../../components/CustomDropdown';
 import navigationStrings from '../../navigation/navigationStrings';
 import {useNavigation} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 export default function News() {
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1);
+  const [eventPage, setEventPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,10 +43,12 @@ export default function News() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [dropdownData, setDropdownData] = useState([]);
   const navigation = useNavigation();
+  const [firstTime, setFirstTime] = useState(false);
 
   useEffect(() => {
     fetchAllNews(page);
     getAllTrendingNews(page, 'Trending');
+    fetchStockFilterData();
   }, []);
 
   useEffect(() => {
@@ -50,8 +56,18 @@ export default function News() {
   }, [page]);
 
   useEffect(() => {
-    fetchStockFilterData();
-  }, []);
+    if (firstTime) {
+      getAllEventsAnnouncement(eventPage);
+    }
+  }, [eventPage]);
+
+  const tabHandler = (tab, index) => {
+    if (tab?.type === 'Events&More') {
+      getAllEventsAnnouncement(tab, index, eventPage);
+    } else {
+      fetchAllNewsTypes(tab, index);
+    }
+  };
 
   const fetchStockFilterData = async () => {
     try {
@@ -99,40 +115,11 @@ export default function News() {
     }
   };
 
-  const fetchAllNewsTypes = async (tab, index) => {
-    if (tab === 'All') {
-      setActiveTab(index);
-      setNews([]);
-      setPage(1);
-      return;
-    }
-
-    try {
-      setActiveTab(index);
-      setLoading(true);
-      setNews([]);
-      const response = await GetAllNewsTypes(page, tab);
-      const SortedData = response?.sort(
-        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
-      );
-
-      if (response?.length) {
-        setNews(prevNews => [...prevNews, ...SortedData]);
-        setHasMore(response.length > 0);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error('Error new types error news:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getAllTrendingNews = async (page, type) => {
+  const getAllTrendingNews = async type => {
     try {
       setTrendingLoading(true);
-      const response = await GetAllNewsTypes(page, type);
+      const response = await GetAllNewsTypes(type);
+
       const SortedData = response?.sort(
         (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
       );
@@ -148,9 +135,80 @@ export default function News() {
     }
   };
 
+  const fetchAllNewsTypes = async (tab, index) => {
+    if (tab === 'All') {
+      setActiveTab(index);
+      setNews([]);
+      setPage(1);
+      return;
+    }
+
+    try {
+      setActiveTab(index);
+      setLoading(true);
+      setNews([]);
+      const response = await GetAllNewsTypes(tab?.type);
+      const SortedData = response?.sort(
+        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+      );
+
+      if (response?.length) {
+        setNews(prevNews => [...prevNews, ...SortedData]);
+
+        //setNews(SortedData);
+        setHasMore(response.length > 0);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Error new types error news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAllEventsAnnouncement = async (tab, index, eventPage) => {
+    if (tab === 'Events&More') {
+      setActiveTab(index);
+      setNews([]);
+      setEventPage(1);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      if (!firstTime) {
+        setActiveTab(index);
+        setNews([]);
+      }
+
+      const response = await GetAllEventsAnnouncement(eventPage);
+      const SortedData = response?.sort(
+        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+      );
+
+      if (response?.length) {
+        setNews(prevNews => [...prevNews, ...SortedData]);
+        // setNews(SortedData);
+        setHasMore(response.length > 0);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.log('error all events announcement =>', error);
+    } finally {
+      setLoading(false);
+      setFirstTime(true);
+    }
+  };
+
   const loadMore = () => {
     if (!isLoading && hasMore) {
-      setPage(prevPage => prevPage + 1);
+      if (activeTab == 0) {
+        setPage(prevPage => prevPage + 1);
+      } else if (activeTab == 1) {
+        setEventPage(eventPage => eventPage + 1);
+      }
     }
   };
 
@@ -183,7 +241,7 @@ export default function News() {
       />
 
       {trendingLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={colors.blue} />
       ) : (
         <NewsCard newsItems={trendingNews} />
       )}
@@ -197,13 +255,13 @@ export default function News() {
             key={index}
             style={[styles.tab, index === activeTab && styles.activeTab]}
             activeOpacity={0.7}
-            onPress={() => fetchAllNewsTypes(tab, index)}>
+            onPress={() => tabHandler(tab, index)}>
             <Text
               style={[
                 styles.tabText,
                 index === activeTab && styles.activeTabText,
               ]}>
-              {tab}
+              {tab?.name}
             </Text>
           </TouchableOpacity>
         ))}
@@ -211,9 +269,6 @@ export default function News() {
 
       <View style={styles.stockStyles}>
         <TextComp text={strings.Trending} style={styles.heading} />
-        <Text style={styles.seeAllStyles} onPress={seeAllHandler}>
-          {strings.SeeAll}
-        </Text>
       </View>
     </>
   );
@@ -221,18 +276,27 @@ export default function News() {
   const TrendingNewsCard = ({item}) => {
     const formattedDate = moment(item?.pubDate).fromNow();
 
+    const openLinkHandler = url => {
+      Linking.openURL(url).catch(err => console.log('An error occurred', err));
+    };
+
     return (
-      <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-        <Image
-          source={{uri: item.imageUrl}}
+      <TouchableOpacity
+        style={styles.card}
+        activeOpacity={0.7}
+        onPress={() => openLinkHandler(item?.link)}>
+        <FastImage
+          source={{
+            uri: item.imageUrl,
+            priority: FastImage.priority.normal,
+          }}
           style={styles.image}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
         {/* Right Content */}
         <View style={styles.contentContainer}>
           <View style={styles.categoryContainer}>
             <Text style={styles.categoryText}>
-              {' '}
               {item?.title?.length > 80
                 ? `${item.title.slice(0, 80)}...`
                 : item?.title}
@@ -264,7 +328,6 @@ export default function News() {
 
   const bellHandler = () => {};
   const settingHandler = () => {};
-  const seeAllHandler = () => {};
   const renderItem = ({item}) => <TrendingNewsCard item={item} />;
 
   return (

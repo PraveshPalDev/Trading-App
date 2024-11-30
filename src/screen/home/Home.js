@@ -6,7 +6,7 @@ import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import TextComp from '../../components/TextComp';
 import styles from './styles';
 import SearchComp from '../../components/SearchComp';
-import {moderateScale, textScale} from '../../styles/responsiveSize';
+import {moderateScale, textScale, width} from '../../styles/responsiveSize';
 import colors from '../../styles/colors';
 import {useSelector} from 'react-redux';
 import {
@@ -286,6 +286,9 @@ export default function Home() {
         dropDownData={eventCategories}
         handleDropdownChange={handleDropdownChange}
         calenderIconHandler={calenderHandler}
+        calendar={'calendar'}
+        showDateContainer={false}
+        itemTextStyle={{color: 'white', fontWeight: 'bold'}}
       />
 
       <View style={styles.flashListContainer}>

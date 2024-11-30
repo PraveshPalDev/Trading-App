@@ -6,6 +6,7 @@ export default {
   News: 'News',
   More: 'More',
   SearchText: 'Search stocks, funds, etc...',
+  Search: 'Search...',
   SeeAll: 'See All',
   PapularStocks: 'Papular Stocks',
   Events: 'Events',
@@ -34,6 +35,14 @@ export default {
   Symbol: 'Symbol',
   Description: 'Description',
   Category: 'Category',
+  TrendFollowing: 'Trend Following',
+  MeanReversion: 'Mean Reversion',
+  Volume: 'Volume',
+  TechnicalAnalysis: 'Technical Analysis',
+  TabLock: 'Tap to unlock',
+  PurchaseCalendar: 'Purchase Cal..',
+  NewsFeed: 'News Feed',
+  StockList: 'Stock List',
 
   // login page content
   WelcomeBack: 'Welcome Back',

@@ -7,11 +7,18 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CustomDropdown from './CustomDropdown';
 import strings from '../constants/lang';
 import TextComp from './TextComp';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function AgendaCalendar({
   calenderIconHandler = () => {},
   handleDropdownChange = () => {},
+  rightMapIconHandler = () => {},
   dropDownData,
+  showDateContainer = true,
+  title = strings.Events,
+  style,
+  rightMapIcon = false,
+  calendar = false,
 }) {
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD'),
@@ -21,61 +28,101 @@ export default function AgendaCalendar({
   );
 
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, ...style}}>
       <View style={styles.header}>
         <View style={styles.header2}>
-          <TextComp style={styles.title}>{strings.Events}</TextComp>
+          <TextComp style={styles.title}>{title}</TextComp>
           <CustomDropdown
             data={dropDownData}
-            placeholder={strings.SearchText}
+            placeholder={strings.Search}
             onChange={selectedValue => handleDropdownChange(selectedValue)}
             value={dropDownData[0]}
             dropdownStyle={styles.dropdownStyle}
             arrowIconColor={colors.blue}
+            itemTextStyle={{
+              color: colors.white,
+              padding: moderateScale(8),
+              backgroundColor: 'cyan',
+            }}
           />
 
-          <TouchableOpacity
-            style={styles.iconStyles}
-            activeOpacity={0.7}
-            onPress={calenderIconHandler}>
-            <FontAwesome
-              name="calendar"
-              size={moderateScale(28)}
-              color={colors.blue}
-            />
-          </TouchableOpacity>
+          {calendar ? (
+            <TouchableOpacity
+              style={{...styles.iconStyles, paddingRight: moderateScale(10)}}
+              activeOpacity={0.7}
+              onPress={calenderIconHandler}>
+              {calendar === 'calendar' ? (
+                <FontAwesome
+                  name={calendar}
+                  size={moderateScale(28)}
+                  color={colors.blue}
+                />
+              ) : (
+                <Icon
+                  name={calendar}
+                  size={moderateScale(28)}
+                  color={colors.blue}
+                />
+              )}
+            </TouchableOpacity>
+          ) : null}
+
+          {rightMapIcon && (
+            <TouchableOpacity
+              style={{
+                ...styles.iconStyles,
+                paddingRight: moderateScale(5),
+              }}
+              activeOpacity={0.7}
+              onPress={rightMapIconHandler}>
+              <Icon
+                name={rightMapIcon}
+                size={moderateScale(28)}
+                color={colors.black}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
-      <Text style={styles.selectedDate}>
-        {moment(selectedDate).format('dddd, DD MMMM YYYY')}
-      </Text>
+      {showDateContainer ? (
+        <>
+          <Text style={styles.selectedDate}>
+            {moment(selectedDate).format('dddd, DD MMMM YYYY')}
+          </Text>
 
-      {/* Calendar */}
-      <View style={styles.calendarContainer}>
-        {daysArray?.map((date, index) => {
-          const isSelected = selectedDate === date;
+          <View style={styles.calendarContainer}>
+            {daysArray?.map((date, index) => {
+              const isSelected = selectedDate === date;
 
-          return (
-            <TouchableOpacity
-              key={index}
-              style={[styles.dayContainer, isSelected && styles.selectedDay]}
-              onPress={() => setSelectedDate(date)}>
-              <Text
-                style={[styles.dayText, isSelected && styles.selectedDayText]}>
-                {moment(date).format('ddd')}
-              </Text>
-              <Text
-                style={[
-                  styles.dateText,
-                  isSelected && styles.selectedDateText,
-                ]}>
-                {moment(date).format('DD')}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.dayContainer,
+                    isSelected && styles.selectedDay,
+                  ]}
+                  onPress={() => setSelectedDate(date)}>
+                  <Text
+                    style={[
+                      styles.dayText,
+                      isSelected && styles.selectedDayText,
+                    ]}>
+                    {moment(date).format('ddd')}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.dateText,
+                      isSelected && styles.selectedDateText,
+                    ]}>
+                    {moment(date).format('DD')}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </>
+      ) : null}
     </View>
   );
 }

@@ -94,6 +94,7 @@ export default NewsCard = ({newsItems, dotStyles, activeDotStyles}) => {
           type: 'spring',
           config: {
             damping: 20,
+            stiffness: 100,
           },
         }}
       />
@@ -153,8 +154,8 @@ const styles = StyleSheet.create({
   companyDotStyles: {
     width: moderateScale(12),
     height: moderateScale(12),
-    borderRadius: moderateScale(4),
-    backgroundColor: '#ef4444',
+    borderRadius: moderateScale(6),
+    backgroundColor: colors.red,
     marginRight: moderateScale(8),
     alignSelf: 'center',
   },

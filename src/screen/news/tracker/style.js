@@ -90,8 +90,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginVertical: moderateScaleVertical(20),
-    marginBottom: moderateScale(50),
+    // marginVertical: moderateScaleVertical(20),
+    marginBottom: moderateScale(60),
+  },
+  meterContainer2: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   accordionButtonContainer: {
     flexWrap: 'wrap',

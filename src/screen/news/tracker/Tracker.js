@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react';
 import {View, FlatList, Text, TouchableOpacity} from 'react-native';
 import WrapperContainer from '../../../components/WrapperContainer';
 import HeaderComp from '../../../components/HeaderComp';
-import {moderateScale} from '../../../styles/responsiveSize';
+import {moderateScale, textScale} from '../../../styles/responsiveSize';
 import strings from '../../../constants/lang';
 import SearchComp from '../../../components/SearchComp';
 import {
@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
 import {Table, Row, Rows} from 'react-native-table-component';
 import Speedometer from '../../../components/Speedometer';
+import CurvedText from '../../../components/CurvedText';
 
 const accordionData = [
   {
@@ -381,10 +382,33 @@ export default function Tracker() {
       <>
         <SearchComp placeholderText={strings.SearchText} />
         {renderTableData()}
+        <View style={styles.meterContainer2}>
+          <CurvedText
+            text={strings.TrendFollowing}
+            pathId="trendPath"
+            arcRadius={moderateScale(70)}
+            fontSize={textScale(15)}
+            startOffset="25%"
+          />
+          <CurvedText
+            text={strings.MeanReversion}
+            pathId="trendPath"
+            arcRadius={moderateScale(70)}
+            fontSize={textScale(15)}
+            startOffset="25%"
+          />
+          <CurvedText
+            text={strings.Volume}
+            pathId="trendPath"
+            arcRadius={moderateScale(70)}
+            fontSize={textScale(15)}
+            startOffset="38%"
+          />
+        </View>
         <View style={styles.meterContainer}>
-          <Speedometer title={'Trend Following'} value={10} />
-          <Speedometer title={'Mean Reversion'} value={60} />
-          <Speedometer title={'Volume'} value={80} />
+          <Speedometer value={10} />
+          <Speedometer value={60} />
+          <Speedometer value={80} />
         </View>
       </>
     );
