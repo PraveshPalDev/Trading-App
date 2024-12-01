@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     marginBottom: moderateScale(12),
+    paddingHorizontal: moderateScale(8),
   },
   seeAllStyles: {
     marginBottom: moderateScale(12),

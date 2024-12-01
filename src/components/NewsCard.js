@@ -15,6 +15,7 @@ import {
 } from '../styles/responsiveSize';
 import colors from '../styles/colors';
 import moment from 'moment';
+import FastImage from 'react-native-fast-image';
 
 export default NewsCard = ({newsItems, dotStyles, activeDotStyles}) => {
   const progressValue = useSharedValue(0);
@@ -43,10 +44,13 @@ export default NewsCard = ({newsItems, dotStyles, activeDotStyles}) => {
 
     return (
       <Animated.View style={[styles.card, animStyle]}>
-        <Image
-          source={{uri: item.imageUrl}}
+        <FastImage
+          source={{
+            uri: item.imageUrl,
+            priority: FastImage.priority.high,
+          }}
           style={styles.image}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
 
         {/* Overlay Gradient */}

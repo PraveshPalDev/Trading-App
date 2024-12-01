@@ -1,10 +1,4 @@
-import {
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import {moderateScale} from '../../styles/responsiveSize';
@@ -69,9 +63,6 @@ export default function Stock() {
       <>
         <View style={styles.stockStyles}>
           <TextComp text={strings.PapularStocks} style={styles.heading} />
-          <Text style={styles.seeAllStyles} onPress={seeAllHandler}>
-            {strings.SeeAll}
-          </Text>
         </View>
       </>
     ),
@@ -81,7 +72,7 @@ export default function Stock() {
   const renderItem = ({item}) => {
     const changeColor = item.change.startsWith('-')
       ? colors.red
-      : colors.lightGreen2;
+      : colors.darkGreen;
 
     const formattedDate = moment().format('YYYY-MM-DD');
 
@@ -127,21 +118,13 @@ export default function Stock() {
     navigation.navigate(navigationStrings.StockDetails, {selectedStock: item});
   };
 
-  const renderLoading = () => (
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color="#005aef" />
-    </View>
-  );
-
-  const bellHandler = () => {};
   const settingHandler = () => {};
-  const seeAllHandler = () => {};
 
   return (
     <WrapperContainer>
       <HeaderComp
         title={strings.Stock}
-        bellHandler={bellHandler}
+        rightBellIconVisible={false}
         settingHandler={settingHandler}
         notificationIcon
       />

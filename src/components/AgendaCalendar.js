@@ -19,6 +19,8 @@ export default function AgendaCalendar({
   style,
   rightMapIcon = false,
   calendar = false,
+  showingDateToAndForm = false,
+  dropdownStyles,
 }) {
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD'),
@@ -37,12 +39,11 @@ export default function AgendaCalendar({
             placeholder={strings.Search}
             onChange={selectedValue => handleDropdownChange(selectedValue)}
             value={dropDownData[0]}
-            dropdownStyle={styles.dropdownStyle}
+            dropdownStyle={{...styles.dropdownStyle, ...dropdownStyles}}
             arrowIconColor={colors.blue}
             itemTextStyle={{
               color: colors.white,
               padding: moderateScale(8),
-              backgroundColor: 'cyan',
             }}
           />
 
@@ -85,12 +86,29 @@ export default function AgendaCalendar({
         </View>
       </View>
 
+      {showingDateToAndForm ? (
+        <>
+          {/* <Text style={styles.boldText}>{'Today'}</Text> */}
+          <View style={styles.selectedDateContainer}>
+            <View style={styles.selectedDateContainer}>
+              <Text style={styles.boldText}>To: </Text>
+              <Text style={{fontSize: textScale(14)}}>
+                {showingDateToAndForm.startDate}
+              </Text>
+            </View>
+
+            <View style={styles.selectedDateContainer}>
+              <Text style={styles.boldText}>From: </Text>
+              <Text style={{fontSize: textScale(14)}}>
+                {showingDateToAndForm.endDate}
+              </Text>
+            </View>
+          </View>
+        </>
+      ) : null}
+
       {showDateContainer ? (
         <>
-          <Text style={styles.selectedDate}>
-            {moment(selectedDate).format('dddd, DD MMMM YYYY')}
-          </Text>
-
           <View style={styles.calendarContainer}>
             {daysArray?.map((date, index) => {
               const isSelected = selectedDate === date;
@@ -212,5 +230,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.blue,
     textAlign: 'left',
+  },
+  selectedDateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: moderateScale(5),
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: colors.black,
+    textAlign: 'center',
+    fontSize: textScale(18),
   },
 });

@@ -5,8 +5,7 @@ import strings from '../../constants/lang';
 import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import TextComp from '../../components/TextComp';
 import styles from './styles';
-import SearchComp from '../../components/SearchComp';
-import {moderateScale, textScale, width} from '../../styles/responsiveSize';
+import {moderateScale, textScale} from '../../styles/responsiveSize';
 import colors from '../../styles/colors';
 import {useSelector} from 'react-redux';
 import {
@@ -14,6 +13,7 @@ import {
   GetAllNews,
   GetAllStocks,
   GetEventsBetweenDates,
+  GetTickerBasicInfo,
 } from '../../redux/actions/news';
 import NewsCard from '../../components/NewsCard';
 import navigationStrings from '../../navigation/navigationStrings';
@@ -31,6 +31,7 @@ import {
   getNextWeekRange,
   getThisWeekRange,
 } from '../../utils/Date';
+import CustomDropdown from '../../components/CustomDropdown';
 
 export default function Home() {
   const navigation = useNavigation();
@@ -52,6 +53,8 @@ export default function Home() {
   const [eventLoading, setEventLoading] = useState(false);
   const [handleApplyStartDate, setHandleApplyStartDate] = useState('');
   const [handleApplyEndDate, setHandleApplyEndDate] = useState('');
+  const [dropdownData, setDropdownData] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     const {startDate, endDate} = getThisWeekRange();
@@ -65,6 +68,7 @@ export default function Home() {
       fetchAllNews(),
       fetchAllStock(),
       fetchAllEventCategory(),
+      fetchStockFilterData(),
     ]).catch(error => console.error('Failed to fetch data:', error));
   }, []);
 
@@ -73,6 +77,30 @@ export default function Home() {
       fetchAllEvents(eventCategoryIds);
     }
   }, [eventCategoryIds, startDate, endDate]);
+
+  const fetchStockFilterData = async () => {
+    try {
+      const response = await GetTickerBasicInfo();
+      const sortedData = response?.sort(
+        (a, b) => new Date(b?.pubDate) - new Date(a?.pubDate),
+      );
+
+      const temp = [];
+      sortedData?.forEach((x, index) => {
+        temp.push({
+          label: `${x?.ticker} - ${x?.eN_Name}`,
+          value: `${x?.ticker} ${x?.eN_Name}`,
+          ticker: x?.ticker,
+        });
+      });
+
+      if (response?.length) {
+        setDropdownData(temp);
+      }
+    } catch (error) {
+      console.error('Error fetching getTickerBasic information :', error);
+    }
+  };
 
   const fetchAllEvents = useCallback(
     async eventCategoryIds => {
@@ -138,12 +166,21 @@ export default function Home() {
       const response = await GetAllEventCategory();
       const temp = [];
       const categoryIds = [];
-      response?.forEach(x => {
+      const color = [
+        colors.red,
+        colors.blue,
+        colors.lightGreen2,
+        colors.yellow,
+      ];
+
+      response?.forEach((x, index) => {
         temp.push({
           label: x.eventCategoryName,
           value: x.eventCategoryName,
           color: x.color,
           id: x?.eventCategoryId,
+          dropdownBgColor: color[index % color.length],
+          textColor: colors.white,
         });
 
         categoryIds.push(x?.eventCategoryId);
@@ -195,9 +232,12 @@ export default function Home() {
         />
         <UserInformation />
 
-        <SearchComp
-          placeholderText={strings.SearchText}
-          searchHandler={searchHandler}
+        <CustomDropdown
+          data={dropdownData}
+          placeholder={strings.SearchText}
+          onChange={handleChangeDropdown}
+          enableSearch={true}
+          value={selectedOption}
         />
 
         <View
@@ -231,7 +271,7 @@ export default function Home() {
   const renderItem = ({item}) => {
     const changeColor = item.change.startsWith('-')
       ? colors.red
-      : colors.lightGreen2;
+      : colors.darkGreen;
     const formattedDate = moment().format('YYYY-MM-DD');
 
     return (
@@ -280,6 +320,10 @@ export default function Home() {
     navigation.navigate(navigationStrings.News);
   };
 
+  const stocksHandler = item => {
+    navigation.navigate(navigationStrings.StockDetails, {item});
+  };
+
   const FooterComponents = () => (
     <View style={{...styles.container, marginTop: moderateScale(10)}}>
       <AgendaCalendar
@@ -288,7 +332,16 @@ export default function Home() {
         calenderIconHandler={calenderHandler}
         calendar={'calendar'}
         showDateContainer={false}
-        itemTextStyle={{color: 'white', fontWeight: 'bold'}}
+        showingDateToAndForm={{
+          startDate: startDate,
+          endDate: endDate,
+          day: '',
+        }}
+        itemTextStyle={item => ({
+          color: item.color || colors.black,
+          padding: moderateScale(8),
+          backgroundColor: item.backgroundColor || colors.white,
+        })}
       />
 
       <View style={styles.flashListContainer}>
@@ -332,9 +385,13 @@ export default function Home() {
     setIsVisible(false);
   };
 
+  const handleChangeDropdown = item => {
+    setSelectedOption(item.value);
+    navigation.navigate(navigationStrings.CompanyProfile, {item});
+  };
+
   const bellHandler = () => {};
   const settingHandler = () => {};
-  const searchHandler = text => {};
 
   const handleDropdownChange = selectedData => {
     // here pending data for set stage

@@ -227,7 +227,7 @@ export default function News() {
     <>
       <HeaderComp
         title={strings.News}
-        bellHandler={bellHandler}
+        rightBellIconVisible={false}
         settingHandler={settingHandler}
         notificationIcon
       />

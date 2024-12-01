@@ -47,7 +47,7 @@ export default function HeaderComp({
       </View>
 
       <View style={styles.rightContainer}>
-        {rightBellIconVisible && (
+        {rightBellIconVisible ? (
           <TouchableOpacity
             style={{...styles.iconLeftStyles}}
             activeOpacity={0.5}
@@ -59,6 +59,8 @@ export default function HeaderComp({
             />
             {notificationIcon && <View style={styles.notificationStyles} />}
           </TouchableOpacity>
+        ) : (
+          <View style={{...styles.iconLeftStyles, borderWidth: 0}} />
         )}
 
         {rightSettingIconVisible && (

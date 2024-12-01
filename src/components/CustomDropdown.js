@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {moderateScale} from '../styles/responsiveSize';
@@ -16,6 +16,7 @@ const CustomDropdown = ({
   dropdownStyle,
   iconStyle,
   arrowIconColor = colors.gray,
+  itemTextStyle,
   ...extraProps
 }) => {
   const [value, setValue] = useState(null);
@@ -34,6 +35,25 @@ const CustomDropdown = ({
 
   const handleDropdownBlur = () => {
     setIsOpen(false);
+  };
+
+  const renderItem = item => {
+    return (
+      <View
+        style={[
+          styles.dropdownItem,
+          {backgroundColor: item.dropdownBgColor || 'transparent'},
+        ]}>
+        <Text
+          style={[
+            styles.itemText,
+            itemTextStyle,
+            {color: item.textColor || colors.black},
+          ]}>
+          {item[labelField]}
+        </Text>
+      </View>
+    );
   };
 
   return (
@@ -58,6 +78,7 @@ const CustomDropdown = ({
             style={iconStyle}
           />
         )}
+        renderItem={renderItem}
         {...extraProps}
       />
     </View>
@@ -87,6 +108,16 @@ const styles = StyleSheet.create({
   },
   dropdownOpen: {
     backgroundColor: colors.white,
+    borderRadius: moderateScale(5),
+  },
+  dropdownItem: {
+    marginBottom: moderateScale(2),
+    paddingHorizontal: moderateScale(10),
+    paddingVertical: moderateScale(8),
+    borderRadius: moderateScale(5),
+  },
+  itemText: {
+    fontSize: moderateScale(16),
   },
 });
 

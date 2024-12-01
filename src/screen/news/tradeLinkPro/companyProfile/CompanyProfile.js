@@ -12,7 +12,11 @@ import FloatingButtonComp from '../../../../components/FloatingButtonComp';
 import colors from '../../../../styles/colors';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {moderateScale, textScale} from '../../../../styles/responsiveSize';
+import {
+  moderateScale,
+  textScale,
+  width,
+} from '../../../../styles/responsiveSize';
 import HeaderComp from '../../../../components/HeaderComp';
 import strings from '../../../../constants/lang';
 import {actions, modalAllButton} from '../../../../constants/static/staticData';
@@ -119,8 +123,6 @@ export default function CompanyProfile() {
         setEventLoading(true);
         const events = await GetEventsBetweenDates(queryParams);
 
-        console.log('events =>', events);
-
         const sortedData = events?.sort(
           (a, b) => new Date(a.startDate) - new Date(b.startDate),
         );
@@ -209,7 +211,13 @@ export default function CompanyProfile() {
               rightMapIcon={'zoom-out-map'}
               calendar={'calendar'}
               rightMapIconHandler={rightMapIconHandler}
-              style={{backgroundColor: colors.white, paddingHorizontal: 0}}
+              style={{
+                backgroundColor: colors.white,
+                paddingHorizontal: 0,
+              }}
+              dropdownStyles={{
+                width: moderateScale(140),
+              }}
             />
 
             {renderHeader()}
@@ -331,6 +339,9 @@ export default function CompanyProfile() {
                 calendar={'newspaper'}
                 rightMapIconHandler={rightMapIconHandler}
                 style={{backgroundColor: colors.white, paddingHorizontal: 0}}
+                dropdownStyles={{
+                  width: moderateScale(180),
+                }}
               />
 
               {eventLoading ? (
