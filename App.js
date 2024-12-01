@@ -1,3 +1,4 @@
+import './reanimatedConfig';
 import 'react-native-gesture-handler';
 import React, {useEffect} from 'react';
 import store from './src/redux/store';
