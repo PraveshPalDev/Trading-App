@@ -1,5 +1,4 @@
 import React from 'react';
-import TabRoutes from './TabRoutes';
 import navigationStrings from './navigationStrings';
 import {
   Analysis,
@@ -11,13 +10,16 @@ import {
   TradeLinkAnalysis,
 } from '../screen';
 import AllStacks from '../screen/news/allStocks/AllStacks';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import DrawerStack from './DrawerStack';
+const Stack = createNativeStackNavigator();
 
-export default function MainStack(Stack) {
+export default function MainStack() {
   return (
     <>
       <Stack.Screen
-        name={navigationStrings.TAB_ROUTES}
-        component={TabRoutes}
+        name={navigationStrings.Home}
+        component={DrawerStack}
         options={{headerShown: false}}
       />
 

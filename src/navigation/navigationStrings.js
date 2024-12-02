@@ -11,6 +11,7 @@ export default {
   AllStocks: 'allStocks',
   Analysis: 'analysis',
   Tracker: 'tracker',
+  Drawer: 'drawer',
 
   // Here all screen to news inside
   CompanyProfile: 'companyProfile',

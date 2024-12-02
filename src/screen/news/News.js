@@ -57,7 +57,7 @@ export default function News() {
 
   useEffect(() => {
     if (firstTime) {
-      getAllEventsAnnouncement(eventPage);
+      getAllEventsAnnouncement(null, 1, eventPage);
     }
   }, [eventPage]);
 
@@ -207,7 +207,7 @@ export default function News() {
       if (activeTab == 0) {
         setPage(prevPage => prevPage + 1);
       } else if (activeTab == 1) {
-        setEventPage(eventPage => eventPage + 1);
+        setEventPage(eventPage + 1);
       }
     }
   };
@@ -326,7 +326,6 @@ export default function News() {
     );
   };
 
-  const bellHandler = () => {};
   const settingHandler = () => {};
   const renderItem = ({item}) => <TrendingNewsCard item={item} />;
 

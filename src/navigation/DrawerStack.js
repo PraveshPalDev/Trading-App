@@ -1,16 +1,14 @@
+// DrawerStack.js
 import React from 'react';
-import {SignUp} from '../screen';
-import navigationStrings from './navigationStrings';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import TabRoutes from './TabRoutes';
+import strings from '../constants/lang';
+const Drawer = createDrawerNavigator();
 
-export default function DrawerStack(Drawer) {
+export default function DrawerStack() {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen
-        name={navigationStrings.TAB_ROUTES}
-        component={TabRoutes}
-      />
-      <Drawer.Screen name={navigationStrings.SignUp} component={SignUp} />
+      <Drawer.Screen name={strings.Home} component={TabRoutes} />
     </Drawer.Navigator>
   );
 }
