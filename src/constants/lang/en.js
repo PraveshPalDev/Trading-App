@@ -1,6 +1,5 @@
 export default {
   // here all screen name
-
   Home: 'Home',
   Stock: 'Stock',
   News: 'News',
@@ -43,6 +42,10 @@ export default {
   PurchaseCalendar: 'Purchase Cal..',
   NewsFeed: 'News Feed',
   StockList: 'Stock List',
+  OnlineTrading: 'OnlineTrading',
+  TradeLinkPro: 'TradeLinkPro',
+  Calendar: 'Calendars',
+  ContactUs: 'ContactUs',
 
   // login page content
   WelcomeBack: 'Welcome Back',

@@ -467,13 +467,13 @@ export default function CompanyProfile() {
         style={{marginBottom: moderateScale(25)}}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}>
-        <HeaderComp
+        {/* <HeaderComp
           backBtn={true}
           title={strings.CompanyProfile}
           rightBellIconVisible={false}
           rightSettingIconVisible={false}
           titleStyle={styles.headerStyles}
-        />
+        /> */}
         <StockCard
           data={stockData}
           isLocked={isLocked}
