@@ -1,4 +1,3 @@
-import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import Svg, {Path, Text as SvgText, TextPath, Defs} from 'react-native-svg';
 import {moderateScale, textScale} from '../styles/responsiveSize';

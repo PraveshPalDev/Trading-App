@@ -7,11 +7,12 @@ import {
 import colors from '../../../../styles/colors';
 
 const styles = StyleSheet.create({
-  container: {
+  containerFirst: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: moderateScale(16),
+    backgroundColor: colors.white,
   },
   floatingButtonContainer: {
     position: 'absolute',
@@ -196,28 +197,104 @@ const styles = StyleSheet.create({
   },
 
   // here modal styles
-  modalBackground: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+  modalOverlay: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
-    width: width / 1.05,
-    backgroundColor: colors.white,
-    borderRadius: moderateScale(18),
-    padding: moderateScale(20),
-    alignItems: 'center',
+    width: '90%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   modalHeader: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    width: width / 1.15,
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 15,
   },
-  modalTitle: {
-    fontSize: textScale(16),
-    color: colors.white,
+  headerText: {
+    fontSize: 16,
     fontWeight: 'bold',
+    color: '#000',
+    flex: 1,
+    marginRight: 10,
+  },
+  modalBody: {
+    marginTop: 10,
+  },
+  bodyText: {
+    fontSize: 14,
+    color: '#444',
+    lineHeight: 20,
+  },
+  // content styles here
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(8),
+    padding: moderateScale(16),
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: moderateScale(2),
+    },
+    shadowOpacity: moderateScale(0.25),
+    shadowRadius: moderateScale(3.84),
+    elevation: moderateScale(5),
+    marginHorizontal: moderateScale(16),
+    marginVertical: moderateScale(8),
+  },
+  lockedCard: {
+    height: moderateScale(300),
+    backgroundColor: colors.whiteOpacity50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: moderateScale(8),
+  },
+  unlockedCard: {
+    backgroundColor: colors.white,
+  },
+  lockedContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockIcon: {
+    marginBottom: moderateScale(8),
+  },
+  lockedText: {
+    color: colors.gray,
+    fontSize: textScale(16),
+    fontWeight: 'bold',
+  },
+  CompanyContainer: {
+    width: width / 1.1,
+    height: moderateScale(250),
+    marginHorizontal: moderateScale(16),
+    alignSelf: 'center',
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(8),
+  },
+  contentContainer: {
+    padding: moderateScale(5),
+  },
+  title: {
+    fontSize: textScale(18),
+    fontWeight: 'bold',
+    marginBottom: moderateScale(10),
+    textAlign: 'left',
+  },
+  description: {
+    fontSize: textScale(16),
+    lineHeight: moderateScale(24),
+    padding: moderateScale(15),
   },
 });
 

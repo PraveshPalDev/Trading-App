@@ -55,6 +55,7 @@ export default function Home() {
   const [handleApplyEndDate, setHandleApplyEndDate] = useState('');
   const [dropdownData, setDropdownData] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedDropdownData, setSelectedDropdownData] = useState([]);
 
   useEffect(() => {
     const {startDate, endDate} = getThisWeekRange();
@@ -118,6 +119,7 @@ export default function Home() {
         );
 
         setEventTableData(sortedData);
+        setSelectedDropdownData(sortedData);
         setEventLoading(false);
         setHandleApplyStartDate(null);
         setHandleApplyEndDate(null);
@@ -324,45 +326,48 @@ export default function Home() {
     navigation.navigate(navigationStrings.StockDetails, {item});
   };
 
-  const FooterComponents = () => (
-    <View style={{...styles.container, marginTop: moderateScale(10)}}>
-      <AgendaCalendar
-        dropDownData={eventCategories}
-        handleDropdownChange={handleDropdownChange}
-        calenderIconHandler={calenderHandler}
-        calendar={'calendar'}
-        showDateContainer={false}
-        showingDateToAndForm={{
-          startDate: startDate,
-          endDate: endDate,
-          day: '',
-        }}
-        itemTextStyle={item => ({
-          color: item.color || colors.black,
-          padding: moderateScale(8),
-          backgroundColor: item.backgroundColor || colors.white,
-        })}
-      />
+  const FooterComponents = useCallback(
+    () => (
+      <View style={{...styles.container, marginTop: moderateScale(10)}}>
+        <AgendaCalendar
+          dropDownData={eventCategories}
+          handleDropdownChange={handleDropdownChange}
+          calenderIconHandler={calenderHandler}
+          calendar={'calendar'}
+          showDateContainer={false}
+          showingDateToAndForm={{
+            startDate: startDate,
+            endDate: endDate,
+            day: '',
+          }}
+          itemTextStyle={item => ({
+            color: item.color || colors.black,
+            padding: moderateScale(8),
+            backgroundColor: item.backgroundColor || colors.white,
+          })}
+        />
 
-      <View style={styles.flashListContainer}>
-        {renderHeader()}
-        {eventLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator
-              size="large"
-              color="#005aef"
-              style={{flex: 1, justifyContent: 'center', alignSelf: 'center'}}
+        <View style={styles.flashListContainer}>
+          {renderHeader()}
+          {eventLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator
+                size="large"
+                color="#005aef"
+                style={{flex: 1, justifyContent: 'center', alignSelf: 'center'}}
+              />
+            </View>
+          ) : (
+            <FlashListComp
+              DATA={selectedDropdownData}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderTableData}
             />
-          </View>
-        ) : (
-          <FlashListComp
-            DATA={eventTableData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderTableData}
-          />
-        )}
+          )}
+        </View>
       </View>
-    </View>
+    ),
+    [selectedDropdownData],
   );
 
   const renderLoading = () => (
@@ -394,11 +399,11 @@ export default function Home() {
   const settingHandler = () => {};
 
   const handleDropdownChange = selectedData => {
-    // here pending data for set stage
-    return;
-    const filterData = eventTableData?.filter(item => {
-      return item.category === selectedData?.id;
-    });
+    const filterData = eventTableData?.filter(
+      item => item.category === selectedData?.id,
+    );
+
+    setSelectedDropdownData(JSON.parse(JSON.stringify(filterData)));
   };
 
   const renderHeader = () => (
@@ -410,8 +415,17 @@ export default function Home() {
     </View>
   );
 
+  const getColorByCategory = categoryId => {
+    const filterColor = eventCategories.find(
+      x => x.id === categoryId,
+    )?.dropdownBgColor;
+
+    return filterColor;
+  };
+
   const renderTableData = ({item, index}) => {
     const isLastItem = index === eventTableData?.length - 1;
+
     return (
       <View style={[styles.row, isLastItem && styles.lastRow]}>
         <TextComp style={styles.cell}>
@@ -426,7 +440,10 @@ export default function Home() {
 
         <View style={{...styles.cell, ...styles.colorIndicator}}>
           <View
-            style={{...styles.colorIndicator, backgroundColor: item?.color}}
+            style={{
+              ...styles.colorIndicator,
+              backgroundColor: getColorByCategory(item?.category),
+            }}
           />
         </View>
       </View>

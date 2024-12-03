@@ -1,4 +1,4 @@
-import {Modal, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import React, {memo, useCallback, useState} from 'react';
 import WrapperContainer from '../../../../components/WrapperContainer';
 import styles from './styles';
@@ -97,7 +97,7 @@ export default function ShareList() {
     return (
       <TouchableOpacity
         style={[
-          // styles.container,
+          styles.container,
           isLocked ? styles.lockedCard : styles.unlockedCard,
           isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
           {padding: 0},
@@ -150,8 +150,35 @@ export default function ShareList() {
                 />
               </View>
             </View>
+          </>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
-            {/* Calendar Container */}
+  const TableComp = ({isLocked, setIsLocked}) => {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.container,
+          isLocked ? styles.lockedCard : styles.unlockedCard,
+          isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
+          {padding: 0},
+        ]}
+        onPress={() => setIsLocked(!isLocked)}
+        activeOpacity={0.9}>
+        {isLocked ? (
+          <View style={styles.lockedContent}>
+            <Icon
+              name="lock"
+              size={moderateScale(40)}
+              color="#555"
+              style={styles.lockIcon}
+            />
+            <TextComp style={styles.lockedText}>{strings.TabLock}</TextComp>
+          </View>
+        ) : (
+          <>
             <View style={styles.dateMainContainer}>
               <DataTable />
             </View>
@@ -278,8 +305,50 @@ export default function ShareList() {
     );
   });
 
-  const onClose = () => {
-    setIsVisible(false);
+  const ContentComp = ({isLocked, setIsLocked}) => {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.container,
+          isLocked ? styles.lockedCard : styles.unlockedCard,
+          isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
+        ]}
+        onPress={() => setIsLocked(!isLocked)}
+        activeOpacity={0.9}>
+        {isLocked ? (
+          <View style={styles.lockedContent}>
+            <Icon
+              name="lock"
+              size={moderateScale(40)}
+              color="#555"
+              style={styles.lockIcon}
+            />
+            <TextComp style={styles.lockedText}>{strings.TabLock}</TextComp>
+          </View>
+        ) : (
+          <ScrollView style={styles.CompanyContainer}>
+            <View style={styles.contentContainer}>
+              <TextComp style={styles.title}>
+                The Eriougia Tria Alfa (AAAK)
+              </TextComp>
+              <TextComp style={styles.description}>
+                The Eriougia Tria Alfa (AAAK) is a company that provides
+                underwater services. The company was founded in Greek work
+                stations and operates since 1927. The company is specialized in
+                the construction of underwater structures for marine
+                infrastructure, as the anchorages. The largest shareholder of
+                the company, in agreement with the MRFY statements, is the Greek
+                Navy and in the first half of 2023 the company announced
+                'increased activity' in the works from the existing projects.
+                The Tria Alfa SA company is engaged in the construction of
+                underwater structures. The company's activities include depth,
+                cladding and underwater welding of large and smaller scale.
+              </TextComp>
+            </View>
+          </ScrollView>
+        )}
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -300,24 +369,33 @@ export default function ShareList() {
           setIsLocked={setIsLocked}
         />
 
-        <ModalComp
-          isVisible={isVisible}
-          onBackdropPress={() => setIsVisible(false)}
-          style={{flex: 1, justifyContent: 'center'}}>
-          <View style={styles.modalBackground}>
+        <TableComp isLocked={isLocked} setIsLocked={setIsLocked} />
+        <ContentComp isLocked={isLocked} setIsLocked={setIsLocked} />
+
+        <ModalComp visible={isVisible} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
               {/* Header */}
               <View style={styles.modalHeader}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setIsVisible(false);
-                  }}>
+                <Text style={styles.headerText}>
+                  Αναβαθμίστε τις επενδύσεις σας με το Trade-Link Pro Picks.
+                </Text>
+                <TouchableOpacity onPress={() => setIsVisible(false)}>
                   <Icon
-                    name={'close-circle'}
+                    name="close-circle"
                     size={moderateScale(30)}
                     color={colors.red}
                   />
                 </TouchableOpacity>
+              </View>
+              {/* Body */}
+              <View style={styles.modalBody}>
+                <Text style={styles.bodyText}>
+                  Αναβαθμίστε τις επενδύσεις σας με το Trade-Link Pro Picks.
+                  Αποκτήστε πρόσβαση σε επιμελημένες λίστες μετοχών, επιλεγμένες
+                  με τη χρήση προηγμένων μοντέλων και γνώμης εμπειρογνωμόνων.
+                  Βρείτε τις μετοχές που ταιριάζουν στο επενδυτικό σας προφίλ...
+                </Text>
               </View>
             </View>
           </View>

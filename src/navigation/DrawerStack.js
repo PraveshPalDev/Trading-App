@@ -1,8 +1,7 @@
-// DrawerStack.js
 import React from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {TouchableOpacity, Text, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'; 
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList} from '@react-navigation/drawer';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import TabRoutes from './TabRoutes';
 import strings from '../constants/lang';
 import {
@@ -13,9 +12,26 @@ import {
   OnlineTrading,
 } from '../screen';
 import colors from '../styles/colors';
-import { moderateScale, textScale } from '../styles/responsiveSize';
+import {moderateScale, textScale} from '../styles/responsiveSize';
 
 const Drawer = createDrawerNavigator();
+
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props} contentContainerStyle={{flex: 1}}>
+      <View style={{flex: 1}}>
+        <DrawerItemList {...props} />
+      </View>
+
+      <View style={styles.versionContainer}>
+        <Text style={styles.versionText}>
+          <Text style={styles.versionLabel}>App Version: </Text>
+          <Text style={styles.versionValue}>1.0.0</Text>
+        </Text>
+      </View>
+    </DrawerContentScrollView>
+  );
+}
 
 function CustomDrawerToggle({navigation}) {
   return (
@@ -30,23 +46,23 @@ function CustomDrawerToggle({navigation}) {
 export default function DrawerStack() {
   return (
     <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={({navigation}) => ({
         headerLeft: () => <CustomDrawerToggle navigation={navigation} />,
-        drawerActiveTintColor: colors.blue, 
-        drawerInactiveTintColor: 'gray', 
-        drawerActiveBackgroundColor: colors.theme, 
-        drawerLabelStyle: {fontSize: textScale(16), fontWeight: 'bold'},
+        drawerActiveTintColor: colors.blue,
+        drawerInactiveTintColor: 'gray',
+        drawerActiveBackgroundColor: colors.whiteOpacity60,
+        drawerLabelStyle: {fontSize: textScale(14), fontWeight: 'bold'},
         drawerStyle: {
-          backgroundColor: colors.theme, 
-          width: moderateScale(250), 
+          backgroundColor: colors.theme,
+          width: moderateScale(250),
         },
         headerStyle: {
-          backgroundColor: colors.theme, 
+          backgroundColor: colors.theme,
         },
-        headerTintColor: colors.black, 
+        headerTintColor: colors.black,
         headerTitleStyle: {
-          fontWeight: 'bold', 
-        
+          fontWeight: 'bold',
         },
       })}>
       <Drawer.Screen
@@ -56,7 +72,7 @@ export default function DrawerStack() {
           drawerIcon: ({focused, size}) => (
             <Icon
               name="home"
-              size={size}
+              size={moderateScale(28)}
               color={focused ? colors.blue : colors.grayOpacity80}
             />
           ),
@@ -69,7 +85,7 @@ export default function DrawerStack() {
           drawerIcon: ({focused, size}) => (
             <Icon
               name="article"
-              size={size}
+              size={moderateScale(28)}
               color={focused ? colors.blue : colors.grayOpacity80}
             />
           ),
@@ -82,7 +98,7 @@ export default function DrawerStack() {
           drawerIcon: ({focused, size}) => (
             <Icon
               name="trending-up"
-              size={size}
+              size={moderateScale(28)}
               color={focused ? colors.blue : colors.grayOpacity80}
             />
           ),
@@ -95,7 +111,7 @@ export default function DrawerStack() {
           drawerIcon: ({focused, size}) => (
             <Icon
               name="business"
-              size={size}
+              size={moderateScale(28)}
               color={focused ? colors.blue : colors.grayOpacity80}
             />
           ),
@@ -108,7 +124,7 @@ export default function DrawerStack() {
           drawerIcon: ({focused, size}) => (
             <Icon
               name="calendar-today"
-              size={size}
+              size={moderateScale(28)}
               color={focused ? colors.blue : colors.grayOpacity80}
             />
           ),
@@ -121,7 +137,7 @@ export default function DrawerStack() {
           drawerIcon: ({focused, size}) => (
             <Icon
               name="contacts"
-              size={size}
+              size={moderateScale(28)}
               color={focused ? colors.blue : colors.grayOpacity80}
             />
           ),
@@ -130,3 +146,28 @@ export default function DrawerStack() {
     </Drawer.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  versionContainer: {
+    padding: moderateScale(12),
+    borderTopWidth: 1,
+    borderTopColor: colors.grayOpacity50,
+    alignItems: 'center',
+  
+  },
+  versionText: {
+    fontSize: textScale(16),
+    color: colors.black,
+
+  },
+  versionLabel: {
+    fontWeight: 'bold', 
+    color: 'black',
+    color: colors.black,
+  },
+  versionValue: {
+    fontWeight: 'normal',
+    color: colors.gray,
+    fontSize: textScale(16),
+  },
+});
