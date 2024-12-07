@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -12,12 +13,7 @@ import FloatingButtonComp from '../../../../components/FloatingButtonComp';
 import colors from '../../../../styles/colors';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {
-  moderateScale,
-  textScale,
-  width,
-} from '../../../../styles/responsiveSize';
-import HeaderComp from '../../../../components/HeaderComp';
+import {moderateScale, textScale} from '../../../../styles/responsiveSize';
 import strings from '../../../../constants/lang';
 import {actions, modalAllButton} from '../../../../constants/static/staticData';
 import navigationStrings from '../../../../navigation/navigationStrings';
@@ -35,6 +31,7 @@ import {
   GetEventsBetweenDates,
 } from '../../../../redux/actions/news';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import FastImage from 'react-native-fast-image';
 
 const stockData = {
   ticker: 'AAAK.AT',
@@ -50,6 +47,36 @@ const stockData = {
     'Κεφαλαιοποίηση (εκ)': '€ 4',
   },
 };
+
+const FeeNews = [
+  {
+    title: 'Χρηματιστήριο: Και πάλι ντέρμπι διατήρησης των 1.400 μονάδων',
+    description:
+      'Στο επίκεντρο της σημερινής συνεδρίασης στο Χρηματιστήριο, μπαίνει η ΓΕΚ ΤΕΡΝΑ...',
+    image_url:
+      'https://raw.githubusercontent.com/StackFrontierOfficial/GRBrokerImages/refs/heads/master/13.png',
+    category: 'PowerGame Markets',
+    time: '7 days',
+  },
+  {
+    title: 'Ανοδική πορεία στις διεθνείς αγορές',
+    description:
+      'Οι διεθνείς αγορές σημειώνουν σημαντική άνοδο μετά τις ανακοινώσεις...',
+    image_url:
+      'https://raw.githubusercontent.com/StackFrontierOfficial/GRBrokerImages/refs/heads/master/13.png',
+    category: 'Global Markets',
+    time: '5 days',
+  },
+  {
+    title: 'Νέα μέτρα στήριξης της οικονομίας',
+    description:
+      'Η κυβέρνηση ανακοίνωσε νέα μέτρα για την ενίσχυση των επιχειρήσεων...',
+    image_url:
+      'https://raw.githubusercontent.com/StackFrontierOfficial/GRBrokerImages/refs/heads/master/13.png',
+    category: 'Economy Updates',
+    time: '2 days',
+  },
+];
 
 export default function CompanyProfile() {
   const [isLocked, setIsLocked] = useState(true);
@@ -85,7 +112,6 @@ export default function CompanyProfile() {
   const [eventLoading, setEventLoading] = useState(false);
   const [handleApplyStartDate, setHandleApplyStartDate] = useState('');
   const [handleApplyEndDate, setHandleApplyEndDate] = useState('');
-
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'Όλα'},
@@ -166,9 +192,7 @@ export default function CompanyProfile() {
   };
 
   const handlePressItem = name => {
-    if (name === 'companyProfile') {
-      navigation.navigate(navigationStrings.CompanyProfile);
-    } else if (name === 'stockLists') {
+    if (name === 'stockLists') {
       navigation.navigate(navigationStrings.ShareList);
     } else if (name === 'technicalAnalysis') {
       navigation.navigate(navigationStrings.TradeLinkAnalysis);
@@ -354,7 +378,7 @@ export default function CompanyProfile() {
                 </View>
               ) : (
                 <FlashListComp
-                  DATA={eventTableData}
+                  DATA={FeeNews}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={renderNewsFeed}
                 />
@@ -366,13 +390,54 @@ export default function CompanyProfile() {
     );
   };
 
-  const renderNewsFeed = ({item, index}) => {
+  const renderNewsFeed = ({item}) => {
+    const formattedDate = moment(item?.pubDate).fromNow();
+
+    const openLinkHandler = url => {
+      if (url) return null;
+      Linking.openURL(url).catch(err => console.log('An error occurred', err));
+    };
+
     return (
-      <View style={[styles.row, {padding: moderateScale(12)}]} key={index}>
-        <TextComp style={[styles.cell, {textAlign: 'left'}]}>
-          {item?.description}
-        </TextComp>
-      </View>
+      <TouchableOpacity style={styles.newFeedCard} activeOpacity={0.7}>
+        <FastImage
+          source={{
+            uri: item.image_url,
+            priority: FastImage.priority.normal,
+          }}
+          style={styles.image}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+        {/* Right Content */}
+        <View style={styles.contentContainer}>
+          <View style={styles.categoryContainer}>
+            <Text style={styles.categoryText}>
+              {item?.title?.length > 80
+                ? `${item.title.slice(0, 80)}...`
+                : item?.title}
+            </Text>
+          </View>
+
+          {/* News Title */}
+          <View style={styles.categoryContainer}>
+            <Text style={styles.title}>
+              {item?.description?.length > 80
+                ? `${item.description.slice(0, 80)}...`
+                : item?.description}
+            </Text>
+          </View>
+
+          {/* Bottom Source and Time */}
+          <View style={styles.categoryContainer}>
+            <View style={styles.sourceContainer}>
+              <View style={styles.sourceInfo}>
+                <Text style={styles.sourceName}>{item?.sourceName}</Text>
+              </View>
+              <Text style={styles.timeText}>{formattedDate}</Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -467,13 +532,6 @@ export default function CompanyProfile() {
         style={{marginBottom: moderateScale(25)}}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}>
-        {/* <HeaderComp
-          backBtn={true}
-          title={strings.CompanyProfile}
-          rightBellIconVisible={false}
-          rightSettingIconVisible={false}
-          titleStyle={styles.headerStyles}
-        /> */}
         <StockCard
           data={stockData}
           isLocked={isLocked}
@@ -665,7 +723,7 @@ const StockCard = ({data, isLocked, setIsLocked}) => {
           <View style={styles.metricsContainer}>
             {Object.entries(data.metrics).map(([key, value]) => (
               <View key={key} style={styles.metricItem}>
-                <TextComp style={styles.metricLabel}>{key}</TextComp>
+                <Text style={styles.metricLabel}>{key}</Text>
                 <Text
                   style={[
                     styles.metricValue,
@@ -732,6 +790,7 @@ const BuySellContainer = ({data, setData, isLocked, setIsLocked}) => {
   const [selectedType, setSelectedType] = useState('Buy');
   const [selectedColor, setSelectedColor] = useState(colors.lightGreen2);
   const [isDelete, setIsDelete] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState(10);
 
   const changeBuySellHandler = type => {
     const newColor =
@@ -743,6 +802,7 @@ const BuySellContainer = ({data, setData, isLocked, setIsLocked}) => {
 
     setSelectedType(type);
     setSelectedColor(newColor);
+    setSelectedAmount(Math.floor(Math.random() * 101));
 
     setData(prevData =>
       prevData.map(item => {
@@ -835,14 +895,21 @@ const BuySellContainer = ({data, setData, isLocked, setIsLocked}) => {
 
             {!isDelete ? (
               <View style={styles.chartContainer}>
-                <PieChart
-                  style={styles.pieChart}
-                  data={data}
-                  valueAccessor={({item}) => item.amount}
-                  innerRadius={0}
-                  outerRadius={80}
-                  labelRadius={110}
-                />
+                <View style={styles.chartContainer}>
+                  <PieChart
+                    style={styles.pieChart}
+                    data={data}
+                    valueAccessor={({item}) => item.amount}
+                    innerRadius={60}
+                    outerRadius={80}
+                    labelRadius={110}
+                  />
+
+                  <View style={styles.centerTextContainer}>
+                    <Text style={styles.centerText}>Total</Text>
+                    <Text style={styles.centerValue}>{selectedAmount}</Text>
+                  </View>
+                </View>
 
                 <View style={styles.legendContainer}>
                   <View style={styles.legendItem}>
@@ -858,19 +925,19 @@ const BuySellContainer = ({data, setData, isLocked, setIsLocked}) => {
                     <View
                       style={[
                         styles.legendColor,
-                        {backgroundColor: colors.red},
+                        {backgroundColor: colors.yellow},
                       ]}
                     />
-                    <Text style={styles.legendText}>Sell</Text>
+                    <Text style={styles.legendText}>Hold</Text>
                   </View>
                   <View style={styles.legendItem}>
                     <View
                       style={[
                         styles.legendColor,
-                        {backgroundColor: colors.yellow},
+                        {backgroundColor: colors.red},
                       ]}
                     />
-                    <Text style={styles.legendText}>Hold</Text>
+                    <Text style={styles.legendText}>Sell</Text>
                   </View>
                 </View>
               </View>

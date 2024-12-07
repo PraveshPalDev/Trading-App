@@ -2,7 +2,13 @@ import React, {useCallback, useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
-import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Linking,
+} from 'react-native';
 import TextComp from '../../components/TextComp';
 import styles from './styles';
 import {moderateScale, textScale} from '../../styles/responsiveSize';
@@ -120,11 +126,11 @@ export default function Home() {
 
         setEventTableData(sortedData);
         setSelectedDropdownData(sortedData);
-        setEventLoading(false);
         setHandleApplyStartDate(null);
         setHandleApplyEndDate(null);
       } catch (error) {
         console.error('Failed to fetch events:', error);
+      } finally {
         setEventLoading(false);
       }
     },
@@ -223,6 +229,12 @@ export default function Home() {
     </View>
   );
 
+  const newsCardHandler = item => {
+    Linking.openURL(item?.link).catch(err =>
+      console.log('An error occurred', err),
+    );
+  };
+
   const HeaderComponents = () => {
     return (
       <>
@@ -257,7 +269,7 @@ export default function Home() {
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
-          <NewsCard newsItems={news} />
+          <NewsCard newsItems={news} onPressHandler={newsCardHandler} />
         )}
 
         <View style={{...styles.stockStyles}}>
@@ -303,7 +315,7 @@ export default function Home() {
                     ? colors.black
                     : colors.white,
               }}>
-              ${item?.price}{' '}
+              €{item?.price}{' '}
             </Text>
             <Text style={[styles.change, {color: changeColor}]}>
               {`(${item?.change})`}
@@ -367,7 +379,7 @@ export default function Home() {
         </View>
       </View>
     ),
-    [selectedDropdownData],
+    [selectedDropdownData, eventLoading],
   );
 
   const renderLoading = () => (

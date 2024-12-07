@@ -1,5 +1,12 @@
 import React, {useRef, useState} from 'react';
-import {View, Text, Image, StyleSheet, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Animated, {
@@ -17,7 +24,12 @@ import colors from '../styles/colors';
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
 
-export default NewsCard = ({newsItems, dotStyles, activeDotStyles}) => {
+export default NewsCard = ({
+  newsItems,
+  dotStyles,
+  activeDotStyles,
+  onPressHandler,
+}) => {
   const progressValue = useSharedValue(0);
   const carouselRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,33 +55,38 @@ export default NewsCard = ({newsItems, dotStyles, activeDotStyles}) => {
     const formattedDate = moment(item?.pubDate).fromNow();
 
     return (
-      <Animated.View style={[styles.card, animStyle]}>
-        <FastImage
-          source={{
-            uri: item.imageUrl,
-            priority: FastImage.priority.high,
-          }}
-          style={styles.image}
-          resizeMode={FastImage.resizeMode.cover}
-        />
+      <TouchableOpacity
+        style={{flex: 1}}
+        activeOpacity={0.7}
+        onPress={() => onPressHandler(item)}>
+        <Animated.View style={[styles.card, animStyle]}>
+          <FastImage
+            source={{
+              uri: item.imageUrl,
+              priority: FastImage.priority.high,
+            }}
+            style={styles.image}
+            resizeMode={FastImage.resizeMode.cover}
+          />
 
-        {/* Overlay Gradient */}
-        <View style={styles.overlay}>
-          {/* Top Section */}
-          <View style={styles.sourceContainer}>
-            <View style={styles.sourceSubContainer}>
-              <View style={styles.companyDotStyles} />
-              <Text style={styles.sourceText}>{item.sourceName}</Text>
+          {/* Overlay Gradient */}
+          <View style={styles.overlay}>
+            {/* Top Section */}
+            <View style={styles.sourceContainer}>
+              <View style={styles.sourceSubContainer}>
+                <View style={styles.companyDotStyles} />
+                <Text style={styles.sourceText}>{item.sourceName}</Text>
+              </View>
+              <Text style={styles.timeText}>{formattedDate}</Text>
             </View>
-            <Text style={styles.timeText}>{formattedDate}</Text>
-          </View>
 
-          {/* Bottom Section */}
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>{item.title}</Text>
+            {/* Bottom Section */}
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>{item.title}</Text>
+            </View>
           </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
+      </TouchableOpacity>
     );
   };
 

@@ -1,62 +1,118 @@
-import {StyleSheet} from 'react-native';
-import {
-  moderateScale,
-  textScale,
-  width,
-} from '../../../../styles/responsiveSize';
+import {Dimensions, StyleSheet} from 'react-native';
+import {moderateScale, textScale} from '../../../../styles/responsiveSize';
 import colors from '../../../../styles/colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(8),
+    padding: moderateScale(16),
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: moderateScale(2),
+    },
+    shadowOpacity: moderateScale(0.25),
+    shadowRadius: moderateScale(3.84),
+    elevation: moderateScale(5),
     marginHorizontal: moderateScale(16),
-  },
-  floatingButtonContainer: {
-    position: 'absolute',
-    bottom: moderateScale(30),
-    right: moderateScale(0),
-  },
-  headerStyles: {
-    color: colors.black,
-    fontSize: textScale(16),
-  },
-
-  // lock card styles here
-  cardContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: moderateScale(2),
-    marginTop: moderateScale(8),
-  },
-  card: {
-    width: width / 1.05,
-    height: moderateScale(190),
-    borderRadius: moderateScale(15),
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: moderateScale(4),
-    shadowColor: '#000',
-    shadowOpacity: moderateScale(0.2),
-    shadowOffset: {width: 0, height: 3},
-    shadowRadius: moderateScale(4),
+    marginVertical: moderateScale(8),
   },
   lockedCard: {
-    backgroundColor: colors.white,
+    height: moderateScale(300),
+    backgroundColor: colors.whiteOpacity50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: moderateScale(8),
   },
   unlockedCard: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: colors.white,
+    backgroundColor: colors.white,
+  },
+  lockedContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   lockIcon: {
-    opacity: moderateScale(0.8),
+    marginBottom: moderateScale(8),
   },
-  unlockedText: {
-    fontSize: textScale(16),
+  lockedText: {
     color: colors.gray,
+    fontSize: textScale(16),
     fontWeight: 'bold',
+  },
+  // time zone styles
+  listContainer: {
+    paddingHorizontal: moderateScale(12),
+    paddingVertical: moderateScale(12),
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(12),
+    elevation: moderateScale(3),
+    shadowColor: colors.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: moderateScale(4),
+    padding: moderateScale(10),
+    alignItems: 'center',
+    marginHorizontal: moderateScale(4),
+    minWidth: Dimensions.get('window').width / 4.5,
+  },
+  cityText: {
+    fontSize: textScale(14),
+    color: colors.gray,
+    fontWeight: '500',
+  },
+  timeText: {
+    fontSize: textScale(18),
+    color: colors.black,
+    fontWeight: 'bold',
+    marginTop: moderateScale(5),
+  },
+  // card list styles here
+  header: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#000',
+  },
+  dropdown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+  dropdownText: {
+    color: '#000',
+    fontWeight: '600',
+  },
+  list: {
+    paddingBottom: 16,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 4,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  source: {
+    fontSize: 14,
+    color: '#777',
+  },
+  time: {
+    fontSize: 14,
+    color: '#777',
   },
 });
 

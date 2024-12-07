@@ -3,7 +3,6 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
   Linking,
 } from 'react-native';
@@ -17,9 +16,9 @@ import TextComp from '../../components/TextComp';
 import {NewsCategories} from '../../constants/static/staticData';
 import NewsCard from '../../components/NewsCard';
 import {
-  GetAllEventsAnnouncement,
   GetAllNews,
   GetAllNewsTypes,
+  GetEventsAnnouncement,
   GetTickerBasicInfo,
 } from '../../redux/actions/news';
 import moment from 'moment';
@@ -47,7 +46,7 @@ export default function News() {
 
   useEffect(() => {
     fetchAllNews(page);
-    getAllTrendingNews(page, 'Trending');
+    getAllTrendingNews();
     fetchStockFilterData();
   }, []);
 
@@ -63,7 +62,8 @@ export default function News() {
 
   const tabHandler = (tab, index) => {
     if (tab?.type === 'Events&More') {
-      getAllEventsAnnouncement(tab, index, eventPage);
+      setNews([]);
+      getAllEventsAnnouncement(tab, index, 1);
     } else {
       fetchAllNewsTypes(tab, index);
     }
@@ -118,7 +118,7 @@ export default function News() {
   const getAllTrendingNews = async type => {
     try {
       setTrendingLoading(true);
-      const response = await GetAllNewsTypes(type);
+      const response = await GetAllNewsTypes('Trending');
 
       const SortedData = response?.sort(
         (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
@@ -168,34 +168,31 @@ export default function News() {
   };
 
   const getAllEventsAnnouncement = async (tab, index, eventPage) => {
-    if (tab === 'Events&More') {
-      setActiveTab(index);
-      setNews([]);
-      setEventPage(1);
-      return;
-    }
-
     try {
       setLoading(true);
-      if (!firstTime) {
-        setActiveTab(index);
+      setActiveTab(index);
+
+      if (tab === 'Events&More') {
+        setNews([]);
+        setEventPage(1);
+      }
+
+      if (eventPage === 1) {
         setNews([]);
       }
 
-      const response = await GetAllEventsAnnouncement(eventPage);
-      const SortedData = response?.sort(
-        (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
-      );
-
+      const response = await GetEventsAnnouncement(eventPage);
       if (response?.length) {
+        const SortedData = response.sort(
+          (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+        );
         setNews(prevNews => [...prevNews, ...SortedData]);
-        // setNews(SortedData);
-        setHasMore(response.length > 0);
+        setHasMore(true);
       } else {
         setHasMore(false);
       }
     } catch (error) {
-      console.log('error all events announcement =>', error);
+      console.error('Error in getAllEventsAnnouncement:', error);
     } finally {
       setLoading(false);
       setFirstTime(true);
@@ -223,6 +220,12 @@ export default function News() {
     navigation.navigate(navigationStrings.CompanyProfile, {item});
   };
 
+  const newsCardHandler = item => {
+    Linking.openURL(item?.link).catch(err =>
+      console.log('An error occurred', err),
+    );
+  };
+
   const HeaderComponents = () => (
     <>
       <HeaderComp
@@ -243,7 +246,7 @@ export default function News() {
       {trendingLoading ? (
         <ActivityIndicator size="large" color={colors.blue} />
       ) : (
-        <NewsCard newsItems={trendingNews} />
+        <NewsCard newsItems={trendingNews} onPressHandler={newsCardHandler} />
       )}
 
       <ScrollView

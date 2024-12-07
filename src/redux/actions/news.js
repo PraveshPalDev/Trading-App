@@ -1,5 +1,6 @@
 import {
   GET_ALL_EVENT_CATEGORY,
+  GET_ALL_EVENT_More,
   GET_ALL_NEWS,
   GET_ALL_NEWS_TYPES,
   GET_ALL_STOCKS,
@@ -23,8 +24,6 @@ export const GetAllEventsAnnouncement = page => {
   const limit = 10;
   const url = `${GET_ALL_NEWS_TYPES}?PageSize=${limit}&PageNo=${page}$NewsSourceIds${20}`;
 
-  console.log('ukl one ->', url, page);
-
   return apiGet(url);
 };
 
@@ -46,5 +45,14 @@ export const GetEventsBetweenDates = async params => {
   const url = `${GET_EVENT}?fromDate=${params?.fromDate}&toDate=${
     params?.toDate
   }&eventCategories=${params?.eventCategories.join(',')}`;
+  return apiGet(url);
+};
+
+export const GetEventsAnnouncement = async page => {
+  const limit = 10;
+
+  const url = `${GET_ALL_EVENT_More}?PageSize=${limit}&PageNo=${page}`;
+  // NewsSourceIds=${newsSourceId}
+
   return apiGet(url);
 };

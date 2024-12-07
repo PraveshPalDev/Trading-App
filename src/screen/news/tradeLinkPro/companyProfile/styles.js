@@ -377,6 +377,91 @@ const styles = StyleSheet.create({
     fontSize: textScale(14),
     color: colors.black,
   },
+  // pie chart styles here
+  chartContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centerTextContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centerText: {
+    fontSize: textScale(18),
+    fontWeight: 'bold',
+    color: colors.gray,
+  },
+  centerValue: {
+    fontSize: textScale(24),
+    fontWeight: 'bold',
+    color: colors.gray,
+  },
+
+  // card styles
+  newFeedCard: {
+    width: width / 7,
+    flexDirection: 'row',
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(20),
+    padding: moderateScale(10),
+    marginBottom: moderateScale(10),
+    marginHorizontal: moderateScale(10),
+  },
+  image: {
+    width: moderateScale(100),
+    height: moderateScale(140),
+    borderRadius: moderateScale(12),
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    marginLeft: moderateScale(12),
+    justifyContent: 'space-between',
+  },
+  categoryContainer: {
+    width: width / 1.7,
+    backgroundColor: colors.white,
+    paddingHorizontal: moderateScale(12),
+    paddingVertical: moderateScale(4),
+    borderRadius: moderateScale(16),
+    alignSelf: 'flex-start',
+  },
+  categoryText: {
+    fontSize: textScale(14),
+    color: colors.black,
+  },
+  title: {
+    fontSize: textScale(14),
+    color: colors.black,
+    marginVertical: moderateScaleVertical(8),
+    lineHeight: moderateScale(20),
+  },
+  sourceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sourceInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sourceLogo: {
+    width: moderateScale(20),
+    height: moderateScale(20),
+    borderRadius: moderateScale(10),
+  },
+  sourceName: {
+    fontSize: textScale(14),
+    color: colors.gray,
+    marginLeft: moderateScale(6),
+  },
+  timeText: {
+    fontSize: textScale(12),
+    color: colors.gray,
+  },
 });
 
 export default styles;
