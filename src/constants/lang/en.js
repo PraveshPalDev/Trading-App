@@ -32,7 +32,7 @@ export default {
   Close: 'CLOSE',
   Date: 'Date',
   Symbol: 'Symbol',
-  Description: 'Description',
+  Description: 'Desc',
   Category: 'Category',
   TrendFollowing: 'Trend Following',
   MeanReversion: 'Mean Reversion',

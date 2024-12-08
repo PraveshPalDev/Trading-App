@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import moment from 'moment';
-import {moderateScale, textScale} from '../styles/responsiveSize';
+import {moderateScale, textScale, width} from '../styles/responsiveSize';
 import colors from '../styles/colors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CustomDropdown from './CustomDropdown';
@@ -31,9 +31,9 @@ export default function AgendaCalendar({
 
   return (
     <View style={{...styles.container, ...style}}>
+      <TextComp style={styles.title}>{title}</TextComp>
       <View style={styles.header}>
         <View style={styles.header2}>
-          <TextComp style={styles.title}>{title}</TextComp>
           <CustomDropdown
             data={dropDownData}
             placeholder={strings.Search}
@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
     fontSize: textScale(18),
     fontWeight: 'bold',
     color: colors.black,
+    paddingLeft: moderateScale(10),
   },
   selectedDate: {
     fontSize: textScale(16),
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dropdownStyle: {
-    width: moderateScale(210),
+    // width: moderateScale(210),
     height: moderateScale(42),
     alignSelf: 'flex-end',
     borderRadius: moderateScale(15),

@@ -145,10 +145,11 @@ const styles = StyleSheet.create({
   },
 
   stockStyles: {
-    marginHorizontal: moderateScale(12),
+    width: width / 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
-    marginTop: moderateScale(12),
+    paddingLeft: moderateScale(28),
+    alignItems: 'center',
   },
   seeAllStyles: {
     marginBottom: moderateScale(12),
@@ -159,6 +160,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     marginBottom: moderateScale(12),
+    marginVertical: moderateScale(12),
   },
 
   // card styles

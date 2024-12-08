@@ -9,6 +9,11 @@ export const LOGIN_API = getApiURL('Users/login');
 // news
 export const GET_ALL_NEWS = getApiURL('v1/News');
 export const GET_ALL_NEWS_TYPES = getApiURL('v1/News/GetNewsBySectionType');
+export const GET_ALL_EVENT_More = getApiURL(
+  'EventsAnnouncement/GetPaginatedEventsAnnouncement',
+);
+export const GET_ALL_News_Sources = getApiURL('v1/News/GetNewsSources');
+
 // stocks
 export const GET_ALL_STOCKS = getApiURL('AthexStockData');
 // RDS
@@ -16,6 +21,6 @@ export const GetTickerBasicInformation = getApiURL('RDS/GetTickerBasicInfo');
 // events
 export const GET_ALL_EVENT_CATEGORY = getApiURL('Event/GetAllEventCategory');
 export const GET_EVENT = getApiURL('Event/GetBetweenDate');
-export const GET_ALL_EVENT_More = getApiURL(
-  'EventsAnnouncement/GetPaginatedEventsAnnouncement',
+export const Get_Events_Announcement = getApiURL(
+  'EventsAnnouncement/GetEventsAnnouncementCategory',
 );

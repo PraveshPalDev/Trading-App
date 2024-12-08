@@ -157,7 +157,7 @@ export default function Home() {
     try {
       setLoading(true);
 
-      const response = await GetAllNews(page);
+      const response = await GetAllNews(page, '');
       if (response) {
         setNews(response);
       }
@@ -243,6 +243,7 @@ export default function Home() {
           bellHandler={bellHandler}
           settingHandler={settingHandler}
           notificationIcon
+          rightBellIconVisible={false}
         />
         <UserInformation />
 

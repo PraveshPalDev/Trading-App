@@ -11,12 +11,14 @@ import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
 import styles from './styles';
-import {moderateScale} from '../../styles/responsiveSize';
+import {moderateScale, width} from '../../styles/responsiveSize';
 import TextComp from '../../components/TextComp';
 import {NewsCategories} from '../../constants/static/staticData';
 import NewsCard from '../../components/NewsCard';
 import {
+  GetAllEventsAnnouncements,
   GetAllNews,
+  GetAllNewsSources,
   GetAllNewsTypes,
   GetEventsAnnouncement,
   GetTickerBasicInfo,
@@ -43,16 +45,37 @@ export default function News() {
   const [dropdownData, setDropdownData] = useState([]);
   const navigation = useNavigation();
   const [firstTime, setFirstTime] = useState(false);
+  const [selectedTabName, setSelectedTabName] = useState('All');
+  const [allNewsSource, setAllNewsSource] = useState([]);
+  const [announcementCategory, setAnnouncementCategory] = useState([]);
+  const [newsSourceId, setNewsSourceId] = useState('');
 
   useEffect(() => {
     fetchAllNews(page);
     getAllTrendingNews();
     fetchStockFilterData();
+    fetchAllNewsSources();
+    fetchAllEventsAnnouncements();
   }, []);
 
   useEffect(() => {
-    fetchAllNews(page);
+    setNews([]);
+    setPage(1);
+    fetchAllNews(1, newsSourceId);
+  }, [newsSourceId]);
+
+  useEffect(() => {
+    fetchAllNews(page, newsSourceId);
   }, [page]);
+
+  useEffect(() => {
+    if (newsSourceId) {
+      setNews([]);
+      setEventPage(1);
+      console.log('first');
+      getAllEventsAnnouncement(null, 1, 1);
+    }
+  }, [newsSourceId]);
 
   useEffect(() => {
     if (firstTime) {
@@ -61,6 +84,7 @@ export default function News() {
   }, [eventPage]);
 
   const tabHandler = (tab, index) => {
+    setSelectedTabName(tab?.name);
     if (tab?.type === 'Events&More') {
       setNews([]);
       getAllEventsAnnouncement(tab, index, 1);
@@ -96,7 +120,7 @@ export default function News() {
   const fetchAllNews = async currentPage => {
     try {
       setLoading(true);
-      const response = await GetAllNews(currentPage);
+      const response = await GetAllNews(currentPage, newsSourceId);
 
       const SortedData = response?.sort(
         (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
@@ -170,18 +194,15 @@ export default function News() {
   const getAllEventsAnnouncement = async (tab, index, eventPage) => {
     try {
       setLoading(true);
-      setActiveTab(index);
 
-      if (tab === 'Events&More') {
+      if (index !== undefined) setActiveTab(index);
+      if (tab === 'Events&More' || eventPage === 1) {
         setNews([]);
         setEventPage(1);
       }
 
-      if (eventPage === 1) {
-        setNews([]);
-      }
+      const response = await GetEventsAnnouncement(eventPage, newsSourceId);
 
-      const response = await GetEventsAnnouncement(eventPage);
       if (response?.length) {
         const SortedData = response.sort(
           (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
@@ -204,7 +225,7 @@ export default function News() {
       if (activeTab == 0) {
         setPage(prevPage => prevPage + 1);
       } else if (activeTab == 1) {
-        setEventPage(eventPage + 1);
+        setEventPage(prevPage => prevPage + 1);
       }
     }
   };
@@ -226,54 +247,158 @@ export default function News() {
     );
   };
 
-  const HeaderComponents = () => (
-    <>
-      <HeaderComp
-        title={strings.News}
-        rightBellIconVisible={false}
-        settingHandler={settingHandler}
-        notificationIcon
-      />
+  const fetchAllNewsSources = async () => {
+    try {
+      setLoading(true);
+      const response = await GetAllNewsSources();
 
-      <CustomDropdown
-        data={dropdownData}
-        placeholder={strings.SearchText}
-        onChange={handleDropdownChange}
-        enableSearch={true}
-        value={selectedOption}
-      />
+      const temp = [];
+      response?.forEach(x => {
+        temp.push({
+          label: x?.sourceName,
+          value: x?.sourceId,
+          sourceURL: x?.sourceURL,
+        });
+      });
 
-      {trendingLoading ? (
-        <ActivityIndicator size="large" color={colors.blue} />
-      ) : (
-        <NewsCard newsItems={trendingNews} onPressHandler={newsCardHandler} />
-      )}
+      if (response?.length) {
+        setAllNewsSource(temp);
+      }
+    } catch (error) {
+      console.error('Error fetching announcementCategory:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.tabsContainer}>
-        {NewsCategories?.map((tab, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.tab, index === activeTab && styles.activeTab]}
-            activeOpacity={0.7}
-            onPress={() => tabHandler(tab, index)}>
-            <Text
-              style={[
-                styles.tabText,
-                index === activeTab && styles.activeTabText,
-              ]}>
-              {tab?.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+  const fetchAllEventsAnnouncements = async () => {
+    try {
+      setLoading(true);
+      const response = await GetAllEventsAnnouncements();
 
-      <View style={styles.stockStyles}>
-        <TextComp text={strings.Trending} style={styles.heading} />
-      </View>
-    </>
+      const temp = [];
+      response?.forEach(x => {
+        temp.push({
+          label: x?.name,
+          value: x?.code,
+        });
+      });
+
+      if (response?.length) {
+        setAnnouncementCategory(temp);
+      }
+    } catch (error) {
+      console.error('Error fetching EventsAnnouncements:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const dropDownAllHandler = item => {
+    setNewsSourceId(item.value);
+    setActiveTab(0);
+  };
+
+  const dropDownEventAndMore = item => {
+    setNewsSourceId(item.value);
+    setActiveTab(1);
+  };
+
+  const HeaderComponents = React.useMemo(
+    () => (
+      <>
+        <HeaderComp
+          title={strings.News}
+          rightBellIconVisible={false}
+          settingHandler={settingHandler}
+          notificationIcon
+        />
+
+        <CustomDropdown
+          data={dropdownData}
+          placeholder={strings.SearchText}
+          onChange={handleDropdownChange}
+          enableSearch={true}
+          value={selectedOption}
+        />
+
+        {trendingLoading ? (
+          <ActivityIndicator size="large" color={colors.blue} />
+        ) : (
+          <NewsCard newsItems={trendingNews} onPressHandler={newsCardHandler} />
+        )}
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabsContainer}>
+          {NewsCategories?.map((tab, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.tab, index === activeTab && styles.activeTab]}
+              activeOpacity={0.7}
+              onPress={() => tabHandler(tab, index)}>
+              <Text
+                style={[
+                  styles.tabText,
+                  index === activeTab && styles.activeTabText,
+                ]}>
+                {tab?.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <View style={styles.stockStyles}>
+          <View
+            style={[
+              selectedTabName !== 'All' && selectedTabName !== 'Events & More'
+                ? null
+                : {width: '25%'},
+            ]}>
+            <TextComp
+              text={selectedTabName}
+              style={
+                selectedTabName !== 'All' && selectedTabName !== 'Events & More'
+                  ? styles.heading
+                  : undefined
+              }
+            />
+          </View>
+
+          {selectedTabName === 'All' ? (
+            <CustomDropdown
+              data={allNewsSource}
+              placeholder={strings.SearchText}
+              onChange={dropDownAllHandler}
+              enableSearch={true}
+              value={selectedOption}
+              dropdownStyle={{width: width / 1.5, alignSelf: 'flex-end'}}
+            />
+          ) : selectedTabName === 'Events & More' ? (
+            <CustomDropdown
+              data={announcementCategory}
+              placeholder={strings.SearchText}
+              onChange={dropDownEventAndMore}
+              enableSearch={true}
+              value={selectedOption}
+              dropdownStyle={{width: width / 1.5, alignSelf: 'flex-end'}}
+            />
+          ) : null}
+        </View>
+      </>
+    ),
+    [
+      dropdownData,
+      selectedOption,
+      trendingLoading,
+      trendingNews,
+      NewsCategories,
+      activeTab,
+      selectedTabName,
+      announcementCategory,
+      allNewsSource,
+    ],
   );
 
   const TrendingNewsCard = ({item}) => {

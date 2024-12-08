@@ -2,16 +2,18 @@ import {
   GET_ALL_EVENT_CATEGORY,
   GET_ALL_EVENT_More,
   GET_ALL_NEWS,
+  GET_ALL_News_Sources,
   GET_ALL_NEWS_TYPES,
   GET_ALL_STOCKS,
   GET_EVENT,
+  Get_Events_Announcement,
   GetTickerBasicInformation,
 } from '../../config/urls';
 import {apiGet} from '../../utils/apiClient';
 
-export const GetAllNews = (page, isTagFilter = false) => {
+export const GetAllNews = (page, NewsSourceIds, isTagFilter = false) => {
   const limit = 10;
-  const url = `${GET_ALL_NEWS}?PageSize=${limit}&PageNo=${page}&IsTagFilter=${isTagFilter}`;
+  const url = `${GET_ALL_NEWS}?PageSize=${limit}&PageNo=${page}&NewsSourceIds=${NewsSourceIds}&IsTagFilter=${isTagFilter}`;
   return apiGet(url);
 };
 
@@ -48,11 +50,17 @@ export const GetEventsBetweenDates = async params => {
   return apiGet(url);
 };
 
-export const GetEventsAnnouncement = async page => {
+export const GetEventsAnnouncement = async (page, newsSourceId) => {
   const limit = 10;
-
-  const url = `${GET_ALL_EVENT_More}?PageSize=${limit}&PageNo=${page}`;
-  // NewsSourceIds=${newsSourceId}
+  const url = `${GET_ALL_EVENT_More}?PageSize=${limit}&PageNo=${page}&NewsSourceIds=${newsSourceId}`;
 
   return apiGet(url);
+};
+
+export const GetAllNewsSources = async () => {
+  return apiGet(`${GET_ALL_News_Sources}`);
+};
+
+export const GetAllEventsAnnouncements = async () => {
+  return apiGet(`${Get_Events_Announcement}`);
 };

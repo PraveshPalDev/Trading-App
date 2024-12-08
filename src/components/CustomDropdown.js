@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
   dropdownOpen: {
     backgroundColor: colors.white,
     borderRadius: moderateScale(5),
+    borderRadius: moderateScale(30),
   },
   dropdownItem: {
     marginBottom: moderateScale(2),

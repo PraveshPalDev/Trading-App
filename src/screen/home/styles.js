@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
     backgroundColor: colors.grayOpacity10,
     height: moderateScale(50),
     borderTopLeftRadius: moderateScale(10),
