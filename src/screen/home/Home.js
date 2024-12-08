@@ -34,6 +34,7 @@ import {showError} from '../../utils/helperFunctions';
 import {modalAllButton} from '../../constants/static/staticData';
 import {
   getCurrentMonthRange,
+  getCurrentWeekRange,
   getNextWeekRange,
   getThisWeekRange,
 } from '../../utils/Date';
@@ -64,7 +65,7 @@ export default function Home() {
   const [selectedDropdownData, setSelectedDropdownData] = useState([]);
 
   useEffect(() => {
-    const {startDate, endDate} = getThisWeekRange();
+    const {startDate, endDate} = getCurrentWeekRange();
     setStartDate(startDate);
     setEndDate(endDate);
     setHandleApplyStartDate(startDate);

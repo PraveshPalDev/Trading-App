@@ -29,3 +29,11 @@ export const getCurrentMonthRange = () => {
     endDate: endOfMonth.format('MM-DD-YYYY'),
   };
 };
+
+export const getCurrentWeekRange = () => {
+  const today = moment();
+  const startDate = today.format('MM-DD-YYYY');
+  const endDate = today.clone().add(5, 'days').format('MM-DD-YYYY');
+
+  return {startDate, endDate};
+};
