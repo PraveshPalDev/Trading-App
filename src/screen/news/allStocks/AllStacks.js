@@ -1,5 +1,5 @@
 import {Text, FlatList, View, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import WrapperContainer from '../../../components/WrapperContainer';
 import HeaderComp from '../../../components/HeaderComp';
@@ -13,229 +13,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Table, Row, Rows} from 'react-native-table-component';
 import navigationStrings from '../../../navigation/navigationStrings';
 import {useNavigation} from '@react-navigation/native';
-
-const data = [
-  {
-    id: '1',
-    title: 'Alpha Growth Fund',
-    currentValue: '$20.23',
-    currentValueText: 'Current Value',
-    percentChange: '34%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '2',
-    title: 'FinTech Advantage Fund',
-    currentValue: '$19.84',
-    currentValueText: 'Current Value',
-    percentChange: '-12%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '3',
-    title: 'Global Equity Fund',
-    currentValue: '$25.56',
-    currentValueText: 'Current Value',
-    percentChange: '8%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '4',
-    title: 'Health Innovation Fund',
-    currentValue: '$18.44',
-    currentValueText: 'Current Value',
-    percentChange: '5%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '5',
-    title: 'Tech Giants Fund',
-    currentValue: '$32.10',
-    currentValueText: 'Current Value',
-    percentChange: '-7%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '6',
-    title: 'Clean Energy Fund',
-    currentValue: '$14.92',
-    currentValueText: 'Current Value',
-    percentChange: '11%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '7',
-    title: 'Emerging Markets Fund',
-    currentValue: '$23.77',
-    currentValueText: 'Current Value',
-    percentChange: '-9%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '8',
-    title: 'Real Estate Growth Fund',
-    currentValue: '$27.60',
-    currentValueText: 'Current Value',
-    percentChange: '3%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '9',
-    title: 'Infrastructure Fund',
-    currentValue: '$21.33',
-    currentValueText: 'Current Value',
-    percentChange: '-5%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '10',
-    title: 'AI & Robotics Fund',
-    currentValue: '$30.75',
-    currentValueText: 'Current Value',
-    percentChange: '14%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '11',
-    title: 'Healthcare Leaders Fund',
-    currentValue: '$22.43',
-    currentValueText: 'Current Value',
-    percentChange: '6%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '12',
-    title: 'Digital Transformation Fund',
-    currentValue: '$29.58',
-    currentValueText: 'Current Value',
-    percentChange: '-3%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '13',
-    title: 'Green Planet Fund',
-    currentValue: '$16.67',
-    currentValueText: 'Current Value',
-    percentChange: '10%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '14',
-    title: 'Innovation Leaders Fund',
-    currentValue: '$24.12',
-    currentValueText: 'Current Value',
-    percentChange: '-8%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '15',
-    title: 'Global Infrastructure Fund',
-    currentValue: '$19.78',
-    currentValueText: 'Current Value',
-    percentChange: '4%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '16',
-    title: 'Renewable Resources Fund',
-    currentValue: '$13.90',
-    currentValueText: 'Current Value',
-    percentChange: '-2%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '17',
-    title: 'Cybersecurity Growth Fund',
-    currentValue: '$26.40',
-    currentValueText: 'Current Value',
-    percentChange: '7%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '18',
-    title: 'Global Consumer Fund',
-    currentValue: '$28.32',
-    currentValueText: 'Current Value',
-    percentChange: '-6%',
-    isPositive: false,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '19',
-    title: 'Biotech Innovation Fund',
-    currentValue: '$22.88',
-    currentValueText: 'Current Value',
-    percentChange: '9%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-  {
-    id: '20',
-    title: 'Global Tech Fund',
-    currentValue: '$31.50',
-    currentValueText: 'Current Value',
-    percentChange: '2%',
-    isPositive: true,
-    chartData: [
-      /* chart data */
-    ],
-  },
-];
+import {
+  GetAllDailyQuotes,
+  GetPortfolioDetails,
+} from '../../../redux/actions/news';
 
 const tableHead = ['Share', 'AVAX', 'AVAX'];
 const tableData = [
@@ -249,12 +30,43 @@ const tableData = [
 export default function AllStacks() {
   const [isModalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    fetchDailyQuotes();
+    fetchPortfolioDetails();
+  }, []);
+
+  const fetchDailyQuotes = async () => {
+    try {
+      setLoading(true);
+      const res = await GetAllDailyQuotes();
+      if (res.length > 0) {
+        setChartData(res);
+      }
+    } catch (error) {
+      console.log('error for daily quotes =>', error);
+    }
+  };
+
+  const fetchPortfolioDetails = async () => {
+    try {
+      const res = await GetPortfolioDetails();
+      if (res) {
+        console.log('get =>', res);
+      }
+    } catch (error) {
+      console.log('error for fetching portfolio details =>', error);
+    }
+  };
 
   const HeaderComponents = () => (
     <>
       <HeaderComp
         title={strings.Props}
-        bellHandler={bellHandler}
+        backBtn={true}
+        rightBellIconVisible={false}
         settingHandler={settingHandler}
         notificationIcon
         bellIcon="bell-plus-outline"
@@ -308,14 +120,13 @@ export default function AllStacks() {
     );
   };
 
-  const bellHandler = () => {};
   const settingHandler = () => {};
   const searchHandler = text => {};
 
   return (
     <WrapperContainer>
       <FlatList
-        data={data}
+        data={chartData}
         ListHeaderComponent={HeaderComponents}
         renderItem={renderItem}
         numColumns={2}

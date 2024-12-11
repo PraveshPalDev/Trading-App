@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import {
-  height,
   moderateScale,
   moderateScaleVertical,
   textScale,
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
   // this is companyDescription
   CompanyContainer: {
     width: width / 1.1,
-    height: moderateScale(250),
+    height: moderateScale(300),
     marginHorizontal: moderateScale(16),
     alignSelf: 'center',
     backgroundColor: colors.white,
@@ -180,100 +179,6 @@ const styles = StyleSheet.create({
     fontSize: textScale(16),
     lineHeight: moderateScale(24),
     padding: moderateScale(15),
-  },
-
-  // this card to sell container
-  pieChart: {
-    height: moderateScale(200),
-    width: width / 1.2,
-  },
-  card2: {
-    width: width / 1.1,
-    backgroundColor: colors.white,
-    borderRadius: moderateScale(10),
-    padding: moderateScale(20),
-  },
-  title: {
-    fontSize: textScale(18),
-    fontWeight: 'bold',
-    color: colors.black,
-    marginBottom: moderateScale(10),
-  },
-  subtitle: {
-    fontSize: textScale(13),
-    color: colors.gray,
-    marginBottom: moderateScale(12),
-    fontWeight: '500',
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  button: {
-    borderRadius: moderateScale(25),
-    paddingVertical: moderateScale(10),
-    paddingHorizontal: moderateScale(20),
-  },
-  buy: {
-    backgroundColor: colors.lightGreen2,
-  },
-  hold: {
-    backgroundColor: colors.yellow,
-  },
-  sell: {
-    backgroundColor: colors.red,
-  },
-  buttonText: {
-    color: colors.white,
-    fontWeight: 'bold',
-  },
-  chartContainer: {
-    alignItems: 'center',
-  },
-  legendContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: moderateScale(20),
-    width: '90%',
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  legendColor: {
-    width: moderateScale(20),
-    height: moderateScale(20),
-    marginRight: moderateScale(5),
-  },
-  legendText: {
-    fontSize: textScale(16),
-    fontWeight: '500',
-  },
-  selectedTextContainer: {
-    marginTop: moderateScale(20),
-    alignItems: 'center',
-  },
-  selectedText: {
-    fontSize: textScale(16),
-    fontWeight: 'bold',
-    color: colors.gray,
-  },
-  deleteBtnContainer: {
-    width: moderateScale(80),
-    height: moderateScale(40),
-    backgroundColor: colors.lightGreen2,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderRadius: moderateScale(50),
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.black,
-  },
-  deleteMainContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: moderateScale(12),
   },
 
   // here all technical styles
@@ -377,7 +282,12 @@ const styles = StyleSheet.create({
     fontSize: textScale(14),
     color: colors.black,
   },
-  // pie chart styles here
+  // // pie chart styles here
+  stockContainer: {
+    width: width / 1,
+    height: moderateScale(450),
+    paddingHorizontal: moderateScale(12),
+  },
   chartContainer: {
     position: 'relative',
     justifyContent: 'center',
@@ -419,7 +329,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     marginLeft: moderateScale(12),
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
   },
   categoryContainer: {
     width: width / 1.7,
@@ -461,6 +371,110 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: textScale(12),
     color: colors.gray,
+  },
+
+  // modal styles here
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: width / 1.05,
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(15),
+    padding: moderateScale(15),
+  },
+  cardBorderContainer: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: width / 1.12,
+    padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.grayOpacity80,
+    borderRadius: moderateScale(10),
+  },
+  title: {
+    fontSize: textScale(18),
+    fontWeight: 'bold',
+    marginBottom: moderateScale(10),
+  },
+  optionButton: {
+    backgroundColor: colors.white,
+    padding: moderateScale(8),
+    borderRadius: moderateScale(5),
+    marginVertical: moderateScale(5),
+    borderWidth: 1,
+    borderColor: colors.blue,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: colors.white,
+    fontSize: textScale(13),
+    fontWeight: '500',
+  },
+  sectionTitle: {
+    fontSize: textScale(16),
+    fontWeight: 'bold',
+    marginBottom: moderateScale(10),
+    textAlign: 'center',
+  },
+  dateInputsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: moderateScale(20),
+  },
+  dateInputWrapper: {
+    flex: 1,
+    marginHorizontal: moderateScale(5),
+  },
+  dateInput: {
+    borderWidth: moderateScale(1),
+    borderColor: colors.gray,
+    borderRadius: moderateScale(5),
+    padding: moderateScale(10),
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  applyButton: {
+    backgroundColor: colors.blue,
+    padding: moderateScale(10),
+    borderRadius: moderateScale(5),
+    alignItems: 'center',
+    marginBottom: moderateScale(10),
+  },
+  disabledButton: {
+    padding: moderateScale(12),
+    backgroundColor: colors.blue,
+  },
+  applyButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.blue,
+    alignItems: 'center',
+    borderRadius: moderateScale(5),
+  },
+  closeButtonText: {
+    color: colors.blue,
+    fontWeight: 'bold',
+  },
+  newFeedTitle: {
+    paddingLeft: moderateScale(20),
+    paddingTop: moderateScale(10),
+    fontSize: moderateScale(18),
+    color: colors.black,
+    fontWeight: 'bold',
+  },
+  newFeedSubContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: moderateScale(8),
   },
 });
 

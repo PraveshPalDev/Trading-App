@@ -26,7 +26,6 @@ import navigationStrings from '../../navigation/navigationStrings';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 import FlashListComp from '../../components/FlashListComp';
-import AgendaCalendar from '../../components/AgendaCalendar';
 import ModalComp from '../../components/ModalComp';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -39,6 +38,7 @@ import {
   getThisWeekRange,
 } from '../../utils/Date';
 import CustomDropdown from '../../components/CustomDropdown';
+import EventCalendarComp from '../../components/EventCalendarComp';
 
 export default function Home() {
   const navigation = useNavigation();
@@ -342,44 +342,17 @@ export default function Home() {
 
   const FooterComponents = useCallback(
     () => (
-      <View style={{...styles.container, marginTop: moderateScale(10)}}>
-        <AgendaCalendar
-          dropDownData={eventCategories}
-          handleDropdownChange={handleDropdownChange}
-          calenderIconHandler={calenderHandler}
-          calendar={'calendar'}
-          showDateContainer={false}
-          showingDateToAndForm={{
-            startDate: startDate,
-            endDate: endDate,
-            day: '',
-          }}
-          itemTextStyle={item => ({
-            color: item.color || colors.black,
-            padding: moderateScale(8),
-            backgroundColor: item.backgroundColor || colors.white,
-          })}
-        />
-
-        <View style={styles.flashListContainer}>
-          {renderHeader()}
-          {eventLoading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator
-                size="large"
-                color="#005aef"
-                style={{flex: 1, justifyContent: 'center', alignSelf: 'center'}}
-              />
-            </View>
-          ) : (
-            <FlashListComp
-              DATA={selectedDropdownData}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderTableData}
-            />
-          )}
-        </View>
-      </View>
+      <EventCalendarComp
+        data={eventCategories}
+        startDate={startDate}
+        endDate={endDate}
+        selectedDropdownData={selectedDropdownData}
+        eventLoading={eventLoading}
+        handleDropdownChange={handleDropdownChange}
+        calenderHandler={calenderHandler}
+        renderTableData={renderTableData}
+        renderHeader={renderHeader}
+      />
     ),
     [selectedDropdownData, eventLoading],
   );

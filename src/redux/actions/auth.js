@@ -34,6 +34,6 @@ export const userSignup = data => {
   return apiPost(SIGNUP_API, data);
 };
 
-export function logout() {
+export function logoutUserData() {
   dispatch({type: types.CLEAR_REDUX_STATE});
 }

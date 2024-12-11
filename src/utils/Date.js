@@ -37,3 +37,43 @@ export const getCurrentWeekRange = () => {
 
   return {startDate, endDate};
 };
+
+// calculate percentages
+export const calcData = (value, price) => {
+  if (value === 0) {
+    return 0;
+  }
+  return ((price - value) / value) * 100;
+};
+
+const numberWithCommas = x => {
+  x = x.toString();
+  var pattern = /(-?\d+)(\d{3})/;
+  while (pattern.test(x)) x = x.replace(pattern, '$1,$2');
+  return x;
+};
+
+export const getMostFrequentSignal = (signalData, group) => {
+  const filteredSignals = signalData
+    .filter(item => item.group === group)
+    .map(item => item.signal);
+
+  const signalCounts = filteredSignals.reduce((acc, signal) => {
+    acc[signal] = (acc[signal] || 0) + 1;
+    return acc;
+  }, {});
+
+  let mostFrequentSignal = null;
+  let maxCount = 0;
+  let isTie = false;
+  Object.keys(signalCounts).forEach(signal => {
+    if (signalCounts[signal] > maxCount) {
+      mostFrequentSignal = signal;
+      maxCount = signalCounts[signal];
+      isTie = false;
+    } else if (signalCounts[signal] === maxCount) {
+      isTie = true;
+    }
+  });
+  return isTie ? 0 : mostFrequentSignal;
+};

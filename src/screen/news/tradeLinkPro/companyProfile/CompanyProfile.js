@@ -7,100 +7,61 @@ import {
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import WrapperContainer from '../../../../components/WrapperContainer';
 import FloatingButtonComp from '../../../../components/FloatingButtonComp';
 import colors from '../../../../styles/colors';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {moderateScale, textScale} from '../../../../styles/responsiveSize';
+import {
+  moderateScale,
+  textScale,
+  width,
+} from '../../../../styles/responsiveSize';
 import strings from '../../../../constants/lang';
 import {actions, modalAllButton} from '../../../../constants/static/staticData';
 import navigationStrings from '../../../../navigation/navigationStrings';
 import TextComp from '../../../../components/TextComp';
-import {PieChart} from 'react-native-svg-charts';
 import Speedometer from '../../../../components/Speedometer';
 import CurvedText from '../../../../components/CurvedText';
 import FlashListComp from '../../../../components/FlashListComp';
 import ModalComp from '../../../../components/ModalComp';
-import {getThisWeekRange} from '../../../../utils/Date';
-import AgendaCalendar from '../../../../components/AgendaCalendar';
+import {
+  calcData,
+  getCurrentMonthRange,
+  getCurrentWeekRange,
+  getMostFrequentSignal,
+  getNextWeekRange,
+  getThisWeekRange,
+} from '../../../../utils/Date';
 import moment from 'moment';
 import {
+  GetAllDailyQuotes,
   GetAllEventCategory,
+  GetAllNewsSources,
+  GetAllQuotes,
+  GetAllSignal,
   GetEventsBetweenDates,
+  GetNewsByTicker,
+  GetRDS,
+  GetTickerBasicInfo,
 } from '../../../../redux/actions/news';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import FastImage from 'react-native-fast-image';
-
-const stockData = {
-  ticker: 'AAAK.AT',
-  price: '€ 4.800',
-  companyName: 'Wool Industry Tria Alfa S.A.',
-  sector: 'Textile Products',
-  metrics: {
-    '1 Ημέρα (%)': '+7.14%',
-    'YTD (%)': '-32.39%',
-    '1 Έτος (%)': '-32.39%',
-    'Μέσος Ημερήσιος Όγκος': '96',
-    'Τυπική Απόκλιση': '44.35%',
-    'Κεφαλαιοποίηση (εκ)': '€ 4',
-  },
-};
-
-const FeeNews = [
-  {
-    title: 'Χρηματιστήριο: Και πάλι ντέρμπι διατήρησης των 1.400 μονάδων',
-    description:
-      'Στο επίκεντρο της σημερινής συνεδρίασης στο Χρηματιστήριο, μπαίνει η ΓΕΚ ΤΕΡΝΑ...',
-    image_url:
-      'https://raw.githubusercontent.com/StackFrontierOfficial/GRBrokerImages/refs/heads/master/13.png',
-    category: 'PowerGame Markets',
-    time: '7 days',
-  },
-  {
-    title: 'Ανοδική πορεία στις διεθνείς αγορές',
-    description:
-      'Οι διεθνείς αγορές σημειώνουν σημαντική άνοδο μετά τις ανακοινώσεις...',
-    image_url:
-      'https://raw.githubusercontent.com/StackFrontierOfficial/GRBrokerImages/refs/heads/master/13.png',
-    category: 'Global Markets',
-    time: '5 days',
-  },
-  {
-    title: 'Νέα μέτρα στήριξης της οικονομίας',
-    description:
-      'Η κυβέρνηση ανακοίνωσε νέα μέτρα για την ενίσχυση των επιχειρήσεων...',
-    image_url:
-      'https://raw.githubusercontent.com/StackFrontierOfficial/GRBrokerImages/refs/heads/master/13.png',
-    category: 'Economy Updates',
-    time: '2 days',
-  },
-];
+import StockChart from '../../../../components/StockChart';
+import EventCalendarComp from '../../../../components/EventCalendarComp';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {useSelector} from 'react-redux';
+import {showError} from '../../../../utils/helperFunctions';
+import CustomDropdown from '../../../../components/CustomDropdown';
+import HeaderComp from '../../../../components/HeaderComp';
+import StockVoteComp from '../../../../components/StockVoteComp';
+import CustomNewsTabs from '../../../../components/CustomNewsTabs';
 
 export default function CompanyProfile() {
-  const [isLocked, setIsLocked] = useState(true);
+  const route = useRoute();
+  const {header, ...item} = route.params || {};
+  const [isLocked, setIsLocked] = useState(false);
   const navigation = useNavigation();
-  const [data, setData] = useState([
-    {
-      key: 1,
-      amount: 100,
-      svg: {fill: colors.lightGreen2},
-      label: 'Buy',
-    },
-    {
-      key: 2,
-      amount: 0,
-      svg: {fill: colors.yellow},
-      label: 'Hold',
-    },
-    {
-      key: 3,
-      amount: 0,
-      svg: {fill: colors.red},
-      label: 'Sell',
-    },
-  ]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -112,24 +73,143 @@ export default function CompanyProfile() {
   const [eventLoading, setEventLoading] = useState(false);
   const [handleApplyStartDate, setHandleApplyStartDate] = useState('');
   const [handleApplyEndDate, setHandleApplyEndDate] = useState('');
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    {key: 'all', title: 'Όλα'},
-    {key: 'daily', title: 'Ημερήσια'},
-    {key: 'weekly', title: 'Εβδομαδιαία'},
-    {key: 'monthly', title: 'Μηνιαία'},
-    {key: 'results', title: 'Αποτελέσματα'},
-  ]);
+  const [loading, setLoading] = useState(false);
+  const [allQuotes, setAllQuotes] = useState([]);
+  const [dailyQuotes, setDailyQuotes] = useState([]);
+  const [allRds, setAllRds] = useState([]);
+  const [selectedDropdownData, setSelectedDropdownData] = useState([]);
+  const userData = useSelector(state => state.auth.userData);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [dropdownData, setDropdownData] = useState([]);
+  const [tickerData, setTickerData] = useState([]);
+  const [signal, setSignal] = useState([]);
+  const [allNewsSource, setAllNewsSource] = useState([]);
+  const [newsSourceId, setNewsSourceId] = useState('');
+  const [allTickerNews, setAllTickerNews] = useState([]);
 
   useEffect(() => {
-    const {startDate, endDate} = getThisWeekRange();
+    const {startDate, endDate} = getCurrentWeekRange();
     setStartDate(startDate);
     setEndDate(endDate);
     setHandleApplyStartDate(startDate);
     setHandleApplyEndDate(endDate);
 
     fetchAllEventCategory();
+    fetchQuotes();
+    fetchDailyQuotes();
+    fetchRDS();
+    fetchStockFilterData();
+    fetchAllSignal();
+    fetchAllNewsSources();
   }, []);
+
+  // call here api to news with ticker
+  useEffect(() => {
+    fetchAllNews();
+  }, [newsSourceId, tickerData]);
+
+  const fetchAllNews = async () => {
+    try {
+      const res = await GetNewsByTicker(tickerData?.ticker, newsSourceId);
+      if (res) {
+        const sortedNewsByDate = res.sort(
+          (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+        );
+        setAllTickerNews(sortedNewsByDate);
+      }
+    } catch (error) {
+      console.log('error for fetch news =>', error);
+    }
+  };
+
+  // here all method to without ticker
+  const fetchQuotes = async () => {
+    try {
+      setLoading(true);
+      const res = await GetAllQuotes();
+
+      if (res.length > 0) {
+        setLoading(false);
+        setAllQuotes(res);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log('error for daily quotes =>', error);
+    }
+  };
+  const fetchDailyQuotes = async () => {
+    try {
+      setLoading(true);
+      const res = await GetAllDailyQuotes();
+
+      if (res.length > 0) {
+        setLoading(false);
+        setDailyQuotes(res);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log('error for getAllDailyQuotes  =>', error);
+    }
+  };
+  const fetchRDS = async () => {
+    try {
+      setLoading(true);
+      const res = await GetRDS();
+
+      if (res.length > 0) {
+        setLoading(false);
+        setAllRds(res);
+      }
+    } catch (error) {
+      setLoading(false);
+
+      console.log('error for rds =>', error);
+    }
+  };
+  const fetchAllEventCategory = async () => {
+    try {
+      const response = await GetAllEventCategory();
+      const temp = [];
+      const categoryIds = [];
+      const color = [
+        colors.red,
+        colors.blue,
+        colors.lightGreen2,
+        colors.yellow,
+      ];
+
+      response?.forEach((x, index) => {
+        temp.push({
+          label: x.eventCategoryName,
+          value: x.eventCategoryName,
+          color: x.color,
+          id: x?.eventCategoryId,
+          dropdownBgColor: color[index % color.length],
+          textColor: colors.white,
+        });
+
+        categoryIds.push(x?.eventCategoryId);
+      });
+
+      if (response) {
+        setEventCategories(temp);
+        setEventCategoryIds(categoryIds);
+      }
+    } catch (error) {
+      console.log('Error fetching stocks:', error);
+      showError(error);
+    }
+  };
+  const fetchAllSignal = async () => {
+    try {
+      const res = await GetAllSignal();
+      if (res) {
+        setSignal(res);
+      }
+    } catch (error) {
+      console.log('error for signal api =>', error);
+    }
+  };
 
   useEffect(() => {
     if (eventCategoryIds?.length > 0) {
@@ -154,6 +234,8 @@ export default function CompanyProfile() {
         );
 
         setEventTableData(sortedData);
+        setSelectedDropdownData(sortedData);
+
         setEventLoading(false);
         setHandleApplyStartDate(null);
         setHandleApplyEndDate(null);
@@ -165,35 +247,10 @@ export default function CompanyProfile() {
     [startDate, endDate],
   );
 
-  const fetchAllEventCategory = async () => {
-    try {
-      const response = await GetAllEventCategory();
-      const temp = [];
-      const categoryIds = [];
-      response?.forEach(x => {
-        temp.push({
-          label: x.eventCategoryName,
-          value: x.eventCategoryName,
-          color: x.color,
-          id: x?.eventCategoryId,
-        });
-
-        categoryIds.push(x?.eventCategoryId);
-      });
-
-      if (response) {
-        setEventCategories(temp);
-        setEventCategoryIds(categoryIds);
-      }
-    } catch (error) {
-      console.log('Error fetching stocks:', error);
-      showError(error);
-    }
-  };
-
   const handlePressItem = name => {
     if (name === 'stockLists') {
-      navigation.navigate(navigationStrings.ShareList);
+      // navigation.navigate(navigationStrings.ShareList);
+      navigation.navigate(navigationStrings.AllStocks);
     } else if (name === 'technicalAnalysis') {
       navigation.navigate(navigationStrings.TradeLinkAnalysis);
     } else if (name === 'research') {
@@ -201,6 +258,14 @@ export default function CompanyProfile() {
     } else {
       console.log('not another screen');
     }
+  };
+
+  const getColorByCategory = categoryId => {
+    const filterColor = eventCategories.find(
+      x => x.id === categoryId,
+    )?.dropdownBgColor;
+
+    return filterColor;
   };
 
   const PurchaseCalendar = ({isLocked, setIsLocked}) => {
@@ -225,42 +290,20 @@ export default function CompanyProfile() {
             <TextComp style={styles.lockedText}>{strings.TabLock}</TextComp>
           </View>
         ) : (
-          <View style={styles.flashListContainer}>
-            <AgendaCalendar
-              dropDownData={eventCategories}
-              handleDropdownChange={handleDropdownChange}
-              calenderIconHandler={calenderHandler}
-              showDateContainer={false}
-              title={strings.PurchaseCalendar}
-              rightMapIcon={'zoom-out-map'}
-              calendar={'calendar'}
-              rightMapIconHandler={rightMapIconHandler}
-              style={{
-                backgroundColor: colors.white,
-                paddingHorizontal: 0,
-              }}
-              dropdownStyles={{
-                width: moderateScale(140),
-              }}
-            />
-
-            {renderHeader()}
-            {eventLoading ? (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator
-                  size="large"
-                  color="#005aef"
-                  style={styles.loadingContainer}
-                />
-              </View>
-            ) : (
-              <FlashListComp
-                DATA={eventTableData}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderTableData}
-              />
-            )}
-          </View>
+          <EventCalendarComp
+            title={strings.PurchaseCalendar}
+            data={eventCategories}
+            startDate={startDate}
+            endDate={endDate}
+            selectedDropdownData={selectedDropdownData}
+            eventLoading={eventLoading}
+            handleDropdownChange={handleDropdownChange}
+            calenderHandler={calenderHandler}
+            renderTableData={renderTableData}
+            renderHeader={renderHeader}
+            rightMapIcon={'zoom-out-map'}
+            rightMapIconHandler={rightMapIconHandler}
+          />
         )}
       </TouchableOpacity>
     );
@@ -274,10 +317,6 @@ export default function CompanyProfile() {
     alert('map');
   };
 
-  const newsHandler = () => {
-    alert('calender');
-  };
-
   const handleApply = () => {
     const formattedStartDate =
       moment(handleApplyStartDate).format('MM-DD-YYYY');
@@ -289,11 +328,11 @@ export default function CompanyProfile() {
   };
 
   const handleDropdownChange = selectedData => {
-    // here pending data for set stage
-    return;
-    const filterData = eventTableData?.filter(item => {
-      return item.category === selectedData?.id;
-    });
+    const filterData = eventTableData?.filter(
+      item => item.category === selectedData?.id,
+    );
+
+    setSelectedDropdownData(JSON.parse(JSON.stringify(filterData)));
   };
 
   const renderHeader = () => (
@@ -321,11 +360,18 @@ export default function CompanyProfile() {
 
         <View style={{...styles.cell, ...styles.colorIndicator}}>
           <View
-            style={{...styles.colorIndicator, backgroundColor: item?.color}}
+            style={{
+              ...styles.colorIndicator,
+              backgroundColor: getColorByCategory(item?.category),
+            }}
           />
         </View>
       </View>
     );
+  };
+
+  const dropDownAllHandler = item => {
+    setNewsSourceId(item.value);
   };
 
   // render news feed components
@@ -353,20 +399,29 @@ export default function CompanyProfile() {
         ) : (
           <>
             <View style={styles.flashListContainer}>
-              <AgendaCalendar
-                dropDownData={eventCategories}
-                handleDropdownChange={handleDropdownChange}
-                calenderIconHandler={newsHandler}
-                showDateContainer={false}
-                title={strings.NewsFeed}
-                // rightMapIcon={'zoom-out-map'}
-                calendar={'newspaper'}
-                rightMapIconHandler={rightMapIconHandler}
-                style={{backgroundColor: colors.white, paddingHorizontal: 0}}
-                dropdownStyles={{
-                  width: moderateScale(180),
-                }}
-              />
+              <View style={{backgroundColor: colors.grayOpacity10}}>
+                <Text style={styles.newFeedTitle}>{strings.NewsFeed}</Text>
+                <View style={styles.newFeedSubContainer}>
+                  <CustomDropdown
+                    data={allNewsSource}
+                    placeholder={strings.SearchText}
+                    onChange={dropDownAllHandler}
+                    enableSearch={true}
+                    value={selectedOption}
+                    dropdownStyle={{width: width / 1.3}}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={rightMapIconHandler}
+                    style={{alignSelf: 'center'}}>
+                    <Icon
+                      name="newspaper"
+                      size={moderateScale(35)}
+                      color={colors.blue}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
 
               {eventLoading ? (
                 <View style={styles.loadingContainer}>
@@ -378,7 +433,7 @@ export default function CompanyProfile() {
                 </View>
               ) : (
                 <FlashListComp
-                  DATA={FeeNews}
+                  DATA={allTickerNews}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={renderNewsFeed}
                 />
@@ -394,15 +449,17 @@ export default function CompanyProfile() {
     const formattedDate = moment(item?.pubDate).fromNow();
 
     const openLinkHandler = url => {
-      if (url) return null;
       Linking.openURL(url).catch(err => console.log('An error occurred', err));
     };
 
     return (
-      <TouchableOpacity style={styles.newFeedCard} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={styles.newFeedCard}
+        activeOpacity={0.7}
+        onPress={() => openLinkHandler(item?.link)}>
         <FastImage
           source={{
-            uri: item.image_url,
+            uri: item.imageUrl,
             priority: FastImage.priority.normal,
           }}
           style={styles.image}
@@ -441,89 +498,92 @@ export default function CompanyProfile() {
     );
   };
 
-  const DailyNews = ({isLocked, setIsLocked}) => {
-    const [index, setIndex] = useState(0);
+  const handleButtonPress = type => {
+    switch (type) {
+      case strings.Today:
+        const currentDate = moment().format('MM-DD-YYYY');
+        setStartDate(currentDate);
+        setEndDate(currentDate);
+        setIsVisible(false);
+        break;
+      case strings.ThisWeek:
+        const {startDate, endDate} = getThisWeekRange();
+        setStartDate(startDate);
+        setEndDate(endDate);
+        setIsVisible(false);
+        break;
+      case strings.NextWeek:
+        const {startDate: nextWeekStart, endDate: nextWeekEnd} =
+          getNextWeekRange();
+        setStartDate(nextWeekStart);
+        setEndDate(nextWeekEnd);
+        setIsVisible(false);
+        break;
+      case strings.CurrentMonth:
+        const {startDate: monthStart, endDate: monthEnd} =
+          getCurrentMonthRange();
+        setStartDate(monthStart);
+        setEndDate(monthEnd);
+        setIsVisible(false);
+        break;
+      default:
+        console.log('Unknown type');
+    }
+  };
 
-    const routes = [
-      {key: 'all', title: 'All'},
-      {key: 'daily', title: 'Daily'},
-      {key: 'weekly', title: 'Weekly'},
-      {key: 'monthly', title: 'Monthly'},
-      {key: 'results', title: 'Results'},
-    ];
+  const handleDropdownChangeTicker = item => {
+    setSelectedOption(item.value);
+    setTickerData(item);
+  };
 
-    // Rendering content based on active tab
-    const renderScene = ({route}) => {
-      switch (route.key) {
-        case 'all':
-          return <TabContent content="All Data" />;
-        case 'daily':
-          return <TabContent content="Daily Data" />;
-        case 'weekly':
-          return <TabContent content="Weekly Data" />;
-        case 'monthly':
-          return <TabContent content="Monthly Data" />;
-        case 'results':
-          return (
-            <TabContent content="No analyses found for the stock AAAK.AT" />
-          );
-        default:
-          return null;
+  const fetchStockFilterData = async () => {
+    try {
+      const response = await GetTickerBasicInfo();
+      const sortedData = response?.sort(
+        (a, b) => new Date(b?.pubDate) - new Date(a?.pubDate),
+      );
+
+      const temp = [];
+      sortedData?.forEach(x => {
+        temp.push({
+          label: `${x?.ticker} - ${x?.eN_Name}`,
+          value: `${x?.ticker} ${x?.eN_Name}`,
+          ticker: x?.ticker,
+        });
+      });
+
+      if (response?.length) {
+        setTickerData(temp[0]);
+        setDropdownData(temp);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching getTickerBasic information :', error);
+    }
+  };
 
-    // Custom tab bar styling
-    const renderTabBar = props => (
-      <TabBar
-        {...props}
-        indicatorStyle={styles.indicator}
-        style={styles.tabBar}
-        labelStyle={styles.label}
-        activeColor={colors.white}
-        inactiveColor={colors.white}
-      />
-    );
+  // here call news sources
+  const fetchAllNewsSources = async () => {
+    try {
+      setLoading(true);
+      const response = await GetAllNewsSources();
 
-    // Separate TabContent component for better modularity
-    const TabContent = ({content}) => (
-      <View style={styles.scene}>
-        <Text style={styles.tabContentText}>{content}</Text>
-      </View>
-    );
+      const temp = [];
+      response?.forEach(x => {
+        temp.push({
+          label: x?.sourceName,
+          value: x?.sourceId,
+          sourceURL: x?.sourceURL,
+        });
+      });
 
-    return (
-      <TouchableOpacity
-        style={[
-          styles.container,
-          isLocked ? styles.lockedCard : styles.unlockedCard,
-          isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
-          {padding: 0},
-        ]}
-        onPress={() => setIsLocked(!isLocked)}
-        activeOpacity={0.9}>
-        {isLocked ? (
-          <View style={styles.lockedContent}>
-            <Icon
-              name="lock"
-              size={moderateScale(40)}
-              color="#555"
-              style={styles.lockIcon}
-            />
-            <Text style={styles.lockedText}>Locked</Text>
-          </View>
-        ) : (
-          <View style={{flex: 1}}>
-            <TabView
-              navigationState={{index, routes}}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={{width: 400}}
-              renderTabBar={renderTabBar}
-            />
-          </View>
-        )}
-      </TouchableOpacity>
-    );
+      if (response?.length) {
+        setAllNewsSource(temp);
+      }
+    } catch (error) {
+      console.log('Error fetching announcementCategory:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -532,28 +592,62 @@ export default function CompanyProfile() {
         style={{marginBottom: moderateScale(25)}}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}>
+        {/* added here ticker dropdown */}
+        {header && (
+          <HeaderComp
+            title={strings.CompanyProfile}
+            rightBellIconVisible={false}
+          />
+        )}
+
+        <CustomDropdown
+          data={dropdownData}
+          placeholder={strings.SearchText}
+          onChange={handleDropdownChangeTicker}
+          enableSearch={true}
+          value={selectedOption}
+        />
+
         <StockCard
-          data={stockData}
+          allQuotes={allQuotes}
+          rds={allRds}
+          dailyQuotes={dailyQuotes}
+          tickerName={tickerData?.ticker}
           isLocked={isLocked}
           setIsLocked={setIsLocked}
         />
-        <CompanyDescription isLocked={isLocked} setIsLocked={setIsLocked} />
-        <BuySellContainer
-          data={data}
-          setData={setData}
+
+        <View style={styles.stockContainer}>
+          <StockChart ticker={tickerData?.ticker} backColor="#000000" />
+        </View>
+
+        <CompanyDescription
+          rds={allRds}
           isLocked={isLocked}
+          tickerName={tickerData?.ticker}
           setIsLocked={setIsLocked}
         />
-        <SpeedoMeterComponents isLocked={isLocked} setIsLocked={setIsLocked} />
+
         <PurchaseCalendar
           isLocked={isLocked}
           setIsLocked={setIsLocked}
+          tickerName={tickerData?.ticker}
           eventCategories={eventCategories}
           eventLoading={eventLoading}
         />
 
+        <StockVoteComp userData={userData} tickerData={tickerData} />
+
+        <SpeedoMeterComponents
+          data={signal}
+          userData={userData}
+          isLocked={isLocked}
+          setIsLocked={setIsLocked}
+        />
         <NewsFeed isLocked={isLocked} setIsLocked={setIsLocked} />
-        <DailyNews isLocked={isLocked} setIsLocked={setIsLocked} />
+        <View style={{marginHorizontal: moderateScale(12)}}>
+          <CustomNewsTabs />
+        </View>
       </ScrollView>
 
       {/* floating button comp */}
@@ -586,6 +680,7 @@ export default function CompanyProfile() {
               })}
 
               <Text style={styles.sectionTitle}>{strings.CustomPeriod}</Text>
+
               <View style={styles.dateInputsContainer}>
                 <View style={styles.dateInputWrapper}>
                   <TextComp>{strings.Start}</TextComp>
@@ -690,7 +785,62 @@ export default function CompanyProfile() {
   );
 }
 
-const StockCard = ({data, isLocked, setIsLocked}) => {
+const StockCard = ({
+  allQuotes,
+  rds,
+  dailyQuotes,
+  tickerName = null,
+  isLocked,
+  setIsLocked,
+}) => {
+  const labels = {
+    day: '1 Ημέρα (%)',
+    adv: 'Μέσος Ημερήσιος Όγκος',
+    modifiedAt: 'Ημερομηνία Τροποποίησης',
+    oneYear: '1 Έτος (%)',
+    ticker: 'Κωδικός Μετοχής',
+    vol: 'Τυπική Απόκλιση',
+    ytd: 'YTD (%)',
+    ek: 'Κεφαλαιοποίηση (εκ)',
+  };
+
+  // Filter data based on tickerName or default to the first item
+  const selectedQuote = tickerName
+    ? allQuotes.find(quote => quote.ticker === tickerName)
+    : allQuotes[0];
+
+  const selectedDailyQuote = tickerName
+    ? dailyQuotes.find(quote => quote.ticker === `${tickerName}.AT`)
+    : dailyQuotes[0];
+
+  const selectedRds = tickerName
+    ? rds.find(quote => quote.ticker === `${tickerName}`)
+    : rds[0];
+
+  const formattedData = selectedDailyQuote
+    ? [
+        {key: 'day', value: selectedQuote?.change},
+        {
+          key: 'ytd',
+          value: `${calcData(
+            selectedDailyQuote?.ytd,
+            selectedQuote?.price,
+          ).toFixed(2)}%`,
+        },
+        {
+          key: 'oneYear',
+          value: `${calcData(
+            selectedDailyQuote?.oneYear,
+            selectedQuote?.price,
+          ).toFixed(2)}%`,
+        },
+        {key: 'adv', value: Math.round(selectedDailyQuote?.adv)},
+        {key: 'vol', value: selectedDailyQuote?.vol},
+        {key: 'ticker', value: selectedDailyQuote?.ticker},
+        {key: 'ek', value: '€ 4'},
+      ]
+    : [];
+
   return (
     <TouchableOpacity
       style={[
@@ -713,21 +863,23 @@ const StockCard = ({data, isLocked, setIsLocked}) => {
       ) : (
         <>
           <View style={styles.header2}>
-            <TextComp style={styles.ticker}>{data.ticker}</TextComp>
-            <TextComp style={styles.price}>{data.price}</TextComp>
+            <TextComp style={styles.ticker}>{selectedQuote?.ticker}</TextComp>
+            <TextComp
+              style={styles.price}>{`€ ${selectedQuote?.price}`}</TextComp>
           </View>
-          <TextComp style={styles.companyName}>{data.companyName}</TextComp>
+          <TextComp style={styles.companyName}>{selectedRds?.eN_Name}</TextComp>
           <TextComp style={[styles.sectionLabel, styles.sectorLabel]}>
-            {data.sector}
+            {`Κλάδος : ${selectedRds?.industry}`}
           </TextComp>
+
           <View style={styles.metricsContainer}>
-            {Object.entries(data.metrics).map(([key, value]) => (
+            {formattedData?.map(({key, value}) => (
               <View key={key} style={styles.metricItem}>
-                <Text style={styles.metricLabel}>{key}</Text>
+                <Text style={styles.metricLabel}>{labels[key]}</Text>
                 <Text
                   style={[
                     styles.metricValue,
-                    value.includes('-') ? styles.negative : styles.positive,
+                    parseFloat(value) < 0 ? styles.negative : styles.positive,
                   ]}>
                   {value}
                 </Text>
@@ -740,87 +892,10 @@ const StockCard = ({data, isLocked, setIsLocked}) => {
   );
 };
 
-const CompanyDescription = ({isLocked, setIsLocked}) => {
-  return (
-    <TouchableOpacity
-      style={[
-        styles.container,
-        isLocked ? styles.lockedCard : styles.unlockedCard,
-        isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
-      ]}
-      onPress={() => setIsLocked(!isLocked)}
-      activeOpacity={0.9}>
-      {isLocked ? (
-        <View style={styles.lockedContent}>
-          <Icon
-            name="lock"
-            size={moderateScale(40)}
-            color="#555"
-            style={styles.lockIcon}
-          />
-          <TextComp style={styles.lockedText}>{strings.TabLock}</TextComp>
-        </View>
-      ) : (
-        <ScrollView style={styles.CompanyContainer}>
-          <View style={styles.contentContainer}>
-            <TextComp style={styles.title}>
-              The Eriougia Tria Alfa (AAAK)
-            </TextComp>
-            <TextComp style={styles.description}>
-              The Eriougia Tria Alfa (AAAK) is a company that provides
-              underwater services. The company was founded in Greek work
-              stations and operates since 1927. The company is specialized in
-              the construction of underwater structures for marine
-              infrastructure, as the anchorages. The largest shareholder of the
-              company, in agreement with the MRFY statements, is the Greek Navy
-              and in the first half of 2023 the company announced 'increased
-              activity' in the works from the existing projects. The Tria Alfa
-              SA company is engaged in the construction of underwater
-              structures. The company's activities include depth, cladding and
-              underwater welding of large and smaller scale.
-            </TextComp>
-          </View>
-        </ScrollView>
-      )}
-    </TouchableOpacity>
-  );
-};
-
-const BuySellContainer = ({data, setData, isLocked, setIsLocked}) => {
-  const [selectedType, setSelectedType] = useState('Buy');
-  const [selectedColor, setSelectedColor] = useState(colors.lightGreen2);
-  const [isDelete, setIsDelete] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState(10);
-
-  const changeBuySellHandler = type => {
-    const newColor =
-      type === 'Buy'
-        ? colors.lightGreen2
-        : type === 'Sell'
-        ? colors.red
-        : colors.yellow;
-
-    setSelectedType(type);
-    setSelectedColor(newColor);
-    setSelectedAmount(Math.floor(Math.random() * 101));
-
-    setData(prevData =>
-      prevData.map(item => {
-        if (item.label === type) {
-          return {
-            ...item,
-            amount: 100,
-            svg: {...item.svg, fill: newColor},
-          };
-        }
-        return {...item, amount: 0};
-      }),
-    );
-  };
-
-  const deleteHandler = () => {
-    setIsDelete(true);
-  };
+const CompanyDescription = ({rds, isLocked, setIsLocked, tickerName}) => {
+  const selectedRds = tickerName
+    ? rds.find(quote => quote.ticker === `${tickerName}`)
+    : rds[0];
 
   return (
     <TouchableOpacity
@@ -842,114 +917,36 @@ const BuySellContainer = ({data, setData, isLocked, setIsLocked}) => {
           <TextComp style={styles.lockedText}>{strings.TabLock}</TextComp>
         </View>
       ) : (
-        <View style={{...styles.containerMain, marginHorizontal: 0}}>
-          <View style={styles.card2}>
-            <Text style={styles.title}>
-              Είναι η μετοχή AAAK.AT για Αγορά ή Πώληση?
-            </Text>
-            <Text style={styles.subtitle}>
-              Πείτε μας την γνώμη σας για την μετοχή και μάθετε τι πιστεύουν και
-              άλλοι χρήστες της πλατφόρμας.
-            </Text>
-
-            {!isDelete ? (
-              <View style={styles.deleteMainContainer}>
-                <Text style={{...styles.subtitle}}>
-                  Ψηφήσατε ότι αυτή η μετοχή είναι για
-                </Text>
-
-                <TouchableOpacity
-                  style={[
-                    styles.deleteBtnContainer,
-                    {backgroundColor: selectedColor},
-                  ]}
-                  onPress={deleteHandler}
-                  activeOpacity={0.7}>
-                  <TextComp style={styles.buttonText}>{selectedType}</TextComp>
-                  <Icon
-                    name={'delete'}
-                    size={moderateScale(26)}
-                    color={colors.white}
-                  />
-                </TouchableOpacity>
-              </View>
-            ) : null}
-
-            <View style={styles.buttonsContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.buy]}
-                onPress={() => changeBuySellHandler('Buy')}>
-                <TextComp style={styles.buttonText}>Buy</TextComp>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.hold]}
-                onPress={() => changeBuySellHandler('Hold')}>
-                <TextComp style={styles.buttonText}>Hold</TextComp>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.sell]}
-                onPress={() => changeBuySellHandler('Sell')}>
-                <TextComp style={styles.buttonText}>Sell</TextComp>
-              </TouchableOpacity>
-            </View>
-
-            {!isDelete ? (
-              <View style={styles.chartContainer}>
-                <View style={styles.chartContainer}>
-                  <PieChart
-                    style={styles.pieChart}
-                    data={data}
-                    valueAccessor={({item}) => item.amount}
-                    innerRadius={60}
-                    outerRadius={80}
-                    labelRadius={110}
-                  />
-
-                  <View style={styles.centerTextContainer}>
-                    <Text style={styles.centerText}>Total</Text>
-                    <Text style={styles.centerValue}>{selectedAmount}</Text>
-                  </View>
-                </View>
-
-                <View style={styles.legendContainer}>
-                  <View style={styles.legendItem}>
-                    <View
-                      style={[
-                        styles.legendColor,
-                        {backgroundColor: colors.lightGreen2},
-                      ]}
-                    />
-                    <Text style={styles.legendText}>Buy</Text>
-                  </View>
-                  <View style={styles.legendItem}>
-                    <View
-                      style={[
-                        styles.legendColor,
-                        {backgroundColor: colors.yellow},
-                      ]}
-                    />
-                    <Text style={styles.legendText}>Hold</Text>
-                  </View>
-                  <View style={styles.legendItem}>
-                    <View
-                      style={[
-                        styles.legendColor,
-                        {backgroundColor: colors.red},
-                      ]}
-                    />
-                    <Text style={styles.legendText}>Sell</Text>
-                  </View>
-                </View>
-              </View>
-            ) : null}
-          </View>
+        <View style={styles.contentContainer}>
+          <TextComp style={styles.title}>Περιγραφή</TextComp>
+          <TextComp style={styles.description}>
+            {selectedRds?.description}
+          </TextComp>
         </View>
       )}
     </TouchableOpacity>
   );
 };
 
-const SpeedoMeterComponents = ({isLocked, setIsLocked}) => {
+const SpeedoMeterComponents = ({data, isLocked, setIsLocked}) => {
+  // Helper function to determine Speedometer value based on signal
+  const getSignalValue = signal => {
+    if (signal == 0) return 50; // Hold
+    if (signal == -1) return 20; // Sell
+    if (signal == 1) return 80; // Buy
+    return 50; // Default (Hold)
+  };
+
+  // Fetch signals for each metric
+  const TrendFollowingSignal = getMostFrequentSignal(data, 'TF');
+  const MeanReversionSignal = getMostFrequentSignal(data, 'MR');
+  const VolumeSignal = getMostFrequentSignal(data, 'Vol');
+
+  // Map signals to Speedometer values
+  const trendValue = getSignalValue(TrendFollowingSignal);
+  const meanValue = getSignalValue(MeanReversionSignal);
+  const volumeValue = getSignalValue(VolumeSignal);
+
   return (
     <TouchableOpacity
       style={[
@@ -1012,9 +1009,10 @@ const SpeedoMeterComponents = ({isLocked, setIsLocked}) => {
             />
           </View>
           <View style={styles.meterContainer}>
-            <Speedometer value={10} />
-            <Speedometer value={60} />
-            <Speedometer value={80} />
+            {/* Bind the specific value to each Speedometer */}
+            <Speedometer value={trendValue} />
+            <Speedometer value={meanValue} />
+            <Speedometer value={volumeValue} />
           </View>
         </>
       )}

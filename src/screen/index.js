@@ -15,6 +15,7 @@ export {default as Tracker} from './news/tracker/Tracker';
 export {default as OnlineTrading} from './drawer/onlineTrading/OnlineTrading';
 export {default as Calendar} from './drawer/calendar/Calendar';
 export {default as ContactUs} from './drawer/contactUs/ContactUs';
+export {default as Logout} from './drawer/logout/Logout';
 
 //News Inside these all screen
 export {default as CompanyProfile} from './news/tradeLinkPro/companyProfile/CompanyProfile';

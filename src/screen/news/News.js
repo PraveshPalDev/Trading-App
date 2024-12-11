@@ -238,7 +238,10 @@ export default function News() {
 
   const handleDropdownChange = item => {
     setSelectedOption(item.value);
-    navigation.navigate(navigationStrings.CompanyProfile, {item});
+    navigation.navigate(navigationStrings.CompanyProfile, {
+      ...item,
+      header: true,
+    });
   };
 
   const newsCardHandler = item => {

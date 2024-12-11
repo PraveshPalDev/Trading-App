@@ -39,7 +39,7 @@ export default {
   Volume: 'Volume',
   TechnicalAnalysis: 'Technical Analysis',
   TabLock: 'Tap to unlock',
-  PurchaseCalendar: 'Purchase Cal..',
+  PurchaseCalendar: 'Calendar',
   NewsFeed: 'News Feed',
   StockList: 'Stock List',
   OnlineTrading: 'OnlineTrading',
@@ -61,6 +61,8 @@ export default {
   SignUp: 'Sign Up',
   SignIn: 'Sign In',
   UserName: 'UserName',
+  Logout: 'Logout',
+  LogoutSuccess: 'Logout Successfully.',
 
   // register page
   WelcomeText: 'Welcome User',

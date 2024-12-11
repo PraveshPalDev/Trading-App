@@ -1,6 +1,10 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList} from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TabRoutes from './TabRoutes';
 import strings from '../constants/lang';
@@ -10,6 +14,7 @@ import {
   ContactUs,
   News,
   OnlineTrading,
+  Logout,
 } from '../screen';
 import colors from '../styles/colors';
 import {moderateScale, textScale} from '../styles/responsiveSize';
@@ -46,7 +51,7 @@ function CustomDrawerToggle({navigation}) {
 export default function DrawerStack() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      drawerContent={props => <CustomDrawerContent {...props} />}
       screenOptions={({navigation}) => ({
         headerLeft: () => <CustomDrawerToggle navigation={navigation} />,
         drawerActiveTintColor: colors.blue,
@@ -143,6 +148,20 @@ export default function DrawerStack() {
           ),
         }}
       />
+
+      <Drawer.Screen
+        name={strings.Logout}
+        component={Logout}
+        options={{
+          drawerIcon: ({focused, size}) => (
+            <Icon
+              name="logout"
+              size={moderateScale(28)}
+              color={focused ? colors.blue : colors.grayOpacity80}
+            />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -153,15 +172,13 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.grayOpacity50,
     alignItems: 'center',
-  
   },
   versionText: {
     fontSize: textScale(16),
     color: colors.black,
-
   },
   versionLabel: {
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
     color: 'black',
     color: colors.black,
   },
