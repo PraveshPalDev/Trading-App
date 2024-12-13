@@ -472,7 +472,7 @@ export default function TradeLinkAnalysis() {
         </TouchableOpacity>
 
         {/* here table container */}
-        <RenderTableCard isLocked={isLocked} setIsLocked={setIsLocked} />
+        {/* <RenderTableCard isLocked={isLocked} setIsLocked={setIsLocked} /> */}
       </KeyboardAwareScrollView>
     </WrapperContainer>
   );

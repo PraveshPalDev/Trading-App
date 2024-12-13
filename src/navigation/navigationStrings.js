@@ -18,4 +18,5 @@ export default {
   Research: 'research',
   ShareList: 'shareList',
   TradeLinkAnalysis: 'tradeLinkAnalysis',
+  TradeLinkTable: 'tradeLinkTable',
 };

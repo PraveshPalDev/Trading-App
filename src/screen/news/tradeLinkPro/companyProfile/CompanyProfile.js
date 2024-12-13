@@ -252,7 +252,7 @@ export default function CompanyProfile() {
       // navigation.navigate(navigationStrings.ShareList);
       navigation.navigate(navigationStrings.AllStocks);
     } else if (name === 'technicalAnalysis') {
-      navigation.navigate(navigationStrings.TradeLinkAnalysis);
+      navigation.navigate(navigationStrings.TradeLinkTable);
     } else if (name === 'research') {
       navigation.navigate(navigationStrings.Research);
     } else {

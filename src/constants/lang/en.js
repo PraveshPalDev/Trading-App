@@ -46,6 +46,7 @@ export default {
   TradeLinkPro: 'TradeLinkPro',
   Calendar: 'Calendars',
   ContactUs: 'ContactUs',
+  TradeLinkTable: 'TradeLinkTable',
 
   // login page content
   WelcomeBack: 'Welcome Back',

@@ -158,6 +158,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: textScale(16),
   },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noContentText: {
+    color: colors.black,
+    fontSize: textScale(16),
+    textAlign: 'center',
+  },
 });
 
 export default styles;

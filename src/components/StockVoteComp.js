@@ -154,7 +154,6 @@ export default function StockVoteComp({tickerData, userData}) {
           isLocked ? styles.lockedCard : styles.unlockedCard,
           isLocked && {
             backgroundColor: 'rgba(255, 255, 255, 0.7)',
-
             elevation: moderateScale(0.5),
           },
         ]}
@@ -249,7 +248,6 @@ const styles = StyleSheet.create({
     width: width / 1.1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: moderateScale(250),
     borderRadius: moderateScale(5),
     shadowColor: colors.black,
     shadowOffset: {

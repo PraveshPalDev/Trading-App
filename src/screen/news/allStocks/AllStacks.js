@@ -1,5 +1,5 @@
-import {Text, FlatList, View, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import styles from './styles';
 import WrapperContainer from '../../../components/WrapperContainer';
 import HeaderComp from '../../../components/HeaderComp';
@@ -12,11 +12,12 @@ import ModalComp from '../../../components/ModalComp';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Table, Row, Rows} from 'react-native-table-component';
 import navigationStrings from '../../../navigation/navigationStrings';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
   GetAllDailyQuotes,
   GetPortfolioDetails,
 } from '../../../redux/actions/news';
+import FlashListComp from '../../../components/FlashListComp';
 
 const tableHead = ['Share', 'AVAX', 'AVAX'];
 const tableData = [
@@ -30,13 +31,18 @@ const tableData = [
 export default function AllStacks() {
   const [isModalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
+  const [portfolioData, setPortfolioData] = useState([]);
 
-  useEffect(() => {
-    fetchDailyQuotes();
-    fetchPortfolioDetails();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchDailyQuotes();
+      // fetchPortfolioDetails();
+
+      return () => {};
+    }, []),
+  );
 
   const fetchDailyQuotes = async () => {
     try {
@@ -47,17 +53,23 @@ export default function AllStacks() {
       }
     } catch (error) {
       console.log('error for daily quotes =>', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchPortfolioDetails = async () => {
+    setLoading(true);
     try {
       const res = await GetPortfolioDetails();
+      console.log('get =>', res);
       if (res) {
-        console.log('get =>', res);
+        setPortfolioData(res);
       }
     } catch (error) {
       console.log('error for fetching portfolio details =>', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,8 +80,6 @@ export default function AllStacks() {
         backBtn={true}
         rightBellIconVisible={false}
         settingHandler={settingHandler}
-        notificationIcon
-        bellIcon="bell-plus-outline"
         settingIcon="settings"
         style={{marginRight: moderateScale(-3)}}
       />
@@ -125,7 +135,7 @@ export default function AllStacks() {
 
   return (
     <WrapperContainer>
-      <FlatList
+      <FlashListComp
         data={chartData}
         ListHeaderComponent={HeaderComponents}
         renderItem={renderItem}
@@ -137,6 +147,17 @@ export default function AllStacks() {
           justifyContent: 'space-between',
           alignSelf: 'center',
         }}
+        ListEmptyComponent={
+          loading ? (
+            <View style={styles.loading}>
+              <ActivityIndicator size={'large'} color={colors.blue} />
+            </View>
+          ) : (
+            <View style={styles.loading}>
+              <Text style={styles.noContentText}>No data available!!</Text>
+            </View>
+          )
+        }
       />
 
       <ModalComp

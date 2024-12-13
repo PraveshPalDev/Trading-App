@@ -8,6 +8,7 @@ import {
   StockDetails,
   Tracker,
   TradeLinkAnalysis,
+  TradeLinkTable,
 } from '../screen';
 import AllStacks from '../screen/news/allStocks/AllStacks';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -70,8 +71,12 @@ export default function MainStack() {
         component={TradeLinkAnalysis}
         options={{headerShown: false}}
       />
+
+      <Stack.Screen
+        name={navigationStrings.TradeLinkTable}
+        component={TradeLinkTable}
+        options={{headerShown: false}}
+      />
     </>
   );
 }
-
-

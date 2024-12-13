@@ -102,5 +102,6 @@ export const GetAnalysis = async () => {
   return apiGet(`${Analysis}`);
 };
 export const GetPortfolioDetails = async () => {
+  console.log('url ->', Portfolio);
   return apiGet(`${Portfolio}`);
 };

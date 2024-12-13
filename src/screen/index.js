@@ -22,3 +22,4 @@ export {default as CompanyProfile} from './news/tradeLinkPro/companyProfile/Comp
 export {default as Research} from './news/tradeLinkPro/research/Research';
 export {default as ShareList} from './news/tradeLinkPro/shareList/ShareList';
 export {default as TradeLinkAnalysis} from './news/tradeLinkPro/tradeLinkAnalysis/TradeLinkAnalysis';
+export {default as TradeLinkTable} from './news/tradeLinkPro/tradeLinkAnalysis/tradeLinkTable/TradeLinkTable';
