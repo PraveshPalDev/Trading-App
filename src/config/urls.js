@@ -42,3 +42,4 @@ export const CreateAndUpdateTicker = getApiURL(
 export const Signal = getApiURL('Signal');
 export const Analysis = getApiURL('Analysis');
 export const Portfolio = getApiURL('Portfolio');
+export const AnalysisImageMappings = getApiURL('AnalysisImageMappings');

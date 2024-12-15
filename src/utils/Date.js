@@ -77,3 +77,16 @@ export const getMostFrequentSignal = (signalData, group) => {
   });
   return isTie ? 0 : mostFrequentSignal;
 };
+
+export const findScore = (b = 0, s = 0, h = 0, t) => {
+  if (b > s && b > h) {
+    return (b / t) * 100;
+  }
+  if (s > b && s > h) {
+    return (s / t) * 100;
+  }
+  if (h > b && h > s) {
+    return (h / t) * 100;
+  }
+  return (b / t) * 100;
+};

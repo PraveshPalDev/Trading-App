@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Text,
@@ -8,15 +9,12 @@ import {
 import React, {useCallback, useEffect, useState} from 'react';
 import WrapperContainer from '../../../../../components/WrapperContainer';
 import styles from './styles';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {moderateScale, width} from '../../../../../styles/responsiveSize';
 import HeaderComp from '../../../../../components/HeaderComp';
 import strings from '../../../../../constants/lang';
-import TextComp from '../../../../../components/TextComp';
 import colors from '../../../../../styles/colors';
 import SearchComp from '../../../../../components/SearchComp';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   GetAllDailyQuotes,
   GetAllSignal,
@@ -30,6 +28,7 @@ export default function TradeLinkTable() {
   const [isLocked, setIsLocked] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [signal, setSignal] = useState([]);
   const navigation = useNavigation();
@@ -40,6 +39,19 @@ export default function TradeLinkTable() {
       fetchAllSignal();
     }, []),
   );
+
+  useEffect(() => {
+    if (searchText) {
+      const filtered = data?.filter(
+        item =>
+          item?.name?.toLowerCase().includes(searchText?.toLowerCase()) ||
+          item?.ticker?.toLowerCase().includes(searchText?.toLowerCase()),
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data);
+    }
+  }, [searchText, data]);
 
   const fetchAllStock = async () => {
     try {
@@ -93,13 +105,12 @@ export default function TradeLinkTable() {
     setLoading(true);
     try {
       const res = await GetAllSignal();
-
       if (res) {
-        console.log('res', res);
         setLoading(false);
         setSignal(res);
       }
     } catch (error) {
+      setLoading(false);
       console.log('error for signal api =>', error);
     }
   };
@@ -161,17 +172,30 @@ export default function TradeLinkTable() {
       signal.filter(x => x.ticker == item.ticker),
       'MR',
     );
-    const VolumeSignal = getMostFrequentSignal(signal, 'Vol');
+    const VolumeSignal = getMostFrequentSignal(
+      signal.filter(x => x.ticker == item.ticker),
+      'Vol',
+    );
 
     // Map signals to Speedometer values
     const trendValue = getSignalValue(TrendFollowingSignal);
     const meanValue = getSignalValue(MeanReversionSignal);
     const volumeValue = getSignalValue(VolumeSignal);
-
-    // console.log('button ->', trendValue, meanValue, volumeValue);
+    const meterValue = {
+      trendValue,
+      meanValue,
+      volumeValue,
+    };
 
     const pressHandler = item => {
-      navigation.navigate(navigationStrings.TradeLinkAnalysis, {item});
+      const updatedItem = {
+        ...item,
+        ytd: calculateYTD,
+        ...meterValue,
+        signal: signal,
+      };
+
+      navigation.navigate(navigationStrings.TradeLinkAnalysis, updatedItem);
     };
 
     return (
@@ -244,7 +268,7 @@ export default function TradeLinkTable() {
         style={{...styles.cardContainer, marginHorizontal: moderateScale(12)}}>
         <FlatList
           ListHeaderComponent={renderHeader}
-          data={data}
+          data={filteredData}
           renderItem={renderTableRow}
           keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={true}
@@ -270,12 +294,15 @@ export default function TradeLinkTable() {
         titleStyle={styles.headerStyles}
       />
 
-      {/* <KeyboardAwareScrollView
-        style={{marginBottom: moderateScale(25)}}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={false}> */}
-      <RenderTableCard isLocked={isLocked} setIsLocked={setIsLocked} />
-      {/* </KeyboardAwareScrollView> */}
+      {loading ? (
+        <ActivityIndicator
+          size={'large'}
+          color={colors.blue}
+          style={styles.loading}
+        />
+      ) : (
+        <RenderTableCard isLocked={isLocked} setIsLocked={setIsLocked} />
+      )}
     </WrapperContainer>
   );
 }

@@ -1,5 +1,6 @@
 import {
   Analysis,
+  AnalysisImageMappings,
   CreateAndUpdateTicker,
   DeleteTicker,
   GET_ALL_EVENT_CATEGORY,
@@ -102,6 +103,8 @@ export const GetAnalysis = async () => {
   return apiGet(`${Analysis}`);
 };
 export const GetPortfolioDetails = async () => {
-  console.log('url ->', Portfolio);
   return apiGet(`${Portfolio}`);
+};
+export const GetAnalysisImageMappings = async () => {
+  return apiGet(`${AnalysisImageMappings}`);
 };

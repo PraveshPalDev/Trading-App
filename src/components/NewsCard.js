@@ -25,6 +25,7 @@ import moment from 'moment';
 import FastImage from 'react-native-fast-image';
 
 export default NewsCard = ({
+  base64 = false,
   newsItems,
   dotStyles,
   activeDotStyles,
@@ -60,31 +61,43 @@ export default NewsCard = ({
         activeOpacity={0.7}
         onPress={() => onPressHandler(item)}>
         <Animated.View style={[styles.card, animStyle]}>
-          <FastImage
-            source={{
-              uri: item.imageUrl,
-              priority: FastImage.priority.high,
-            }}
-            style={styles.image}
-            resizeMode={FastImage.resizeMode.cover}
-          />
+          {base64 ? (
+            <View style={{backgroundColor: colors.whiteOpacity20}}>
+              <Image
+                source={{uri: `data:image/jpeg;base64,${item?.analysisImage}`}}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            </View>
+          ) : (
+            <>
+              <FastImage
+                source={{
+                  uri: item.imageUrl,
+                  priority: FastImage.priority.high,
+                }}
+                style={styles.image}
+                resizeMode={FastImage.resizeMode.cover}
+              />
 
-          {/* Overlay Gradient */}
-          <View style={styles.overlay}>
-            {/* Top Section */}
-            <View style={styles.sourceContainer}>
-              <View style={styles.sourceSubContainer}>
-                <View style={styles.companyDotStyles} />
-                <Text style={styles.sourceText}>{item.sourceName}</Text>
+              {/* Overlay Gradient */}
+              <View style={styles.overlay}>
+                {/* Top Section */}
+                <View style={styles.sourceContainer}>
+                  <View style={styles.sourceSubContainer}>
+                    <View style={styles.companyDotStyles} />
+                    <Text style={styles.sourceText}>{item.sourceName}</Text>
+                  </View>
+                  <Text style={styles.timeText}>{formattedDate}</Text>
+                </View>
+
+                {/* Bottom Section */}
+                <View style={styles.contentContainer}>
+                  <Text style={styles.title}>{item.title}</Text>
+                </View>
               </View>
-              <Text style={styles.timeText}>{formattedDate}</Text>
-            </View>
-
-            {/* Bottom Section */}
-            <View style={styles.contentContainer}>
-              <Text style={styles.title}>{item.title}</Text>
-            </View>
-          </View>
+            </>
+          )}
         </Animated.View>
       </TouchableOpacity>
     );
@@ -120,6 +133,7 @@ export default NewsCard = ({
         }}
       />
 
+      {/* {!base64 && ( */}
       <View style={styles.dotContainer}>
         {newsItems?.map((_, index) => (
           <View
@@ -134,6 +148,7 @@ export default NewsCard = ({
           />
         ))}
       </View>
+      {/* )} */}
     </GestureHandlerRootView>
   );
 };

@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: colors.white,
     borderRadius: moderateScale(14),
-    padding: moderateScale(8),
+    padding: moderateScale(10),
     elevation: moderateScale(4),
     shadowColor: colors.black,
     shadowOpacity: 0.1,
@@ -247,7 +247,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.grayOpacity20,
     paddingVertical: moderateScale(15),
-    paddingHorizontal: moderateScale(25),
     borderWidth: 1,
     borderColor: colors.grayOpacity20,
   },
@@ -262,16 +261,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: moderateScale(15),
     paddingHorizontal: moderateScale(25),
-    alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.grayOpacity20,
   },
+
   cell: {
     fontSize: textScale(14),
-    fontWeight: 'bold',
+    fontWeight: '400',
     textAlign: 'center',
     color: colors.black,
+    flex: 1,
   },
+
   infoButton: {
     width: moderateScale(25),
     height: moderateScale(25),
@@ -280,6 +281,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   infoText: {
     color: colors.white,
     fontWeight: 'bold',
@@ -377,11 +379,6 @@ const styles = StyleSheet.create({
     padding: moderateScale(8),
     borderBottomWidth: 1,
     borderColor: colors.white,
-  },
-  cell: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: textScale(14),
   },
   greenText: {color: colors.darkGreen},
   redText: {color: colors.red},

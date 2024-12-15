@@ -1,38 +1,50 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Alert,
+} from 'react-native';
 import colors from '../styles/colors';
 import {moderateScale, textScale, width} from '../styles/responsiveSize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TextComp from './TextComp';
 import {GetAnalysis} from '../redux/actions/news';
 import moment from 'moment';
+import CustomDropdown from './CustomDropdown';
+import SearchComp from './SearchComp';
 
-export default function CustomNewsTabs() {
+export default function CustomNewsTabs({showSearchBar = false}) {
   const [activeTab, setActiveTab] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
-  const tabs = ['Όλα', 'Ημερήσια', 'Εβδομαδιαία', 'Μηνιαία', 'Αποτελέσματα'];
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchAnalysis();
-  }, []);
+  const tabs = ['Όλα', 'Ημερήσια', 'Εβδομαδιαία', 'Μηνιαία', 'Αποτελέσματα'];
 
-  const fetchAnalysis = async () => {
+  const fetchAnalysis = useCallback(async () => {
     setLoading(true);
     try {
       const res = await GetAnalysis();
       if (res) {
-        setData(res);
+        setData(prevData =>
+          JSON.stringify(prevData) !== JSON.stringify(res) ? res : prevData,
+        );
       }
     } catch (error) {
-      console.log('error for analysis api =>', error);
+      console.log('Error fetching analysis data:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const filterDataByTab = () => {
+  useEffect(() => {
+    fetchAnalysis();
+  }, [fetchAnalysis]);
+
+  const filterDataByTab = useMemo(() => {
     switch (activeTab) {
       case 0:
         return data;
@@ -47,14 +59,14 @@ export default function CustomNewsTabs() {
       default:
         return [];
     }
-  };
+  }, [activeTab, data]);
 
-  const renderItem = ({item}) => {
-    const fileDownloadHandler = async item => {
-      alert('coming soon');
-    };
+  const fileDownloadHandler = useCallback(() => {
+    Alert.alert('Coming soon');
+  }, []);
 
-    return (
+  const renderItem = useCallback(
+    ({item}) => (
       <View style={styles.card}>
         <Text style={[styles.text, styles.subjectText]}>{item?.subject}</Text>
         <Text style={styles.separator}>---</Text>
@@ -73,8 +85,19 @@ export default function CustomNewsTabs() {
           <Text style={styles.buttonText}>Άνοιγμα Έρευνας</Text>
         </TouchableOpacity>
       </View>
-    );
-  };
+    ),
+    [fileDownloadHandler],
+  );
+
+  const renderDropdownAndSearchBar = useCallback(
+    () => (
+      <View>
+        <CustomDropdown />
+        <SearchComp containerStyle={{backgroundColor: 'red'}} />
+      </View>
+    ),
+    [],
+  );
 
   return (
     <View style={styles.container}>
@@ -98,8 +121,9 @@ export default function CustomNewsTabs() {
           </View>
         ) : (
           <>
+            {/* {showSearchBar && renderDropdownAndSearchBar()} */}
             <View style={styles.tabsContainer}>
-              {tabs?.map((tab, index) => (
+              {tabs.map((tab, index) => (
                 <TouchableOpacity
                   key={index}
                   style={[styles.tab, activeTab === index && styles.activeTab]}
@@ -120,9 +144,9 @@ export default function CustomNewsTabs() {
                 <Text>Loading...</Text>
               ) : (
                 <FlatList
-                  data={filterDataByTab()}
+                  data={filterDataByTab}
                   keyExtractor={(item, index) =>
-                    item?.analysisID?.toString() || index
+                    item?.analysisID?.toString() || index.toString()
                   }
                   renderItem={renderItem}
                   ListEmptyComponent={

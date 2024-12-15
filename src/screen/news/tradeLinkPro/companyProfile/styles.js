@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: 'center',
-    color: colors.white,
+    color: colors.black,
     fontSize: textScale(13),
     fontWeight: '500',
   },
