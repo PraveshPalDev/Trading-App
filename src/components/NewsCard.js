@@ -133,7 +133,6 @@ export default NewsCard = ({
         }}
       />
 
-      {/* {!base64 && ( */}
       <View style={styles.dotContainer}>
         {newsItems?.map((_, index) => (
           <View
@@ -148,7 +147,6 @@ export default NewsCard = ({
           />
         ))}
       </View>
-      {/* )} */}
     </GestureHandlerRootView>
   );
 };
@@ -250,7 +248,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    paddingTop: moderateScale(25),
+    paddingTop: moderateScale(28),
   },
   dot: {
     margin: moderateScale(5),

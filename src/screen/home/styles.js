@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     color: colors.blueOpacity90,
   },
   heading: {
+    color: colors.black,
     marginBottom: moderateScale(12),
   },
   seeAllStyles: {
@@ -143,6 +144,7 @@ const styles = StyleSheet.create({
     fontSize: textScale(18),
     fontWeight: 'bold',
     marginBottom: moderateScale(10),
+    color: colors.black,
   },
 
   optionButton: {
@@ -164,6 +166,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: moderateScale(10),
     textAlign: 'center',
+    color: colors.black,
   },
   dateInputsContainer: {
     flexDirection: 'row',
@@ -173,6 +176,11 @@ const styles = StyleSheet.create({
   dateInputWrapper: {
     flex: 1,
     marginHorizontal: moderateScale(5),
+  },
+  dateLabelStyles: {
+    color: colors.black,
+    fontSize: textScale(16),
+    fontVariant: '500',
   },
   dateInput: {
     borderWidth: moderateScale(1),

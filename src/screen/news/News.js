@@ -11,7 +11,12 @@ import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
 import styles from './styles';
-import {moderateScale, width} from '../../styles/responsiveSize';
+import {
+  height,
+  moderateScale,
+  textScale,
+  width,
+} from '../../styles/responsiveSize';
 import TextComp from '../../components/TextComp';
 import {NewsCategories} from '../../constants/static/staticData';
 import NewsCard from '../../components/NewsCard';
@@ -359,33 +364,46 @@ export default function News() {
                 ? null
                 : {width: '25%'},
             ]}>
-            <TextComp
-              text={selectedTabName}
-              style={
+            <Text
+              style={[
+                {
+                  color: colors.black,
+                  fontSize: textScale(16),
+                  fontWeight: '700',
+                },
                 selectedTabName !== 'All' && selectedTabName !== 'Events & More'
                   ? styles.heading
-                  : undefined
-              }
-            />
+                  : null,
+              ]}>
+              {selectedTabName}
+            </Text>
           </View>
 
           {selectedTabName === 'All' ? (
             <CustomDropdown
               data={allNewsSource}
-              placeholder={strings.SearchText}
+              placeholder={strings.Search}
               onChange={dropDownAllHandler}
               enableSearch={true}
               value={selectedOption}
-              dropdownStyle={{width: width / 1.5, alignSelf: 'flex-end'}}
+              dropdownStyle={{
+                width: width / 1.5,
+                height: moderateScale(45),
+                alignSelf: 'flex-end',
+              }}
             />
           ) : selectedTabName === 'Events & More' ? (
             <CustomDropdown
               data={announcementCategory}
-              placeholder={strings.SearchText}
+              placeholder={strings.Search}
               onChange={dropDownEventAndMore}
               enableSearch={true}
               value={selectedOption}
-              dropdownStyle={{width: width / 1.5, alignSelf: 'flex-end'}}
+              dropdownStyle={{
+                width: width / 1.5,
+                height: moderateScale(45),
+                alignSelf: 'flex-end',
+              }}
             />
           ) : null}
         </View>

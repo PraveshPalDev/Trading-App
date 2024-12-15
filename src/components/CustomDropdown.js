@@ -16,6 +16,8 @@ const CustomDropdown = ({
   dropdownStyle,
   iconStyle,
   arrowIconColor = colors.gray,
+  placeholderTextColor = colors.gray,
+  selectedTextColor = colors.black,
   itemTextStyle,
   ...extraProps
 }) => {
@@ -78,6 +80,14 @@ const CustomDropdown = ({
             style={iconStyle}
           />
         )}
+        placeholderStyle={[
+          styles.placeholderStyle,
+          {color: placeholderTextColor},
+        ]}
+        selectedTextStyle={[
+          styles.selectedTextStyle,
+          {color: selectedTextColor},
+        ]}
         renderItem={renderItem}
         {...extraProps}
       />
@@ -98,7 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(10),
     height: moderateScale(55),
     marginVertical: moderateScale(10),
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -107,7 +117,7 @@ const styles = StyleSheet.create({
     paddingLeft: moderateScale(25),
   },
   dropdownOpen: {
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white,
     borderRadius: moderateScale(5),
     borderRadius: moderateScale(30),
   },
@@ -118,7 +128,16 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(5),
   },
   itemText: {
+    color: colors.black,
     fontSize: moderateScale(16),
+  },
+  placeholderStyle: {
+    fontSize: moderateScale(16),
+    color: colors.gray,
+  },
+  selectedTextStyle: {
+    fontSize: moderateScale(16),
+    color: colors.black,
   },
 });
 

@@ -262,7 +262,7 @@ export default function Home() {
             justifyContent: 'space-between',
             marginHorizontal: moderateScale(15),
           }}>
-          <TextComp text={strings.News} style={styles.heading} />
+          <TextComp style={styles.heading}>{strings.News}</TextComp>
           <Text style={styles.seeAllStyles} onPress={newsSeeAllHandler}>
             {strings.SeeAll}
           </Text>
@@ -509,12 +509,12 @@ export default function Home() {
               <Text style={styles.sectionTitle}>{strings.CustomPeriod}</Text>
               <View style={styles.dateInputsContainer}>
                 <View style={styles.dateInputWrapper}>
-                  <TextComp>{strings.Start}</TextComp>
+                  <Text style={styles.dateLabelStyles}>{strings.Start}</Text>
                   <TouchableOpacity
                     onPress={() => setShowStartPicker(true)}
                     style={styles.dateInput}
                     activeOpacity={0.7}>
-                    <TextComp>
+                    <TextComp style={styles.dateLabelStyles}>
                       {handleApplyStartDate
                         ? moment(handleApplyStartDate, 'MM-DD-YYYY').format(
                             'MM/DD/YYYY',
@@ -545,12 +545,12 @@ export default function Home() {
                 </View>
 
                 <View style={styles.dateInputWrapper}>
-                  <TextComp>{strings.End}</TextComp>
+                  <Text style={styles.dateLabelStyles}>{strings.End}</Text>
                   <TouchableOpacity
                     onPress={() => setShowEndPicker(true)}
                     style={styles.dateInput}
                     activeOpacity={0.7}>
-                    <TextComp>
+                    <TextComp style={styles.dateLabelStyles}>
                       {handleApplyEndDate
                         ? moment(handleApplyEndDate, 'MM-DD-YYYY').format(
                             'MM/DD/YYYY',

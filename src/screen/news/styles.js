@@ -135,20 +135,20 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: textScale(14),
-    color: colors.gray,
-    fontWeight: '700',
+    color: colors.black,
+    fontWeight: 'bold',
   },
   activeTabText: {
     fontSize: textScale(14),
     color: colors.white,
-    fontWeight: '700',
+    fontWeight: 'bold',
   },
 
   stockStyles: {
     width: width / 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
-    paddingLeft: moderateScale(28),
+    paddingLeft: moderateScale(25),
     alignItems: 'center',
   },
   seeAllStyles: {

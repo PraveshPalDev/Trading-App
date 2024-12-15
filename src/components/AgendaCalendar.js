@@ -92,15 +92,15 @@ export default function AgendaCalendar({
           <View style={styles.selectedDateContainer}>
             <View style={styles.selectedDateContainer}>
               <Text style={styles.boldText}>To: </Text>
-              <Text style={{fontSize: textScale(14)}}>
-                {showingDateToAndForm.startDate}
+              <Text style={{fontSize: textScale(15), color: colors.black}}>
+                {showingDateToAndForm?.startDate}
               </Text>
             </View>
 
             <View style={styles.selectedDateContainer}>
               <Text style={styles.boldText}>From: </Text>
-              <Text style={{fontSize: textScale(14)}}>
-                {showingDateToAndForm.endDate}
+              <Text style={{fontSize: textScale(15), color: colors.black}}>
+                {showingDateToAndForm?.endDate}
               </Text>
             </View>
           </View>
