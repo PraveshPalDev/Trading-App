@@ -115,8 +115,12 @@ export default function Stock() {
   };
 
   const stocksHandler = async item => {
-    navigation.navigate(navigationStrings.StockDetails, {selectedStock: item});
+    navigation.navigate(navigationStrings.CompanyProfile, { 
+      item, 
+      isHeader: true, 
+    });
   };
+  
 
   const settingHandler = () => {};
 

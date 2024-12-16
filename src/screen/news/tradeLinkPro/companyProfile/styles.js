@@ -115,13 +115,14 @@ const styles = StyleSheet.create({
   sectionLabel: {
     color: colors.gray,
     fontSize: textScale(14),
-    marginBottom: moderateScale(8),
   },
   sectorLabel: {
-    marginTop: moderateScale(8),
+    paddingLeft: moderateScale(5),
+    color: colors.black,
+    fontSize: textScale(14),
   },
   metricsContainer: {
-    marginTop: moderateScale(12),
+    marginTop: moderateScale(10),
   },
   metricItem: {
     flexDirection: 'row',

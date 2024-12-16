@@ -21,6 +21,7 @@ export default function AgendaCalendar({
   calendar = false,
   showingDateToAndForm = false,
   dropdownStyles,
+  selectedDropdownData,
 }) {
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD'),
@@ -38,7 +39,7 @@ export default function AgendaCalendar({
             data={dropDownData}
             placeholder={strings.Search}
             onChange={selectedValue => handleDropdownChange(selectedValue)}
-            value={dropDownData[0]}
+            value={dropDownData?.[0]?.value}
             dropdownStyle={{...styles.dropdownStyle, ...dropdownStyles}}
             arrowIconColor={colors.blue}
             itemTextStyle={{

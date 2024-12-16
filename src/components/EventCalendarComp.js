@@ -53,11 +53,13 @@ export default function EventCalendarComp({
             />
           </View>
         ) : (
-          <FlashListComp
-            DATA={selectedDropdownData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderTableData}
-          />
+          <View style={{marginBottom: moderateScale(20)}}>
+            <FlashListComp
+              DATA={selectedDropdownData}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderTableData}
+            />
+          </View>
         )}
       </View>
     </View>

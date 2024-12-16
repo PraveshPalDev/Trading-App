@@ -11,13 +11,7 @@ import WrapperContainer from '../../components/WrapperContainer';
 import HeaderComp from '../../components/HeaderComp';
 import strings from '../../constants/lang';
 import styles from './styles';
-import {
-  height,
-  moderateScale,
-  textScale,
-  width,
-} from '../../styles/responsiveSize';
-import TextComp from '../../components/TextComp';
+import {moderateScale, textScale, width} from '../../styles/responsiveSize';
 import {NewsCategories} from '../../constants/static/staticData';
 import NewsCard from '../../components/NewsCard';
 import {
@@ -54,6 +48,7 @@ export default function News() {
   const [allNewsSource, setAllNewsSource] = useState([]);
   const [announcementCategory, setAnnouncementCategory] = useState([]);
   const [newsSourceId, setNewsSourceId] = useState('');
+  const [eventSourceId, setEventSourceId] = useState('');
 
   useEffect(() => {
     fetchAllNews(page);
@@ -74,13 +69,12 @@ export default function News() {
   }, [page]);
 
   useEffect(() => {
-    if (newsSourceId) {
+    if (eventSourceId) {
       setNews([]);
       setEventPage(1);
-      console.log('first');
       getAllEventsAnnouncement(null, 1, 1);
     }
-  }, [newsSourceId]);
+  }, [eventSourceId]);
 
   useEffect(() => {
     if (firstTime) {
@@ -206,7 +200,7 @@ export default function News() {
         setEventPage(1);
       }
 
-      const response = await GetEventsAnnouncement(eventPage, newsSourceId);
+      const response = await GetEventsAnnouncement(eventPage, eventSourceId);
 
       if (response?.length) {
         const SortedData = response.sort(
@@ -308,7 +302,7 @@ export default function News() {
   };
 
   const dropDownEventAndMore = item => {
-    setNewsSourceId(item.value);
+    setEventSourceId(item.value);
     setActiveTab(1);
   };
 

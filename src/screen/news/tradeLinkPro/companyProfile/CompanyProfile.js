@@ -59,7 +59,7 @@ import CustomNewsTabs from '../../../../components/CustomNewsTabs';
 
 export default function CompanyProfile() {
   const route = useRoute();
-  const {header, ...item} = route.params || {};
+  const {isHeader, ...item} = route.params || {};
   const [isLocked, setIsLocked] = useState(false);
   const navigation = useNavigation();
   const [startDate, setStartDate] = useState('');
@@ -593,7 +593,7 @@ export default function CompanyProfile() {
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}>
         {/* added here ticker dropdown */}
-        {header && (
+        {isHeader && (
           <HeaderComp
             title={strings.CompanyProfile}
             rightBellIconVisible={false}
@@ -868,9 +868,9 @@ const StockCard = ({
               style={styles.price}>{`€ ${selectedQuote?.price}`}</TextComp>
           </View>
           <TextComp style={styles.companyName}>{selectedRds?.eN_Name}</TextComp>
-          <TextComp style={[styles.sectionLabel, styles.sectorLabel]}>
+          <Text style={[styles.sectionLabel, styles.sectorLabel]}>
             {`Κλάδος : ${selectedRds?.industry}`}
-          </TextComp>
+          </Text>
 
           <View style={styles.metricsContainer}>
             {formattedData?.map(({key, value}) => (

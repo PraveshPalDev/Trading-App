@@ -337,11 +337,11 @@ export default function Home() {
   };
 
   const stocksHandler = item => {
-    navigation.navigate(navigationStrings.StockDetails, {item});
+    navigation.navigate(navigationStrings.CompanyProfile, {item,isHeader:true});
   };
 
-  const FooterComponents = useCallback(
-    () => (
+  const FooterComponents = useCallback(() => {
+    return (
       <EventCalendarComp
         data={eventCategories}
         startDate={startDate}
@@ -353,9 +353,8 @@ export default function Home() {
         renderTableData={renderTableData}
         renderHeader={renderHeader}
       />
-    ),
-    [selectedDropdownData, eventLoading],
-  );
+    );
+  }, [selectedDropdownData, eventLoading]);
 
   const renderLoading = () => (
     <View style={styles.loadingContainer}>
@@ -420,9 +419,9 @@ export default function Home() {
         </TextComp>
         <TextComp style={styles.cell}>{item?.symbol}</TextComp>
         <TextComp style={styles.cell}>
-          {item.description.length > 50
+          {item?.description?.length > 50
             ? `${item?.description?.substring(0, 50)}...`
-            : item.description}
+            : item?.description}
         </TextComp>
 
         <View style={{...styles.cell, ...styles.colorIndicator}}>

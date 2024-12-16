@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.grayOpacity20,
+    padding: moderateScale(5),
   },
   lastRow: {
     borderBottomLeftRadius: moderateScale(10),
