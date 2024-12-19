@@ -63,6 +63,7 @@ export default function Home() {
   const [dropdownData, setDropdownData] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedDropdownData, setSelectedDropdownData] = useState([]);
+  const [selectedOptionItem, setSelectedOptionItem] = useState(null);
 
   useEffect(() => {
     const {startDate, endDate} = getCurrentWeekRange();
@@ -337,7 +338,10 @@ export default function Home() {
   };
 
   const stocksHandler = item => {
-    navigation.navigate(navigationStrings.CompanyProfile, {item,isHeader:true});
+    navigation.navigate(navigationStrings.CompanyProfile, {
+      item,
+      isHeader: true,
+    });
   };
 
   const FooterComponents = useCallback(() => {
@@ -347,6 +351,7 @@ export default function Home() {
         startDate={startDate}
         endDate={endDate}
         selectedDropdownData={selectedDropdownData}
+        selectedOptionItem={selectedOptionItem}
         eventLoading={eventLoading}
         handleDropdownChange={handleDropdownChange}
         calenderHandler={calenderHandler}
@@ -389,6 +394,7 @@ export default function Home() {
       item => item.category === selectedData?.id,
     );
 
+    setSelectedOptionItem(selectedData);
     setSelectedDropdownData(JSON.parse(JSON.stringify(filterData)));
   };
 

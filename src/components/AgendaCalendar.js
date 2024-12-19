@@ -39,13 +39,22 @@ export default function AgendaCalendar({
             data={dropDownData}
             placeholder={strings.Search}
             onChange={selectedValue => handleDropdownChange(selectedValue)}
-            value={dropDownData?.[0]?.value}
-            dropdownStyle={{...styles.dropdownStyle, ...dropdownStyles}}
+            value={selectedDropdownData?.value || dropDownData[0]}
+            dropdownStyle={{
+              ...styles.dropdownStyle,
+              ...dropdownStyles,
+              backgroundColor:
+                selectedDropdownData?.dropdownBgColor ||
+                dropDownData[0]?.dropdownBgColor,
+            }}
             arrowIconColor={colors.blue}
             itemTextStyle={{
-              color: colors.white,
+              color: 'yellow',
               padding: moderateScale(8),
             }}
+            selectedTextColor={
+              selectedDropdownData?.textColor || dropDownData[0]?.textColor
+            }
           />
 
           {calendar ? (
@@ -225,12 +234,12 @@ const styles = StyleSheet.create({
   },
   dropdownStyle: {
     // width: moderateScale(210),
-    height: moderateScale(42),
+    height: moderateScale(50),
     alignSelf: 'flex-end',
     borderRadius: moderateScale(15),
     backgroundColor: colors.grayOpacity10,
     borderWidth: 1,
-    borderColor: colors.blue,
+    borderColor: colors.black,
     textAlign: 'left',
   },
   selectedDateContainer: {

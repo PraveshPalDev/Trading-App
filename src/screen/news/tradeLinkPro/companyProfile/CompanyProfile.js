@@ -86,6 +86,8 @@ export default function CompanyProfile() {
   const [allNewsSource, setAllNewsSource] = useState([]);
   const [newsSourceId, setNewsSourceId] = useState('');
   const [allTickerNews, setAllTickerNews] = useState([]);
+  const [selectedOptionItem, setSelectedOptionItem] = useState(null);
+  const [selectedValue, setSelectedValue] = useState();
 
   useEffect(() => {
     const {startDate, endDate} = getCurrentWeekRange();
@@ -295,6 +297,7 @@ export default function CompanyProfile() {
             data={eventCategories}
             startDate={startDate}
             endDate={endDate}
+            selectedOptionItem={selectedOptionItem}
             selectedDropdownData={selectedDropdownData}
             eventLoading={eventLoading}
             handleDropdownChange={handleDropdownChange}
@@ -332,6 +335,7 @@ export default function CompanyProfile() {
       item => item.category === selectedData?.id,
     );
 
+    setSelectedOptionItem(selectedData);
     setSelectedDropdownData(JSON.parse(JSON.stringify(filterData)));
   };
 
@@ -371,6 +375,7 @@ export default function CompanyProfile() {
   };
 
   const dropDownAllHandler = item => {
+    setSelectedValue(item?.label);
     setNewsSourceId(item.value);
   };
 
@@ -407,7 +412,7 @@ export default function CompanyProfile() {
                     placeholder={strings.SearchText}
                     onChange={dropDownAllHandler}
                     enableSearch={true}
-                    value={selectedOption}
+                    value={selectedValue}
                     dropdownStyle={{width: width / 1.3}}
                   />
                   <TouchableOpacity
@@ -643,6 +648,7 @@ export default function CompanyProfile() {
           userData={userData}
           isLocked={isLocked}
           setIsLocked={setIsLocked}
+          navigation={navigation}
         />
         <NewsFeed isLocked={isLocked} setIsLocked={setIsLocked} />
         <View style={{marginHorizontal: moderateScale(12)}}>
@@ -817,26 +823,38 @@ const StockCard = ({
     ? rds.find(quote => quote.ticker === `${tickerName}`)
     : rds[0];
 
+  const formatValue = value => {
+    const num = parseFloat(value);
+    if (isNaN(num)) return value;
+    return `${num > 0 ? '+' : ''}${num.toFixed(2)}%`;
+  };
+
   const formattedData = selectedDailyQuote
     ? [
-        {key: 'day', value: selectedQuote?.change},
+        {
+          key: 'day',
+          value:
+            selectedQuote?.change !== undefined
+              ? `${selectedQuote?.change >= 0 ? '+' : ''}${
+                  selectedQuote?.change
+                }%`
+              : '0%',
+        },
         {
           key: 'ytd',
-          value: `${calcData(
-            selectedDailyQuote?.ytd,
-            selectedQuote?.price,
-          ).toFixed(2)}%`,
+          value: formatValue(
+            calcData(selectedDailyQuote?.ytd, selectedQuote?.price),
+          ),
         },
         {
           key: 'oneYear',
-          value: `${calcData(
-            selectedDailyQuote?.oneYear,
-            selectedQuote?.price,
-          ).toFixed(2)}%`,
+          value: formatValue(
+            calcData(selectedDailyQuote?.oneYear, selectedQuote?.price),
+          ),
         },
         {key: 'adv', value: Math.round(selectedDailyQuote?.adv)},
         {key: 'vol', value: selectedDailyQuote?.vol},
-        {key: 'ticker', value: selectedDailyQuote?.ticker},
+        // {key: 'ticker', value: selectedDailyQuote?.ticker},
         {key: 'ek', value: '€ 4'},
       ]
     : [];
@@ -928,7 +946,7 @@ const CompanyDescription = ({rds, isLocked, setIsLocked, tickerName}) => {
   );
 };
 
-const SpeedoMeterComponents = ({data, isLocked, setIsLocked}) => {
+const SpeedoMeterComponents = ({data, isLocked, setIsLocked, navigation}) => {
   // Helper function to determine Speedometer value based on signal
   const getSignalValue = signal => {
     if (signal == 0) return 50; // Hold
@@ -977,7 +995,10 @@ const SpeedoMeterComponents = ({data, isLocked, setIsLocked}) => {
             <TouchableOpacity
               style={{
                 padding: moderateScale(5),
-              }}>
+              }}
+              onPress={() =>
+                navigation.navigate(navigationStrings.TradeLinkTable)
+              }>
               <Icon
                 name={'zoom-out-map'}
                 size={moderateScale(25)}

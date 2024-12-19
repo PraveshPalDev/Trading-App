@@ -16,17 +16,11 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
   GetAllDailyQuotes,
   GetPortfolioDetails,
+  GetRDS,
 } from '../../../redux/actions/news';
 import FlashListComp from '../../../components/FlashListComp';
 
 const tableHead = ['Share', 'AVAX', 'AVAX'];
-const tableData = [
-  ['Price', '€ 1.36', '€ 1.36'],
-  ['Add. 1 Year (%)', '+1.28%', '+1.28%'],
-  ['Change (%)', '-0.73%', '-0.73%'],
-  ['Average Daily Volume', '1,02,000', '1,02,000'],
-  ['Capitalization (m)', '€ 201.72', '€ 201.72'],
-];
 
 export default function AllStacks() {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -34,12 +28,25 @@ export default function AllStacks() {
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [portfolioData, setPortfolioData] = useState([]);
+  const [allRds, setAllRds] = useState([]);
+
+  const generateTableData = portfolioData => {
+    return portfolioData.map(item => [
+      '€ ' + item.price,
+      `+${item.oneYear.toFixed(2)}%`,
+      `${item.change.toFixed(2)}%`,
+      item.volume.toLocaleString(),
+      '€ ' + ((item.price * item.shares) / 1000000).toFixed(2),
+    ]);
+  };
+
+  const tableData = generateTableData(portfolioData);
 
   useFocusEffect(
     useCallback(() => {
       fetchDailyQuotes();
-      // fetchPortfolioDetails();
-
+      fetchPortfolioDetails();
+      fetchRDS();
       return () => {};
     }, []),
   );
@@ -62,12 +69,27 @@ export default function AllStacks() {
     setLoading(true);
     try {
       const res = await GetPortfolioDetails();
-      console.log('get =>', res);
+
+      console.log('res =>', res);
       if (res) {
         setPortfolioData(res);
       }
     } catch (error) {
       console.log('error for fetching portfolio details =>', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRDS = async () => {
+    try {
+      setLoading(true);
+      const res = await GetRDS();
+      if (res.length > 0) {
+        setAllRds(res);
+      }
+    } catch (error) {
+      console.log('error for rds =>', error);
     } finally {
       setLoading(false);
     }
@@ -184,7 +206,7 @@ export default function AllStacks() {
             <View style={styles.tableContainer}>
               <Table borderStyle={styles.tableBorder}>
                 <Row
-                  data={tableHead.map((item, index) => (
+                  data={tableHead?.map((item, index) => (
                     <Text
                       key={index}
                       style={[
@@ -222,7 +244,7 @@ export default function AllStacks() {
               </Text>
             </View>
 
-            <View style={styles.footer}>
+            {/* <View style={styles.footer}>
               <View style={styles.tableFooterStyles}>
                 <TouchableOpacity style={styles.iconButton}>
                   <Icon
@@ -248,7 +270,7 @@ export default function AllStacks() {
                 }}>
                 <Text style={styles.buyButtonText}>Buy</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </View>
       </ModalComp>

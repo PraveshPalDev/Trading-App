@@ -18,6 +18,7 @@ import {
   GetTickerByUsers,
 } from '../redux/actions/news';
 import {showSuccess} from '../utils/helperFunctions';
+import {buttonSell} from '../constants/static/staticData';
 
 export default function StockVoteComp({tickerData, userData}) {
   const [tickerOptions, setTickerOptions] = useState([]);
@@ -30,6 +31,7 @@ export default function StockVoteComp({tickerData, userData}) {
     sell: false,
     del: false,
   });
+  const [selectedColor, setSelectedColor] = useState();
 
   useEffect(() => {
     fetchData();
@@ -117,14 +119,15 @@ export default function StockVoteComp({tickerData, userData}) {
       modifiedDate: isoDate,
       createdBy: `${userData.firstName} ${userData.lastName}`,
       modifiedBy: `${userData.firstName} ${userData.lastName}`,
-      tickerStatus: type,
+      tickerStatus: type?.label,
     };
 
     setVoteLoadingState(prevState => ({
       ...prevState,
-      [type.toLowerCase()]: true,
+      [type?.label]: true,
     }));
 
+    setSelectedColor(type);
     try {
       const res = await CrateORUpdateTicker(payload);
 
@@ -137,7 +140,7 @@ export default function StockVoteComp({tickerData, userData}) {
     } finally {
       setVoteLoadingState(prevState => ({
         ...prevState,
-        [type.toLowerCase()]: false,
+        [type?.label]: false,
       }));
     }
   };
@@ -183,9 +186,7 @@ export default function StockVoteComp({tickerData, userData}) {
                   style={[
                     styles.deleteBtnContainer,
                     {
-                      backgroundColor:
-                        chartData?.find(item => item.key === 'buy')?.svg
-                          ?.fill || colors.lightGreen2,
+                      backgroundColor: selectedColor?.color,
                     },
                   ]}
                   onPress={() => handleDeleteVote('del')}
@@ -194,12 +195,20 @@ export default function StockVoteComp({tickerData, userData}) {
                     <ActivityIndicator size="small" color={colors.white} />
                   ) : (
                     <>
-                      <TextComp>{'Buy'}</TextComp>
-                      <Icon
-                        name="delete"
-                        size={moderateScale(22)}
-                        color={colors.white}
-                      />
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                        }}>
+                        <TextComp style={{color: colors.white}}>
+                          {selectedColor?.label}
+                        </TextComp>
+                        <Icon
+                          name="delete"
+                          size={moderateScale(22)}
+                          color={colors.black}
+                        />
+                      </View>
                     </>
                   )}
                 </TouchableOpacity>
@@ -207,15 +216,17 @@ export default function StockVoteComp({tickerData, userData}) {
             </View>
 
             <View style={styles.buttonsContainer}>
-              {['Buy', 'Hold', 'Sell'].map(type => (
+              {buttonSell?.map(type => (
                 <TouchableOpacity
-                  key={type}
-                  style={[styles.button, styles[type.toLowerCase()]]}
+                  key={type.id}
+                  style={[styles.button, styles[type?.label?.toLowerCase()]]}
                   onPress={() => handleCreateAndUpdateTicker(type)}>
-                  {voteLoadingState[type.toLowerCase()] ? (
+                  {voteLoadingState[type?.label?.toLowerCase()] ? (
                     <ActivityIndicator size="small" color={colors.white} />
                   ) : (
-                    <TextComp>{type}</TextComp>
+                    <TextComp style={{color: colors.white}}>
+                      {type?.label}
+                    </TextComp>
                   )}
                 </TouchableOpacity>
               ))}
@@ -226,13 +237,12 @@ export default function StockVoteComp({tickerData, userData}) {
                   style={styles.pieChart}
                   data={chartData}
                   valueAccessor={({item}) => item.amount}
-                  innerRadius={60}
-                  outerRadius={80}
+                  innerRadius={0}
+                  outerRadius={90}
                   labelRadius={110}
                 />
                 <View style={styles.centerTextContainer}>
-                  <Text style={styles.centerText}>Total</Text>
-                  <Text style={styles.centerValue}>{'10'}</Text>
+                  <Text style={styles.centerText}>{selectedColor?.label}</Text>
                 </View>
               </View>
             )}
@@ -345,6 +355,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   button: {
+    borderWidth: 1,
+    borderColor: colors.black,
     borderRadius: moderateScale(25),
     paddingVertical: moderateScale(10),
     paddingHorizontal: moderateScale(20),
@@ -396,7 +408,6 @@ const styles = StyleSheet.create({
   deleteBtnContainer: {
     width: moderateScale(60),
     height: moderateScale(35),
-    backgroundColor: colors.lightGreen2,
     flexDirection: 'row',
     justifyContent: 'center',
     borderRadius: moderateScale(50),
@@ -431,7 +442,7 @@ const styles = StyleSheet.create({
   centerText: {
     fontSize: textScale(18),
     fontWeight: 'bold',
-    color: colors.gray,
+    color: colors.black,
   },
   centerValue: {
     fontSize: textScale(24),

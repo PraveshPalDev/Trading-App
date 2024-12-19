@@ -210,7 +210,7 @@ export default function TradeLinkAnalysis({route}) {
     );
   };
 
-  const renderRow = ({item}) => {
+  const renderRow = ({item, isVolGroup}) => {
     return (
       <View style={{...styles.row}}>
         <Text style={{...styles.cell}}>{item.indicator}</Text>
@@ -220,14 +220,26 @@ export default function TradeLinkAnalysis({route}) {
             {
               color:
                 item.signal === 1
-                  ? 'green'
+                  ? isVolGroup
+                    ? 'rgb(19, 222, 185)'
+                    : 'green'
                   : item.signal === -1
-                  ? 'red'
+                  ? isVolGroup
+                    ? 'rgb(250, 137, 107)'
+                    : 'red'
                   : 'orange',
               paddingRight: moderateScale(80),
             },
           ]}>
-          {item.signal === 1 ? 'Buy' : item.signal === -1 ? 'Sell' : 'Hold'}
+          {item.signal === 1
+            ? isVolGroup
+              ? 'Strong'
+              : 'Buy'
+            : item.signal === -1
+            ? isVolGroup
+              ? 'Weak'
+              : 'Sell'
+            : 'Hold'}
         </Text>
 
         <TouchableOpacity
@@ -264,7 +276,7 @@ export default function TradeLinkAnalysis({route}) {
         color: getScoreColor(buyCount, sellCount, holdCount),
       },
     ];
-    // here remove the hold button in Vol tabs
+
     if (item?.data[0]?.group === 'Vol') {
       stats = stats?.filter(stat => stat?.label !== `Hold : ${holdCount}`);
     }
@@ -315,7 +327,7 @@ export default function TradeLinkAnalysis({route}) {
               </View>
 
               <View style={styles.tableHeader}>
-                {AccordingTableHeading.map((heading, index) => (
+                {AccordingTableHeading?.map((heading, index) => (
                   <Text
                     key={index}
                     style={[styles.tableHeaderText, styles.headerCell]}>
@@ -326,7 +338,12 @@ export default function TradeLinkAnalysis({route}) {
 
               <FlatList
                 data={item?.data}
-                renderItem={renderRow}
+                renderItem={rowItem =>
+                  renderRow({
+                    ...rowItem,
+                    isVolGroup: item?.data[0]?.group === 'Vol',
+                  })
+                }
                 keyExtractor={(item, index) => index.toString()}
               />
             </CollapseBody>

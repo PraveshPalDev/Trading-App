@@ -18,12 +18,14 @@ export default function EventCalendarComp({
   title,
   rightMapIcon,
   rightMapIconHandler,
+  selectedOptionItem,
 }) {
   return (
     <View style={{...styles.container, marginTop: moderateScale(10)}}>
       <AgendaCalendar
         title={title}
         dropDownData={data}
+        selectedDropdownData={selectedOptionItem}
         handleDropdownChange={handleDropdownChange}
         calenderIconHandler={calenderHandler}
         calendar={'calendar'}
@@ -53,7 +55,7 @@ export default function EventCalendarComp({
             />
           </View>
         ) : (
-          <View style={{marginBottom: moderateScale(20)}}>
+          <View style={{marginBottom: moderateScale(25)}}>
             <FlashListComp
               DATA={selectedDropdownData}
               keyExtractor={(item, index) => index.toString()}

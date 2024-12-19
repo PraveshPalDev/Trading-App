@@ -102,8 +102,8 @@ export const GetNewsByTicker = async (tickerName, newsSourceId) => {
 export const GetAnalysis = async () => {
   return apiGet(`${Analysis}`);
 };
-export const GetPortfolioDetails = async () => {
-  return apiGet(`${Portfolio}`);
+export const GetPortfolioDetails = async id => {
+  return apiGet(`${Portfolio}/${'424'}`);
 };
 export const GetAnalysisImageMappings = async () => {
   return apiGet(`${AnalysisImageMappings}`);

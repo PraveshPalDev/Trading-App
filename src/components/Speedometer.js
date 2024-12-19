@@ -1,11 +1,45 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import RNSpeedometer from 'react-native-speedometer';
 import colors from '../styles/colors';
-import {moderateScale, textScale} from '../styles/responsiveSize';
-import CurvedText from './CurvedText';
+import {textScale} from '../styles/responsiveSize';
 
 export default function Speedometer({value = 0, meterSize = 100}) {
+  // Labels for speedometer segments
+
+  const updateLabel = value => {
+    if (value === 20) {
+      return 'Sell';
+    } else if (value === 50) {
+      return 'Hold';
+    } else if (value === 80) {
+      return 'Buy';
+    } else {
+      return '';
+    }
+  };
+
+  const labels = [
+    {
+      name: updateLabel(value) === 'Sell' ? 'Sell' : '',
+      labelColor: colors.red,
+      activeBarColor: colors.red,
+      labelStyle: styles.labelLow,
+    },
+    {
+      name: updateLabel(value) === 'Hold' ? 'Hold' : '',
+      labelColor: colors.yellow,
+      activeBarColor: colors.yellow,
+      labelStyle: styles.labelMedium,
+    },
+    {
+      name: updateLabel(value) === 'Buy' ? 'Buy' : '',
+      labelColor: colors.green,
+      activeBarColor: colors.green,
+      labelStyle: styles.labelHigh,
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <RNSpeedometer
@@ -18,26 +52,7 @@ export default function Speedometer({value = 0, meterSize = 100}) {
         outerCircleStyle={styles.outerCircle}
         easeDuration={1000}
         showIndicator={false}
-        labels={[
-          {
-            name: 'Sell',
-            labelColor: colors.red,
-            activeBarColor: colors.red,
-            labelStyle: styles.labelLow,
-          },
-          {
-            name: 'Buy',
-            labelColor: colors.yellow,
-            activeBarColor: colors.yellow,
-            labelStyle: styles.labelMedium,
-          },
-          {
-            name: 'Hold',
-            labelColor: colors.green,
-            activeBarColor: colors.green,
-            labelStyle: styles.labelHigh,
-          },
-        ]}
+        labels={labels}
       />
     </View>
   );
@@ -53,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: textScale(15),
     color: colors.black,
     textAlign: 'center',
+    marginBottom: 10,
   },
   innerCircle: {
     width: '90%',
@@ -61,5 +77,17 @@ const styles = StyleSheet.create({
   outerCircle: {
     width: '100%',
     height: '100%',
+  },
+  labelLow: {
+    fontSize: textScale(10),
+    color: colors.red,
+  },
+  labelMedium: {
+    fontSize: textScale(10),
+    color: colors.yellow,
+  },
+  labelHigh: {
+    fontSize: textScale(10),
+    color: colors.green,
   },
 });

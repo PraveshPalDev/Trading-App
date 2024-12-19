@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     fontSize: textScale(14),
     fontWeight: 'bold',
     textAlign: 'center',
+    color: colors.black,
   },
   row: {
     flexDirection: 'row',

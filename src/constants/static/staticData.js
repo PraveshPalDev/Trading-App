@@ -107,6 +107,12 @@ const modalAllButton = [
   },
 ];
 
+const buttonSell = [
+  {id: 1, label: 'Buy', color: colors.green},
+  {id: 2, label: 'Hold', color: colors.yellow},
+  {id: 3, label: 'Sell', color: colors.red},
+];
+
 export {
   appearanceData,
   symbols,
@@ -116,4 +122,5 @@ export {
   actions,
   modalAllButton,
   AccordingTableHeading,
+  buttonSell,
 };
