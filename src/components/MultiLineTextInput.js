@@ -46,7 +46,6 @@ export default function MultiLineTextInputComp({
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
     borderRadius: moderateScale(10),
     marginVertical: moderateScale(10),
   },
@@ -57,5 +56,8 @@ const styles = StyleSheet.create({
     maxHeight: moderateScale(200),
     textAlignVertical: 'top',
     padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.purple,
+    borderRadius: moderateScale(12),
   },
 });

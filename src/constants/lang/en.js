@@ -65,6 +65,14 @@ export default {
   Logout: 'Logout',
   LogoutSuccess: 'Logout Successfully.',
 
+  // contact page
+  Communication: 'Επικοινωνία',
+  Name: 'Όνομα',
+  EmailContact: 'Ηλεκτρονικό Ταχυδρομείο',
+  Phone: 'Τηλέφωνο Επικοινωνίας (προαιρετικό)',
+  Message: 'Μήνυμα',
+  Shipment: 'Αποστολή',
+
   // register page
   WelcomeText: 'Welcome User',
   SignUpText: 'Sign up to continue',

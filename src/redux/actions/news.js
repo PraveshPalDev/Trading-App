@@ -1,6 +1,7 @@
 import {
   Analysis,
   AnalysisImageMappings,
+  ContactUsUser,
   CreateAndUpdateTicker,
   DeleteTicker,
   GET_ALL_EVENT_CATEGORY,
@@ -107,4 +108,7 @@ export const GetPortfolioDetails = async id => {
 };
 export const GetAnalysisImageMappings = async () => {
   return apiGet(`${AnalysisImageMappings}`);
+};
+export const ContactUsHandler = async payload => {
+  return apiPost(`${ContactUsUser}`, payload);
 };
