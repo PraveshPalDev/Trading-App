@@ -169,50 +169,58 @@ export default function StockVoteComp({tickerData, userData}) {
           </View>
         ) : (
           <View style={styles.containerMain}>
-            <Text style={styles.title}>
-              Είναι η μετοχή AAAK.AT για Αγορά ή Πώληση?
-            </Text>
-            <Text style={styles.subtitle}>
-              Πείτε μας την γνώμη σας για την μετοχή και μάθετε τι πιστεύουν και
-              άλλοι χρήστες της πλατφόρμας.
-            </Text>
-
-            <View style={styles.deleteMainContainer}>
-              <Text style={styles.subtitle}>
-                Ψηφήσατε ότι αυτή η μετοχή είναι για
+            <View
+              style={{
+                width: width / 1.1,
+                padding: moderateScale(10),
+                justifyContent: 'center',
+                alignSelf: 'center',
+              }}>
+              <Text style={styles.title}>
+                Είναι η μετοχή AAAK.AT για Αγορά ή Πώληση?
               </Text>
-              {isDeleted && (
-                <TouchableOpacity
-                  style={[
-                    styles.deleteBtnContainer,
-                    {
-                      backgroundColor: selectedColor?.color,
-                    },
-                  ]}
-                  onPress={() => handleDeleteVote('del')}
-                  activeOpacity={0.7}>
-                  {voteLoadingState['del'] ? (
-                    <ActivityIndicator size="small" color={colors.white} />
-                  ) : (
-                    <>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'center',
-                        }}>
-                        <TextComp style={{color: colors.white}}>
-                          {selectedColor?.label}
-                        </TextComp>
-                        <Icon
-                          name="delete"
-                          size={moderateScale(22)}
-                          color={colors.black}
-                        />
-                      </View>
-                    </>
-                  )}
-                </TouchableOpacity>
-              )}
+              <Text style={styles.subtitle}>
+                Πείτε μας την γνώμη σας για την μετοχή και μάθετε τι πιστεύουν
+                και άλλοι χρήστες της πλατφόρμας.
+              </Text>
+
+              <View style={styles.deleteMainContainer}>
+                <Text style={styles.subtitle}>
+                  Ψηφήσατε ότι αυτή η μετοχή είναι για
+                </Text>
+                {isDeleted && (
+                  <TouchableOpacity
+                    style={[
+                      styles.deleteBtnContainer,
+                      {
+                        backgroundColor: selectedColor?.color,
+                      },
+                    ]}
+                    onPress={() => handleDeleteVote('del')}
+                    activeOpacity={0.7}>
+                    {voteLoadingState['del'] ? (
+                      <ActivityIndicator size="small" color={colors.white} />
+                    ) : (
+                      <>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                          }}>
+                          <TextComp style={{color: colors.white}}>
+                            {selectedColor?.label}
+                          </TextComp>
+                          <Icon
+                            name="delete"
+                            size={moderateScale(22)}
+                            color={colors.white}
+                          />
+                        </View>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
 
             <View style={styles.buttonsContainer}>
@@ -350,7 +358,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   buttonsContainer: {
-    width: width / 1.2,
+    width: width / 1.05,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -362,7 +370,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(20),
   },
   buy: {
-    backgroundColor: colors.lightGreen2,
+    backgroundColor: colors.green,
   },
   hold: {
     backgroundColor: colors.yellow,
@@ -442,7 +450,7 @@ const styles = StyleSheet.create({
   centerText: {
     fontSize: textScale(18),
     fontWeight: 'bold',
-    color: colors.black,
+    color: colors.white,
   },
   centerValue: {
     fontSize: textScale(24),

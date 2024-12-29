@@ -19,6 +19,13 @@ const styles = StyleSheet.create({
     bottom: moderateScale(30),
     right: moderateScale(0),
   },
+
+  floatingOverlay: {
+    ...StyleSheet.absoluteFillObject, // Covers the entire screen
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 9,
+  },
+
   headerStyles: {
     color: colors.black,
     fontSize: textScale(16),
@@ -145,6 +152,9 @@ const styles = StyleSheet.create({
   negative: {
     color: colors.red,
   },
+  blackText: {
+    color: colors.black,
+  },
   lockedContent: {
     flex: 1,
     alignItems: 'center',
@@ -170,16 +180,24 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: moderateScale(5),
   },
-  title: {
-    fontSize: textScale(18),
-    fontWeight: 'bold',
-    marginBottom: moderateScale(10),
-    textAlign: 'left',
-  },
   description: {
     fontSize: textScale(16),
     lineHeight: moderateScale(24),
     padding: moderateScale(15),
+    color: colors.black,
+  },
+  newFeedSubContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: moderateScale(5),
+  },
+  newFeedTitle: {
+    fontSize: textScale(16),
+    fontWeight: 'bold',
+    color: colors.black,
+    paddingLeft: moderateScale(10),
+    paddingTop: moderateScale(10),
   },
 
   // here all technical styles
@@ -367,14 +385,13 @@ const styles = StyleSheet.create({
   sourceName: {
     fontSize: textScale(14),
     color: colors.gray,
-    marginLeft: moderateScale(6),
+    marginLeft: moderateScale(4),
   },
   timeText: {
     fontSize: textScale(12),
     color: colors.gray,
   },
 
-  // modal styles here
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -396,11 +413,6 @@ const styles = StyleSheet.create({
     borderColor: colors.grayOpacity80,
     borderRadius: moderateScale(10),
   },
-  title: {
-    fontSize: textScale(18),
-    fontWeight: 'bold',
-    marginBottom: moderateScale(10),
-  },
   optionButton: {
     backgroundColor: colors.white,
     padding: moderateScale(8),
@@ -411,8 +423,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: 'center',
-    color: colors.black,
-    fontSize: textScale(13),
+    color: colors.blue,
+    fontSize: textScale(16),
     fontWeight: '500',
   },
   sectionTitle: {
@@ -420,6 +432,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: moderateScale(10),
     textAlign: 'center',
+    color: colors.black,
   },
   dateInputsContainer: {
     flexDirection: 'row',
@@ -429,6 +442,11 @@ const styles = StyleSheet.create({
   dateInputWrapper: {
     flex: 1,
     marginHorizontal: moderateScale(5),
+  },
+  dateLabelStyles: {
+    color: colors.black,
+    fontSize: textScale(16),
+    fontVariant: '500',
   },
   dateInput: {
     borderWidth: moderateScale(1),
@@ -464,18 +482,6 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: colors.blue,
     fontWeight: 'bold',
-  },
-  newFeedTitle: {
-    paddingLeft: moderateScale(20),
-    paddingTop: moderateScale(10),
-    fontSize: moderateScale(18),
-    color: colors.black,
-    fontWeight: 'bold',
-  },
-  newFeedSubContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginRight: moderateScale(8),
   },
 });
 

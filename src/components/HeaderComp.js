@@ -32,7 +32,11 @@ export default function HeaderComp({
           <TouchableOpacity
             activeOpacity={0.5}
             onPress={() => navigation.goBack()}>
-            <Icon2 name={'arrow-back-ios-new'} size={moderateScale(25)} />
+            <Icon2
+              name={'arrow-back-ios-new'}
+              size={moderateScale(25)}
+              color={colors.black}
+            />
           </TouchableOpacity>
         )}
 

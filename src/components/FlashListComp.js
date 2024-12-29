@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import TextComp from './TextComp';
 import {FlashList} from '@shopify/flash-list';
+import colors from '../styles/colors';
 
 export default function FlashListComp({
   DATA,
@@ -25,7 +26,7 @@ export default function FlashListComp({
       {...props}
       ListEmptyComponent={() => (
         <View style={styles.emptyContainer}>
-          <TextComp text="No data available !!" />
+          <TextComp style={{color: colors.black}} text="No data available !!" />
         </View>
       )}
       ItemSeparatorComponent={ItemSeparatorComponent}

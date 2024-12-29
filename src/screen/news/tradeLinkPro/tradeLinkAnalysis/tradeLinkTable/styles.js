@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
     borderColor: colors.grayOpacity20,
   },
   cell: {
+    flex: 1,
     fontSize: textScale(14),
     fontWeight: 'bold',
     textAlign: 'center',
@@ -371,17 +372,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: textScale(13),
+    color: colors.black,
   },
   row: {
     flexDirection: 'row',
     padding: moderateScale(8),
     borderBottomWidth: 1,
     borderColor: colors.white,
-  },
-  cell: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: textScale(14),
   },
   greenText: {color: colors.darkGreen},
   redText: {color: colors.red},

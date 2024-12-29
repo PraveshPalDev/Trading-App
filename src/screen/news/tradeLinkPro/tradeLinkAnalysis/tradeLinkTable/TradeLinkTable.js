@@ -131,7 +131,7 @@ export default function TradeLinkTable() {
           value={searchText}
           searchHandler={searchHandler}
           placeholderText={strings.SearchText}
-          containerStyle={{width: width / 1.3}}
+          containerStyle={{width: width / 1.33}}
         />
       </View>
 

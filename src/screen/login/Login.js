@@ -15,7 +15,7 @@ import {userLogin} from '../../redux/actions/auth';
 
 export default function Login({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('sandip@gmail.com');
   const [password, setPassword] = useState('sandip@123');
   const [loading, setLoading] = useState(false);
 

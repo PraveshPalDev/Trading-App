@@ -27,7 +27,9 @@ import CurvedText from '../../../../components/CurvedText';
 import FlashListComp from '../../../../components/FlashListComp';
 import ModalComp from '../../../../components/ModalComp';
 import {
+  addCommaEveryThree,
   calcData,
+  formatValue,
   getCurrentMonthRange,
   getCurrentWeekRange,
   getMostFrequentSignal,
@@ -317,7 +319,7 @@ export default function CompanyProfile() {
   };
 
   const rightMapIconHandler = () => {
-    alert('map');
+    navigation.navigate(navigationStrings.News);
   };
 
   const handleApply = () => {
@@ -375,7 +377,7 @@ export default function CompanyProfile() {
   };
 
   const dropDownAllHandler = item => {
-    setSelectedValue(item?.label);
+    setSelectedValue(item?.value);
     setNewsSourceId(item.value);
   };
 
@@ -405,16 +407,22 @@ export default function CompanyProfile() {
           <>
             <View style={styles.flashListContainer}>
               <View style={{backgroundColor: colors.grayOpacity10}}>
-                <Text style={styles.newFeedTitle}>{strings.NewsFeed}</Text>
+                <TextComp text={strings.NewsFeed} style={styles.newFeedTitle} />
+
                 <View style={styles.newFeedSubContainer}>
                   <CustomDropdown
                     data={allNewsSource}
-                    placeholder={strings.SearchText}
+                    placeholder={strings.Search}
                     onChange={dropDownAllHandler}
                     enableSearch={true}
                     value={selectedValue}
-                    dropdownStyle={{width: width / 1.3}}
+                    dropdownStyle={{
+                      width: width / 1.35,
+                      height: moderateScale(45),
+                      alignSelf: '',
+                    }}
                   />
+
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={rightMapIconHandler}
@@ -548,21 +556,35 @@ export default function CompanyProfile() {
         (a, b) => new Date(b?.pubDate) - new Date(a?.pubDate),
       );
 
-      const temp = [];
-      sortedData?.forEach(x => {
-        temp.push({
+      const temp =
+        sortedData?.map(x => ({
           label: `${x?.ticker} - ${x?.eN_Name}`,
           value: `${x?.ticker} ${x?.eN_Name}`,
           ticker: x?.ticker,
-        });
-      });
+        })) || [];
 
-      if (response?.length) {
-        setTickerData(temp[0]);
-        setDropdownData(temp);
+      setDropdownData(temp);
+      if (item?.item) {
+        const temp = [];
+        temp.push({
+          label: `${item?.item?.ticker} - ${item.item.grTicker}`,
+          value: `${item?.item?.ticker} ${item.item.grTicker}`,
+          ticker: item?.item?.ticker,
+        });
+
+        const updatedTemp = temp.map(item => ({
+          ...item,
+          ticker: item.ticker.replace('.AT', ''),
+        }));
+
+        setTickerData(updatedTemp[0]);
+        return;
       }
+
+      setTickerData(temp[0]);
+      setDropdownData(temp);
     } catch (error) {
-      console.error('Error fetching getTickerBasic information :', error);
+      console.error('Error fetching getTickerBasic information:', error);
     }
   };
 
@@ -649,6 +671,7 @@ export default function CompanyProfile() {
           isLocked={isLocked}
           setIsLocked={setIsLocked}
           navigation={navigation}
+          signal={signal}
         />
         <NewsFeed isLocked={isLocked} setIsLocked={setIsLocked} />
         <View style={{marginHorizontal: moderateScale(12)}}>
@@ -672,29 +695,26 @@ export default function CompanyProfile() {
           <View style={styles.modalContainer}>
             <Text style={styles.title}>{strings.SelectCalendarPeriod}</Text>
             <View style={styles.cardBorderContainer}>
-              {modalAllButton?.map(item => {
-                return (
-                  <View key={item?.id}>
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      style={styles.optionButton}
-                      onPress={() => handleButtonPress(item?.type)}>
-                      <Text style={styles.buttonText}>{item?.name}</Text>
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
+              {modalAllButton?.map(item => (
+                <View key={item?.id}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={styles.optionButton}
+                    onPress={() => handleButtonPress(item?.type)}>
+                    <Text style={styles.buttonText}>{item?.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
 
               <Text style={styles.sectionTitle}>{strings.CustomPeriod}</Text>
-
               <View style={styles.dateInputsContainer}>
                 <View style={styles.dateInputWrapper}>
-                  <TextComp>{strings.Start}</TextComp>
+                  <Text style={styles.dateLabelStyles}>{strings.Start}</Text>
                   <TouchableOpacity
                     onPress={() => setShowStartPicker(true)}
                     style={styles.dateInput}
                     activeOpacity={0.7}>
-                    <TextComp>
+                    <TextComp style={styles.dateLabelStyles}>
                       {handleApplyStartDate
                         ? moment(handleApplyStartDate, 'MM-DD-YYYY').format(
                             'MM/DD/YYYY',
@@ -725,12 +745,12 @@ export default function CompanyProfile() {
                 </View>
 
                 <View style={styles.dateInputWrapper}>
-                  <TextComp>{strings.End}</TextComp>
+                  <Text style={styles.dateLabelStyles}>{strings.End}</Text>
                   <TouchableOpacity
                     onPress={() => setShowEndPicker(true)}
                     style={styles.dateInput}
                     activeOpacity={0.7}>
-                    <TextComp>
+                    <TextComp style={styles.dateLabelStyles}>
                       {handleApplyEndDate
                         ? moment(handleApplyEndDate, 'MM-DD-YYYY').format(
                             'MM/DD/YYYY',
@@ -791,6 +811,64 @@ export default function CompanyProfile() {
   );
 }
 
+const formatMetricsData = (selectedQuote, selectedDailyQuote, shareMap) => [
+  {
+    key: 'day',
+    value:
+      selectedQuote?.change !== undefined
+        ? `${selectedQuote?.change >= 0 ? '+' : ''}${selectedQuote?.change}%`
+        : '0%',
+  },
+  {
+    key: 'ytd',
+    value: formatValue(calcData(selectedDailyQuote?.ytd, selectedQuote?.price)),
+  },
+  {
+    key: 'oneYear',
+    value: formatValue(
+      calcData(selectedDailyQuote?.oneYear, selectedQuote?.price),
+    ),
+  },
+  {
+    key: 'adv',
+    value: addCommaEveryThree(Math.round(selectedDailyQuote?.adv)),
+  },
+  {key: 'vol', value: selectedDailyQuote?.vol},
+  {
+    key: 'ek',
+    value: `€ ${addCommaEveryThree(Math.floor(shareMap / 1000000))}`,
+  },
+];
+
+// Reusable MetricItem Component
+const MetricItem = ({label, value, isSpecial}) => (
+  <View style={styles.metricItem}>
+    <Text style={styles.metricLabel}>{label}</Text>
+    <Text
+      style={[
+        styles.metricValue,
+        parseFloat(value) < 0 ? styles.negative : styles.positive,
+        isSpecial ? styles.blackText : null,
+      ]}>
+      {value}
+    </Text>
+  </View>
+);
+
+// Reusable LockedState Component
+const LockedState = ({onPress}) => (
+  <View style={styles.lockedContent}>
+    <Icon
+      name="lock"
+      size={moderateScale(40)}
+      color="#555"
+      style={styles.lockIcon}
+    />
+    <TextComp style={styles.lockedText}>{strings.TabLock}</TextComp>
+  </View>
+);
+
+// Main StockCard Component
 const StockCard = ({
   allQuotes,
   rds,
@@ -810,7 +888,6 @@ const StockCard = ({
     ek: 'Κεφαλαιοποίηση (εκ)',
   };
 
-  // Filter data based on tickerName or default to the first item
   const selectedQuote = tickerName
     ? allQuotes.find(quote => quote.ticker === tickerName)
     : allQuotes[0];
@@ -823,41 +900,14 @@ const StockCard = ({
     ? rds.find(quote => quote.ticker === `${tickerName}`)
     : rds[0];
 
-  const formatValue = value => {
-    const num = parseFloat(value);
-    if (isNaN(num)) return value;
-    return `${num > 0 ? '+' : ''}${num.toFixed(2)}%`;
-  };
+  const marketCap = rds?.find(x => x.ticker === tickerName)?.shares;
+  const shareMap = marketCap * (selectedQuote ? selectedQuote.price : 0);
 
-  const formattedData = selectedDailyQuote
-    ? [
-        {
-          key: 'day',
-          value:
-            selectedQuote?.change !== undefined
-              ? `${selectedQuote?.change >= 0 ? '+' : ''}${
-                  selectedQuote?.change
-                }%`
-              : '0%',
-        },
-        {
-          key: 'ytd',
-          value: formatValue(
-            calcData(selectedDailyQuote?.ytd, selectedQuote?.price),
-          ),
-        },
-        {
-          key: 'oneYear',
-          value: formatValue(
-            calcData(selectedDailyQuote?.oneYear, selectedQuote?.price),
-          ),
-        },
-        {key: 'adv', value: Math.round(selectedDailyQuote?.adv)},
-        {key: 'vol', value: selectedDailyQuote?.vol},
-        // {key: 'ticker', value: selectedDailyQuote?.ticker},
-        {key: 'ek', value: '€ 4'},
-      ]
-    : [];
+  const formattedData = formatMetricsData(
+    selectedQuote,
+    selectedDailyQuote,
+    shareMap,
+  );
 
   return (
     <TouchableOpacity
@@ -869,15 +919,7 @@ const StockCard = ({
       onPress={() => setIsLocked(!isLocked)}
       activeOpacity={0.9}>
       {isLocked ? (
-        <View style={styles.lockedContent}>
-          <Icon
-            name="lock"
-            size={moderateScale(40)}
-            color="#555"
-            style={styles.lockIcon}
-          />
-          <TextComp style={styles.lockedText}>{strings.TabLock}</TextComp>
-        </View>
+        <LockedState />
       ) : (
         <>
           <View style={styles.header2}>
@@ -891,17 +933,13 @@ const StockCard = ({
           </Text>
 
           <View style={styles.metricsContainer}>
-            {formattedData?.map(({key, value}) => (
-              <View key={key} style={styles.metricItem}>
-                <Text style={styles.metricLabel}>{labels[key]}</Text>
-                <Text
-                  style={[
-                    styles.metricValue,
-                    parseFloat(value) < 0 ? styles.negative : styles.positive,
-                  ]}>
-                  {value}
-                </Text>
-              </View>
+            {formattedData.map(({key, value}) => (
+              <MetricItem
+                key={key}
+                label={labels[key]}
+                value={value}
+                isSpecial={['adv', 'vol', 'ek'].includes(key)}
+              />
             ))}
           </View>
         </>
@@ -946,7 +984,13 @@ const CompanyDescription = ({rds, isLocked, setIsLocked, tickerName}) => {
   );
 };
 
-const SpeedoMeterComponents = ({data, isLocked, setIsLocked, navigation}) => {
+const SpeedoMeterComponents = ({
+  data,
+  isLocked,
+  setIsLocked,
+  navigation,
+  signal,
+}) => {
   // Helper function to determine Speedometer value based on signal
   const getSignalValue = signal => {
     if (signal == 0) return 50; // Hold
@@ -964,6 +1008,26 @@ const SpeedoMeterComponents = ({data, isLocked, setIsLocked, navigation}) => {
   const trendValue = getSignalValue(TrendFollowingSignal);
   const meanValue = getSignalValue(MeanReversionSignal);
   const volumeValue = getSignalValue(VolumeSignal);
+  const meterValue = {
+    trendValue,
+    meanValue,
+    volumeValue,
+  };
+
+  const pressHandler = item => {
+    // const calculateYTD = `${Math.floor(calcData(item?.ytd, item?.price))}%`;
+
+    // console.log('item =>', item);
+
+    // const updatedItem = {
+    //   ...item,
+    //   ytd: calculateYTD,
+    //   ...meterValue,
+    //   signal: signal,
+    // };
+
+    navigation.navigate(navigationStrings.TradeLinkTable);
+  };
 
   return (
     <TouchableOpacity
@@ -996,9 +1060,7 @@ const SpeedoMeterComponents = ({data, isLocked, setIsLocked, navigation}) => {
               style={{
                 padding: moderateScale(5),
               }}
-              onPress={() =>
-                navigation.navigate(navigationStrings.TradeLinkTable)
-              }>
+              onPress={() => pressHandler(data)}>
               <Icon
                 name={'zoom-out-map'}
                 size={moderateScale(25)}

@@ -1,4 +1,4 @@
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, View, ScrollView} from 'react-native';
 import React from 'react';
 import AgendaCalendar from './AgendaCalendar';
 import {moderateScale, textScale} from '../styles/responsiveSize';
@@ -55,12 +55,16 @@ export default function EventCalendarComp({
             />
           </View>
         ) : (
-          <View style={{marginBottom: moderateScale(25)}}>
-            <FlashListComp
-              DATA={selectedDropdownData}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderTableData}
-            />
+          <View style={{marginBottom: moderateScale(20)}}>
+            <ScrollView
+              style={styles.scrollContainer}
+              nestedScrollEnabled={true}>
+              <FlashListComp
+                DATA={selectedDropdownData}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderTableData}
+              />
+            </ScrollView>
           </View>
         )}
       </View>
@@ -73,7 +77,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: moderateScale(12),
   },
-  //table styles here
+  flashListContainer: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContainer: {
+    maxHeight: moderateScale(300),
+    borderRadius: moderateScale(20),
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

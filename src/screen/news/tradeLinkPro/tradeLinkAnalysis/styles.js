@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: textScale(16),
     fontWeight: '500',
+    color: colors.black,
   },
   body: {
     flexDirection: 'row',

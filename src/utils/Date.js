@@ -46,11 +46,26 @@ export const calcData = (value, price) => {
   return ((price - value) / value) * 100;
 };
 
-const numberWithCommas = x => {
+export const numberWithCommas = x => {
   x = x.toString();
   var pattern = /(-?\d+)(\d{3})/;
   while (pattern.test(x)) x = x.replace(pattern, '$1,$2');
   return x;
+};
+
+export const addCommaEveryThree = num => {
+  const [integerPart, decimalPart] = num?.toString().split('.');
+
+  const formattedInteger = integerPart?.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // Return the formatted number
+  return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+};
+
+export const formatValue = value => {
+  const num = parseFloat(value);
+  if (isNaN(num)) return value;
+  return `${num > 0 ? '+' : ''}${num.toFixed(2)}%`;
 };
 
 export const getMostFrequentSignal = (signalData, group) => {
