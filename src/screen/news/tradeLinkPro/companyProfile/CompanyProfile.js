@@ -43,6 +43,7 @@ import {
   GetAllNewsSources,
   GetAllQuotes,
   GetAllSignal,
+  GetAllStocks,
   GetEventsBetweenDates,
   GetNewsByTicker,
   GetRDS,
@@ -90,6 +91,7 @@ export default function CompanyProfile() {
   const [allTickerNews, setAllTickerNews] = useState([]);
   const [selectedOptionItem, setSelectedOptionItem] = useState(null);
   const [selectedValue, setSelectedValue] = useState();
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const {startDate, endDate} = getCurrentWeekRange();
@@ -103,13 +105,14 @@ export default function CompanyProfile() {
     fetchDailyQuotes();
     fetchRDS();
     fetchStockFilterData();
-    fetchAllSignal();
+    fetchDataAndMerge();
     fetchAllNewsSources();
   }, []);
 
   // call here api to news with ticker
   useEffect(() => {
     fetchAllNews();
+    fetchAllSignal();
   }, [newsSourceId, tickerData]);
 
   const fetchAllNews = async () => {
@@ -149,6 +152,7 @@ export default function CompanyProfile() {
       if (res.length > 0) {
         setLoading(false);
         setDailyQuotes(res);
+        return res;
       }
     } catch (error) {
       setLoading(false);
@@ -208,10 +212,52 @@ export default function CompanyProfile() {
     try {
       const res = await GetAllSignal();
       if (res) {
-        setSignal(res);
+        const filterSignal = res.filter(
+          x => x.ticker === `${tickerData?.ticker}.AT`,
+        );
+        setSignal(filterSignal);
       }
     } catch (error) {
       console.log('error for signal api =>', error);
+    }
+  };
+
+  // call here api to analysis page
+  const fetchAllStock = async () => {
+    try {
+      const res = await GetAllStocks();
+      return res;
+    } catch (error) {
+      console.log('Error fetching stock details =>', error);
+      return [];
+    }
+  };
+
+  const fetchDataAndMerge = async () => {
+    setLoading(true);
+    try {
+      // Fetch both datasets in parallel
+      const [stocks, dailyQuotes] = await Promise.all([
+        fetchAllStock(),
+        fetchDailyQuotes(),
+      ]);
+
+      // Merge data based on ticker
+      const mergedData = stocks?.map(stock => {
+        const dailyQuote = dailyQuotes.find(
+          quote => quote?.ticker === stock?.ticker,
+        );
+        return {
+          ...stock,
+          ...dailyQuote,
+        };
+      });
+
+      setData(mergedData);
+    } catch (error) {
+      console.log('Error merging data =>', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -273,12 +319,16 @@ export default function CompanyProfile() {
   };
 
   const PurchaseCalendar = ({isLocked, setIsLocked}) => {
+    const filterData = selectedDropdownData?.filter(
+      x => x.symbol === tickerData?.ticker,
+    );
+
     return (
       <TouchableOpacity
         style={[
           styles.container,
           isLocked ? styles.lockedCard : styles.unlockedCard,
-          isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
+          isLocked ? {backgroundColor: 'rgba(206, 204, 204, 0.7)'} : null,
           {padding: 0},
         ]}
         onPress={() => setIsLocked(!isLocked)}
@@ -300,7 +350,7 @@ export default function CompanyProfile() {
             startDate={startDate}
             endDate={endDate}
             selectedOptionItem={selectedOptionItem}
-            selectedDropdownData={selectedDropdownData}
+            selectedDropdownData={filterData}
             eventLoading={eventLoading}
             handleDropdownChange={handleDropdownChange}
             calenderHandler={calenderHandler}
@@ -672,10 +722,12 @@ export default function CompanyProfile() {
           setIsLocked={setIsLocked}
           navigation={navigation}
           signal={signal}
+          apiData={data}
+          tickerName={tickerData?.ticker}
         />
         <NewsFeed isLocked={isLocked} setIsLocked={setIsLocked} />
         <View style={{marginHorizontal: moderateScale(12)}}>
-          <CustomNewsTabs />
+          <CustomNewsTabs tickerData={tickerData} />
         </View>
       </ScrollView>
 
@@ -990,6 +1042,8 @@ const SpeedoMeterComponents = ({
   setIsLocked,
   navigation,
   signal,
+  apiData,
+  tickerName,
 }) => {
   // Helper function to determine Speedometer value based on signal
   const getSignalValue = signal => {
@@ -1008,25 +1062,51 @@ const SpeedoMeterComponents = ({
   const trendValue = getSignalValue(TrendFollowingSignal);
   const meanValue = getSignalValue(MeanReversionSignal);
   const volumeValue = getSignalValue(VolumeSignal);
-  const meterValue = {
-    trendValue,
-    meanValue,
-    volumeValue,
-  };
 
-  const pressHandler = item => {
-    // const calculateYTD = `${Math.floor(calcData(item?.ytd, item?.price))}%`;
+  const pressHandler = () => {
+    const item = apiData?.find(x => x.ticker === `${tickerName}.AT`);
+    const calculateYTD = `${Math.floor(calcData(item?.ytd, item?.price))}%`;
 
-    // console.log('item =>', item);
+    // Helper function to determine Speedometer value based on signal
+    const getSignalValue = signal => {
+      if (signal == 0) return 'Hold';
+      if (signal == -1) return 'Sell';
+      if (signal == 1) return 'Buy';
+      return 'Hold';
+    };
 
-    // const updatedItem = {
-    //   ...item,
-    //   ytd: calculateYTD,
-    //   ...meterValue,
-    //   signal: signal,
-    // };
+    // Fetch signals for each metric
+    const TrendFollowingSignal = getMostFrequentSignal(
+      signal.filter(x => x.ticker == item.ticker),
+      'TF',
+    );
+    const MeanReversionSignal = getMostFrequentSignal(
+      signal.filter(x => x.ticker == item.ticker),
+      'MR',
+    );
+    const VolumeSignal = getMostFrequentSignal(
+      signal.filter(x => x.ticker == item.ticker),
+      'Vol',
+    );
 
-    navigation.navigate(navigationStrings.TradeLinkTable);
+    // Map signals to Speedometer values
+    const trendValue = getSignalValue(TrendFollowingSignal);
+    const meanValue = getSignalValue(MeanReversionSignal);
+    const volumeValue = getSignalValue(VolumeSignal);
+    const meterValue = {
+      trendValue,
+      meanValue,
+      volumeValue,
+    };
+
+    const updatedItem = {
+      ...item,
+      ytd: calculateYTD,
+      ...meterValue,
+      signal: signal,
+    };
+
+    navigation.navigate(navigationStrings.TradeLinkAnalysis, updatedItem);
   };
 
   return (
@@ -1060,7 +1140,7 @@ const SpeedoMeterComponents = ({
               style={{
                 padding: moderateScale(5),
               }}
-              onPress={() => pressHandler(data)}>
+              onPress={() => pressHandler()}>
               <Icon
                 name={'zoom-out-map'}
                 size={moderateScale(25)}
@@ -1095,7 +1175,7 @@ const SpeedoMeterComponents = ({
             {/* Bind the specific value to each Speedometer */}
             <Speedometer value={trendValue} />
             <Speedometer value={meanValue} />
-            <Speedometer value={volumeValue} />
+            <Speedometer value={volumeValue} isVolumeMeter={true} />
           </View>
         </>
       )}

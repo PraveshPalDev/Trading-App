@@ -4,16 +4,28 @@ import RNSpeedometer from 'react-native-speedometer';
 import colors from '../styles/colors';
 import {textScale} from '../styles/responsiveSize';
 
-export default function Speedometer({value = 0, meterSize = 100}) {
+export default function Speedometer({
+  value = 0,
+  meterSize = 100,
+  isVolumeMeter,
+}) {
   // Labels for speedometer segments
 
   const updateLabel = value => {
     if (value === 20) {
-      return 'Sell';
+      if (isVolumeMeter) {
+        return 'Week';
+      } else {
+        return 'Sell';
+      }
     } else if (value === 50) {
       return 'Hold';
     } else if (value === 80) {
-      return 'Buy';
+      if (isVolumeMeter) {
+        return 'Strong';
+      } else {
+        return 'Buy';
+      }
     } else {
       return '';
     }
@@ -21,19 +33,19 @@ export default function Speedometer({value = 0, meterSize = 100}) {
 
   const labels = [
     {
-      name: updateLabel(value) === 'Sell' ? 'Sell' : '',
+      name: updateLabel(value),
       labelColor: colors.red,
       activeBarColor: colors.red,
       labelStyle: styles.labelLow,
     },
     {
-      name: updateLabel(value) === 'Hold' ? 'Hold' : '',
+      name: updateLabel(value),
       labelColor: colors.yellow,
       activeBarColor: colors.yellow,
       labelStyle: styles.labelMedium,
     },
     {
-      name: updateLabel(value) === 'Buy' ? 'Buy' : '',
+      name: updateLabel(value),
       labelColor: colors.green,
       activeBarColor: colors.green,
       labelStyle: styles.labelHigh,

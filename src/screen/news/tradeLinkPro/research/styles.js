@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
   },
 
   // modal styles here
+
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -193,11 +194,6 @@ const styles = StyleSheet.create({
     borderColor: colors.grayOpacity80,
     borderRadius: moderateScale(10),
   },
-  title: {
-    fontSize: textScale(18),
-    fontWeight: 'bold',
-    marginBottom: moderateScale(10),
-  },
   optionButton: {
     backgroundColor: colors.white,
     padding: moderateScale(8),
@@ -208,8 +204,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: 'center',
-    color: colors.black,
-    fontSize: textScale(13),
+    color: colors.blue,
+    fontSize: textScale(16),
     fontWeight: '500',
   },
   sectionTitle: {
@@ -217,6 +213,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: moderateScale(10),
     textAlign: 'center',
+    color: colors.black,
   },
   dateInputsContainer: {
     flexDirection: 'row',
@@ -226,6 +223,11 @@ const styles = StyleSheet.create({
   dateInputWrapper: {
     flex: 1,
     marginHorizontal: moderateScale(5),
+  },
+  dateLabelStyles: {
+    color: colors.black,
+    fontSize: textScale(16),
+    fontVariant: '500',
   },
   dateInput: {
     borderWidth: moderateScale(1),
@@ -261,18 +263,6 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: colors.blue,
     fontWeight: 'bold',
-  },
-  newFeedTitle: {
-    paddingLeft: moderateScale(20),
-    paddingTop: moderateScale(10),
-    fontSize: moderateScale(18),
-    color: colors.black,
-    fontWeight: 'bold',
-  },
-  newFeedSubContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginRight: moderateScale(8),
   },
 });
 

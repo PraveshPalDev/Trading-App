@@ -9,12 +9,13 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import TabRoutes from './TabRoutes';
 import strings from '../constants/lang';
 import {
-  Calendar,
   CompanyProfile,
   ContactUs,
   News,
   OnlineTrading,
   Logout,
+  CalendarPage,
+  BigCalendar,
 } from '../screen';
 import colors from '../styles/colors';
 import {moderateScale, textScale} from '../styles/responsiveSize';
@@ -122,9 +123,23 @@ export default function DrawerStack() {
           ),
         }}
       />
+      {/* <Drawer.Screen
+        name={strings.Calendar}
+        component={CalendarPage}
+        options={{
+          drawerIcon: ({focused, size}) => (
+            <Icon
+              name="calendar-today"
+              size={moderateScale(28)}
+              color={focused ? colors.blue : colors.grayOpacity80}
+            />
+          ),
+        }}
+      /> */}
+
       <Drawer.Screen
         name={strings.Calendar}
-        component={Calendar}
+        component={BigCalendar}
         options={{
           drawerIcon: ({focused, size}) => (
             <Icon

@@ -35,6 +35,7 @@ import ModalComp from '../../../../components/ModalComp';
 import {modalAllButton} from '../../../../constants/static/staticData';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NewsCard from '../../../../components/NewsCard';
+import CustomDropdown from '../../../../components/CustomDropdown';
 const data = [
   {city: 'San Francisco', offset: -8},
   {city: 'New York', offset: -5},
@@ -64,6 +65,7 @@ export default function Research() {
   const [trendingLoading, setTrendingLoading] = useState(false);
   const [allImage, setAllImage] = useState([]);
   const [timeData, setTimeData] = useState(data);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     updateTime();
@@ -133,7 +135,7 @@ export default function Research() {
         setEventLoading(false);
       }
     },
-    [startDate, endDate],
+    [startDate, endDate, tickerData?.ticker],
   );
   const fetchStockFilterData = async () => {
     try {
@@ -357,6 +359,10 @@ export default function Research() {
   };
 
   const PurchaseCalendar = ({isLocked, setIsLocked}) => {
+    const filterData = selectedDropdownData?.filter(
+      x => x.symbol === tickerData?.ticker,
+    );
+
     return (
       <TouchableOpacity
         style={[
@@ -383,7 +389,7 @@ export default function Research() {
             data={eventCategories}
             startDate={startDate}
             endDate={endDate}
-            selectedDropdownData={selectedDropdownData}
+            selectedDropdownData={filterData}
             eventLoading={eventLoading}
             handleDropdownChange={handleDropdownChange}
             calenderHandler={calenderHandler}
@@ -403,6 +409,11 @@ export default function Research() {
     );
   };
 
+  const handleDropdownChangeTicker = item => {
+    setSelectedOption(item.value);
+    setTickerData(item);
+  };
+
   return (
     <WrapperContainer>
       <HeaderComp
@@ -417,6 +428,15 @@ export default function Research() {
         style={{marginBottom: moderateScale(25)}}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}>
+        {/* added the ticker dropdown */}
+        <CustomDropdown
+          data={dropdownData}
+          placeholder={strings.SearchText}
+          onChange={handleDropdownChangeTicker}
+          enableSearch={true}
+          value={selectedOption}
+        />
+
         <RenderTimeZoneCard isLocked={isLocked} setIsLocked={setIsLocked} />
 
         {trendingLoading ? (
@@ -442,7 +462,7 @@ export default function Research() {
             />
 
             <View style={{marginHorizontal: moderateScale(12)}}>
-              <CustomNewsTabs showSearchBar={true} />
+              <CustomNewsTabs showSearchBar={true} tickerData={tickerData} />
             </View>
           </>
         )}
@@ -472,12 +492,12 @@ export default function Research() {
 
               <View style={styles.dateInputsContainer}>
                 <View style={styles.dateInputWrapper}>
-                  <TextComp>{strings.Start}</TextComp>
+                  <Text style={styles.dateLabelStyles}>{strings.Start}</Text>
                   <TouchableOpacity
                     onPress={() => setShowStartPicker(true)}
                     style={styles.dateInput}
                     activeOpacity={0.7}>
-                    <TextComp>
+                    <TextComp style={styles.dateLabelStyles}>
                       {handleApplyStartDate
                         ? moment(handleApplyStartDate, 'MM-DD-YYYY').format(
                             'MM/DD/YYYY',
@@ -508,12 +528,12 @@ export default function Research() {
                 </View>
 
                 <View style={styles.dateInputWrapper}>
-                  <TextComp>{strings.End}</TextComp>
+                  <Text style={styles.dateLabelStyles}>{strings.End}</Text>
                   <TouchableOpacity
                     onPress={() => setShowEndPicker(true)}
                     style={styles.dateInput}
                     activeOpacity={0.7}>
-                    <TextComp>
+                    <TextComp style={styles.dateLabelStyles}>
                       {handleApplyEndDate
                         ? moment(handleApplyEndDate, 'MM-DD-YYYY').format(
                             'MM/DD/YYYY',

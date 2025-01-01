@@ -16,12 +16,11 @@ import moment from 'moment';
 import CustomDropdown from './CustomDropdown';
 import SearchComp from './SearchComp';
 
-export default function CustomNewsTabs({showSearchBar = false}) {
+export default function CustomNewsTabs({showSearchBar = false, tickerData}) {
   const [activeTab, setActiveTab] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const tabs = ['Όλα', 'Ημερήσια', 'Εβδομαδιαία', 'Μηνιαία', 'Αποτελέσματα'];
 
   const fetchAnalysis = useCallback(async () => {
@@ -29,8 +28,14 @@ export default function CustomNewsTabs({showSearchBar = false}) {
     try {
       const res = await GetAnalysis();
       if (res) {
+        const filterData = res?.filter(
+          x => x?.tickers && x.tickers?.includes(`${tickerData?.ticker}.AT`),
+        );
+
         setData(prevData =>
-          JSON.stringify(prevData) !== JSON.stringify(res) ? res : prevData,
+          JSON.stringify(prevData) !== JSON.stringify(filterData)
+            ? filterData
+            : prevData,
         );
       }
     } catch (error) {
@@ -38,7 +43,7 @@ export default function CustomNewsTabs({showSearchBar = false}) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [tickerData?.ticker]);
 
   useEffect(() => {
     fetchAnalysis();

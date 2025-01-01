@@ -35,7 +35,7 @@ export default function StockVoteComp({tickerData, userData}) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [tickerData?.ticker]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -60,7 +60,20 @@ export default function StockVoteComp({tickerData, userData}) {
       if (tickerOptions) {
         setTickerOptions(tickerOptions);
       }
+
       if (chartData) {
+        let stateObject = {};
+        if (chartData?.buy === 1 || chartData?.buy === 2) {
+          stateObject = {color: colors.green, id: 1, label: 'Buy'};
+        } else if (chartData?.hold === 1 || chartData?.hold === 2) {
+          stateObject = {color: colors.yellow, id: 2, label: 'Hold'};
+        } else if (chartData?.sell === 1 || chartData?.sell === 2) {
+          stateObject = {color: colors.red, id: 3, label: 'Sell'};
+        } else {
+          stateObject = {color: colors.white, id: 0, label: 'None'};
+        }
+        setSelectedColor(stateObject);
+
         const formattedData = Object.keys(chartData)
           .filter(key => key !== 'tickerName')
           .map(key => ({
@@ -145,6 +158,8 @@ export default function StockVoteComp({tickerData, userData}) {
     }
   };
 
+  const totalCount = chartData.reduce((total, item) => total + item.amount, 0);
+
   return (
     <View
       style={{
@@ -177,8 +192,9 @@ export default function StockVoteComp({tickerData, userData}) {
                 alignSelf: 'center',
               }}>
               <Text style={styles.title}>
-                Είναι η μετοχή AAAK.AT για Αγορά ή Πώληση?
+                Είναι η μετοχή {tickerData?.ticker} για Αγορά ή Πώληση?
               </Text>
+
               <Text style={styles.subtitle}>
                 Πείτε μας την γνώμη σας για την μετοχή και μάθετε τι πιστεύουν
                 και άλλοι χρήστες της πλατφόρμας.
@@ -245,12 +261,12 @@ export default function StockVoteComp({tickerData, userData}) {
                   style={styles.pieChart}
                   data={chartData}
                   valueAccessor={({item}) => item.amount}
-                  innerRadius={0}
+                  innerRadius={moderateScale(1)}
                   outerRadius={90}
                   labelRadius={110}
                 />
                 <View style={styles.centerTextContainer}>
-                  <Text style={styles.centerText}>{selectedColor?.label}</Text>
+                  <Text style={styles.centerText}>{totalCount}</Text>
                 </View>
               </View>
             )}
@@ -448,9 +464,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   centerText: {
-    fontSize: textScale(18),
+    fontSize: textScale(25),
     fontWeight: 'bold',
-    color: colors.white,
+    color: colors.black,
   },
   centerValue: {
     fontSize: textScale(24),

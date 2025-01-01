@@ -1,5 +1,5 @@
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import WrapperContainer from '../../../../components/WrapperContainer';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -61,12 +61,12 @@ export default function TradeLinkAnalysis({route}) {
   }, []);
 
   const filterAllData = () => {
-    const {TFFilterData, MRFilterData, VolFilterData} = item?.signal.reduce(
+    const {TFFilterData, MRFilterData, VolFilterData} = item?.signal?.reduce(
       (acc, x) => {
         if (x?.ticker === item?.ticker) {
-          if (x.group === 'TF') acc.TFFilterData.push(x);
-          else if (x.group === 'MR') acc.MRFilterData.push(x);
-          else if (x.group === 'Vol') acc.VolFilterData.push(x);
+          if (x.group === 'TF') acc?.TFFilterData.push(x);
+          else if (x.group === 'MR') acc?.MRFilterData.push(x);
+          else if (x.group === 'Vol') acc?.VolFilterData.push(x);
         }
         return acc;
       },
@@ -203,6 +203,7 @@ export default function TradeLinkAnalysis({route}) {
           />
           <Speedometer value={getSignalValueFromLabel(data?.data?.meanValue)} />
           <Speedometer
+            isVolumeMeter={true}
             value={getSignalValueFromLabel(data?.data?.volumeValue)}
           />
         </View>
@@ -278,20 +279,29 @@ export default function TradeLinkAnalysis({route}) {
     ];
 
     if (item?.data[0]?.group === 'Vol') {
-      stats = stats?.filter(stat => stat?.label !== `Hold : ${holdCount}`);
+      stats = stats.map(stat => {
+        if (stat.label.includes('Buy')) {
+          return {...stat, label: `Strong : ${buyCount}`};
+        }
+        if (stat.label.includes('Sell')) {
+          return {...stat, label: `Weak : ${sellCount}`};
+        }
+        return stat;
+      });
+      stats = stats.filter(stat => stat?.label !== `Hold : ${holdCount}`);
     }
 
     return (
       <View style={styles.cardContainer}>
-        <View style={styles.accordionStyles} key={item.id}>
+        <View style={styles.accordionStyles} key={item?.id}>
           <Collapse
             isActive={activeAccordion === item.id}
             onToggle={() => toggleAccordion(item.id)}
             style={styles.collapse}>
             <CollapseHeader>
               <View style={styles.header}>
-                <Text style={styles.headerText}>{item.title}</Text>
-                {activeAccordion === item.id ? (
+                <Text style={styles.headerText}>{item?.title}</Text>
+                {activeAccordion === item?.id ? (
                   <Icon2
                     name="arrow-up-drop-circle"
                     size={moderateScale(30)}

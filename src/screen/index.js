@@ -13,9 +13,10 @@ export {default as Tracker} from './news/tracker/Tracker';
 
 // Drawer all screen here
 export {default as OnlineTrading} from './drawer/onlineTrading/OnlineTrading';
-export {default as Calendar} from './drawer/calendar/Calendar';
+export {default as CalendarPage} from './drawer/calendar/CalendarPage';
 export {default as ContactUs} from './drawer/contactUs/ContactUs';
 export {default as Logout} from './drawer/logout/Logout';
+export {default as BigCalendar} from './drawer/calendar/BigCalendar';
 
 //News Inside these all screen
 export {default as CompanyProfile} from './news/tradeLinkPro/companyProfile/CompanyProfile';

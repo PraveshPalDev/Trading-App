@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {moderateScale} from '../styles/responsiveSize';
+import {moderateScale, textScale} from '../styles/responsiveSize';
 import colors from '../styles/colors';
 
 const CustomDropdown = ({
@@ -72,6 +72,7 @@ const CustomDropdown = ({
         searchPlaceholder="Search..."
         onFocus={handleDropdownFocus}
         onBlur={handleDropdownBlur}
+        inputSearchStyle={styles.searchInputStyles}
         renderRightIcon={() => (
           <Icon
             name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
@@ -137,6 +138,11 @@ const styles = StyleSheet.create({
   selectedTextStyle: {
     fontSize: moderateScale(16),
     color: colors.black,
+  },
+  searchInputStyles: {
+    fontSize: textScale(15),
+    color: colors.black,
+    fontWeight: '500',
   },
 });
 
