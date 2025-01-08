@@ -727,7 +727,7 @@ export default function CompanyProfile() {
         />
         <NewsFeed isLocked={isLocked} setIsLocked={setIsLocked} />
         <View style={{marginHorizontal: moderateScale(12)}}>
-          <CustomNewsTabs tickerData={tickerData} />
+          <CustomNewsTabs tickerData={tickerData} defaultData={true} />
         </View>
       </ScrollView>
 

@@ -11,8 +11,7 @@ import colors from '../../../styles/colors';
 import ModalComp from '../../../components/ModalComp';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Table, Row, Rows} from 'react-native-table-component';
-import navigationStrings from '../../../navigation/navigationStrings';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   GetAllDailyQuotes,
   GetPortfolioDetails,
@@ -21,26 +20,42 @@ import {
 import FlashListComp from '../../../components/FlashListComp';
 
 const tableHead = ['Share', 'AVAX', 'AVAX'];
-
 export default function AllStacks() {
   const [isModalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [portfolioData, setPortfolioData] = useState([]);
   const [allRds, setAllRds] = useState([]);
+  const [modalData, setModalData] = useState([]);
 
-  const generateTableData = portfolioData => {
-    return portfolioData.map(item => [
-      '€ ' + item.price,
-      `+${item.oneYear.toFixed(2)}%`,
-      `${item.change.toFixed(2)}%`,
-      item.volume.toLocaleString(),
-      '€ ' + ((item.price * item.shares) / 1000000).toFixed(2),
-    ]);
+  const generateTableData = item => {
+    return [
+      ['Price', '€ ' + item?.price, '€ ' + item?.price],
+      [
+        'Add. 1 Year (%)',
+        `+${item?.oneYear?.toFixed(2)}%`,
+        `+${item?.oneYear?.toFixed(2)}%`,
+      ],
+      [
+        'Change (%)',
+        `${item?.change?.toFixed(2)}%`,
+        `${item?.change?.toFixed(2)}%`,
+      ],
+      [
+        'Average Daily Volume',
+        item?.volume?.toLocaleString(),
+        item?.volume?.toLocaleString(),
+      ],
+      [
+        'Capitalization (m)',
+        '€ ' + ((item?.price * item?.shares) / 1000000).toFixed(2),
+        ,
+        '€ ' + ((item?.price * item?.shares) / 1000000).toFixed(2),
+      ],
+    ];
   };
 
-  const tableData = generateTableData(portfolioData);
+  const tableData = generateTableData(modalData);
 
   useFocusEffect(
     useCallback(() => {
@@ -70,7 +85,6 @@ export default function AllStacks() {
     try {
       const res = await GetPortfolioDetails();
 
-      console.log('res =>', res);
       if (res) {
         setPortfolioData(res);
       }
@@ -114,10 +128,13 @@ export default function AllStacks() {
   );
 
   const stockHandler = item => {
+    setModalData(item);
     setModalVisible(true);
   };
 
   const renderItem = ({item}) => {
+    console.log('item =>', item);
+
     return (
       <TouchableOpacity
         style={styles.card}
@@ -147,7 +164,13 @@ export default function AllStacks() {
           </View>
         </View>
         <StockChartComp chartWidth={width} chartHeight={120} />
-        <Text style={styles.title}>{item.title}</Text>
+
+        <View style={styles.bottomCardStyles}>
+          <Text style={styles.title}>{item.portfolioName}</Text>
+          <View style={styles.buttonButtonStyles}>
+            <Text style={{color: colors.white}}>0.95</Text>
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -158,7 +181,7 @@ export default function AllStacks() {
   return (
     <WrapperContainer>
       <FlashListComp
-        data={chartData}
+        data={portfolioData}
         ListHeaderComponent={HeaderComponents}
         renderItem={renderItem}
         numColumns={2}
@@ -188,9 +211,8 @@ export default function AllStacks() {
         style={{flex: 1, justifyContent: 'center'}}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            {/* Header */}
             <View style={styles.header}>
-              <Text style={styles.modalTitle}>Alpha Growth Fund</Text>
+              <Text style={styles.modalTitle}>{`Alpha Growth Fund`}</Text>
               <TouchableOpacity
                 onPress={() => {
                   setModalVisible(false);
@@ -221,19 +243,31 @@ export default function AllStacks() {
 
                 <Rows
                   data={tableData?.map(row =>
-                    row.map((cell, cellIndex) => (
-                      <Text
-                        key={cellIndex}
-                        style={[
-                          styles.text,
-                          cellIndex === 0 && {
-                            ...styles.text,
-                            fontWeight: 'bold',
-                          },
-                        ]}>
-                        {cell}
-                      </Text>
-                    )),
+                    row?.map((cell, cellIndex) => {
+                      let textStyle = [styles.text];
+
+                      if (row[0] === 'Add. 1 Year (%)' && cellIndex > 0) {
+                        textStyle?.push({
+                          color: cell.includes('+') ? 'green' : 'red',
+                        });
+                      }
+                      if (row[0] === 'Change (%)' && cellIndex > 0) {
+                        textStyle?.push({
+                          color: cell.includes('-') ? 'red' : 'green',
+                        });
+                      }
+
+                      return (
+                        <Text
+                          key={cellIndex}
+                          style={[
+                            ...textStyle,
+                            cellIndex === 0 && {fontWeight: 'bold'},
+                          ]}>
+                          {cell}
+                        </Text>
+                      );
+                    }),
                   )}
                 />
               </Table>
@@ -243,34 +277,6 @@ export default function AllStacks() {
                 industry...
               </Text>
             </View>
-
-            {/* <View style={styles.footer}>
-              <View style={styles.tableFooterStyles}>
-                <TouchableOpacity style={styles.iconButton}>
-                  <Icon
-                    name={'heart'}
-                    color={colors.white}
-                    size={moderateScale(30)}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
-                  <Icon
-                    name={'share-all'}
-                    color={colors.white}
-                    size={moderateScale(30)}
-                  />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={styles.buyButton}
-                activeOpacity={0.7}
-                onPress={() => {
-                  setModalVisible(false);
-                  navigation.navigate(navigationStrings.Analysis);
-                }}>
-                <Text style={styles.buyButtonText}>Buy</Text>
-              </TouchableOpacity>
-            </View> */}
           </View>
         </View>
       </ModalComp>

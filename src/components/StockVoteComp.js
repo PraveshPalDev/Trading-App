@@ -158,7 +158,10 @@ export default function StockVoteComp({tickerData, userData}) {
     }
   };
 
-  const totalCount = chartData.reduce((total, item) => total + item.amount, 0);
+  const totalCount = chartData.reduce((total, item) => {
+    console.log('Current Item:', item);
+    return total + item.amount;
+  }, 0);
 
   return (
     <View
@@ -239,6 +242,21 @@ export default function StockVoteComp({tickerData, userData}) {
               </View>
             </View>
 
+            {isDeleted && (
+              <View style={styles.chartContainer}>
+                <PieChart
+                  style={styles.pieChart}
+                  data={chartData}
+                  valueAccessor={({item}) => item.amount}
+                  innerRadius={moderateScale(1)}
+                  outerRadius="100%">
+                  <View style={styles.centerTextContainer}>
+                    <Text style={styles.centerText}>{totalCount}</Text>
+                  </View>
+                </PieChart>
+              </View>
+            )}
+
             <View style={styles.buttonsContainer}>
               {buttonSell?.map(type => (
                 <TouchableOpacity
@@ -255,21 +273,6 @@ export default function StockVoteComp({tickerData, userData}) {
                 </TouchableOpacity>
               ))}
             </View>
-            {isDeleted && (
-              <View style={styles.chartContainer}>
-                <PieChart
-                  style={styles.pieChart}
-                  data={chartData}
-                  valueAccessor={({item}) => item.amount}
-                  innerRadius={moderateScale(1)}
-                  outerRadius={90}
-                  labelRadius={110}
-                />
-                <View style={styles.centerTextContainer}>
-                  <Text style={styles.centerText}>{totalCount}</Text>
-                </View>
-              </View>
-            )}
           </View>
         )}
       </TouchableOpacity>
@@ -278,6 +281,16 @@ export default function StockVoteComp({tickerData, userData}) {
 }
 
 const styles = StyleSheet.create({
+  chartContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
+  },
+  pieChart: {
+    height: 200,
+    width: 200,
+  },
+
   container: {
     width: width / 1.1,
     justifyContent: 'center',
@@ -377,6 +390,7 @@ const styles = StyleSheet.create({
     width: width / 1.05,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    paddingBottom: moderateScale(15),
   },
   button: {
     borderWidth: 1,
@@ -397,9 +411,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.white,
     fontWeight: 'bold',
-  },
-  chartContainer: {
-    alignItems: 'center',
   },
   legendContainer: {
     flexDirection: 'row',

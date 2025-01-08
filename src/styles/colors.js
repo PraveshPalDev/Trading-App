@@ -51,6 +51,7 @@ export default {
   greenOpacity80: 'rgba(0, 255, 0, 0.8)',
   greenOpacity90: 'rgba(0, 255, 0, 0.9)',
 
+  darkBlue: '#0F007B',
   blue: '#005aef',
   blueOpacity10: 'rgba(0, 90, 239, 0.1)',
   blueOpacity20: 'rgba(0, 90, 239, 0.2)',

@@ -16,7 +16,11 @@ import moment from 'moment';
 import CustomDropdown from './CustomDropdown';
 import SearchComp from './SearchComp';
 
-export default function CustomNewsTabs({showSearchBar = false, tickerData}) {
+export default function CustomNewsTabs({
+  showSearchBar = false,
+  tickerData,
+  defaultData = true,
+}) {
   const [activeTab, setActiveTab] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
   const [data, setData] = useState([]);
@@ -27,7 +31,9 @@ export default function CustomNewsTabs({showSearchBar = false, tickerData}) {
     setLoading(true);
     try {
       const res = await GetAnalysis();
-      if (res) {
+      if (defaultData == false) {
+        setData(res);
+      } else {
         const filterData = res?.filter(
           x => x?.tickers && x.tickers?.includes(`${tickerData?.ticker}.AT`),
         );

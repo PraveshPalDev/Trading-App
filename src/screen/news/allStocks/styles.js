@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: moderateScale(8),
     padding: moderateScale(5),
-    textAlign: 'center',
+    color: colors.black,
   },
   priceContainer: {
     flexDirection: 'row',
@@ -64,6 +64,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: moderateScale(10),
   },
+  bottomCardStyles: {
+    width: '70%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: moderateScale(8),
+  },
+  buttonButtonStyles: {
+    backgroundColor: colors.darkBlue,
+    width: moderateScale(50),
+    height: moderateScale(35),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: moderateScale(18),
+  },
+
   // modal styles here
   modalBackground: {
     flex: 1,

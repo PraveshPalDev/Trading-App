@@ -389,7 +389,7 @@ export default function Research() {
             data={eventCategories}
             startDate={startDate}
             endDate={endDate}
-            selectedDropdownData={filterData}
+            selectedDropdownData={selectedDropdownData}
             eventLoading={eventLoading}
             handleDropdownChange={handleDropdownChange}
             calenderHandler={calenderHandler}
@@ -462,7 +462,11 @@ export default function Research() {
             />
 
             <View style={{marginHorizontal: moderateScale(12)}}>
-              <CustomNewsTabs showSearchBar={true} tickerData={tickerData} />
+              <CustomNewsTabs
+                showSearchBar={true}
+                tickerData={tickerData}
+                defaultData={false}
+              />
             </View>
           </>
         )}
