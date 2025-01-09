@@ -97,7 +97,7 @@ export default function DrawerStack() {
           ),
         }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name={strings.OnlineTrading}
         component={OnlineTrading}
         options={{
@@ -109,7 +109,7 @@ export default function DrawerStack() {
             />
           ),
         }}
-      />
+      /> */}
       <Drawer.Screen
         name={strings.TradeLinkPro}
         component={CompanyProfile}
@@ -123,19 +123,6 @@ export default function DrawerStack() {
           ),
         }}
       />
-      {/* <Drawer.Screen
-        name={strings.Calendar}
-        component={CalendarPage}
-        options={{
-          drawerIcon: ({focused, size}) => (
-            <Icon
-              name="calendar-today"
-              size={moderateScale(28)}
-              color={focused ? colors.blue : colors.grayOpacity80}
-            />
-          ),
-        }}
-      /> */}
 
       <Drawer.Screen
         name={strings.Calendar}

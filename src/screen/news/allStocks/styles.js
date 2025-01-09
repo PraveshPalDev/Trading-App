@@ -107,13 +107,40 @@ const styles = StyleSheet.create({
   },
 
   // this is all styles to table
+  modalMainContainer: {
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(12),
+    marginVertical: moderateScale(15),
+  },
+  modalSubContainer: {
+    width: width / 1.1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  modalGridStyles: {
+    height: moderateScale(50),
+    width: width / 3.7,
+    marginVertical: moderateScale(5),
+    marginHorizontal: moderateScale(5),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.black,
+  },
+  gridNameText: {
+    color: colors.black,
+    fontSize: textScale(16),
+    fontWeight: '500',
+  },
+
   tableContainer: {
     width: width / 1.1,
     backgroundColor: colors.white,
     borderRadius: moderateScale(10),
     marginVertical: moderateScale(10),
   },
-
   tableBorder: {
     borderWidth: 1,
     borderColor: colors.gray,
@@ -135,7 +162,6 @@ const styles = StyleSheet.create({
     fontSize: textScale(14),
     color: colors.gray,
   },
-
   description: {
     fontSize: textScale(16),
     color: colors.blackOpacity50,

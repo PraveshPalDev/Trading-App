@@ -5,7 +5,7 @@ import WrapperContainer from '../../../components/WrapperContainer';
 import HeaderComp from '../../../components/HeaderComp';
 import SearchComp from '../../../components/SearchComp';
 import strings from '../../../constants/lang';
-import {moderateScale, width} from '../../../styles/responsiveSize';
+import {moderateScale, textScale, width} from '../../../styles/responsiveSize';
 import StockChartComp from '../../../components/StockChartComp';
 import colors from '../../../styles/colors';
 import ModalComp from '../../../components/ModalComp';
@@ -19,7 +19,7 @@ import {
 } from '../../../redux/actions/news';
 import FlashListComp from '../../../components/FlashListComp';
 
-const tableHead = ['Share', 'AVAX', 'AVAX'];
+const tableHead = ['Share', 'AVAX'];
 export default function AllStacks() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -27,34 +27,20 @@ export default function AllStacks() {
   const [portfolioData, setPortfolioData] = useState([]);
   const [allRds, setAllRds] = useState([]);
   const [modalData, setModalData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const generateTableData = item => {
     return [
-      ['Price', '€ ' + item?.price, '€ ' + item?.price],
-      [
-        'Add. 1 Year (%)',
-        `+${item?.oneYear?.toFixed(2)}%`,
-        `+${item?.oneYear?.toFixed(2)}%`,
-      ],
-      [
-        'Change (%)',
-        `${item?.change?.toFixed(2)}%`,
-        `${item?.change?.toFixed(2)}%`,
-      ],
-      [
-        'Average Daily Volume',
-        item?.volume?.toLocaleString(),
-        item?.volume?.toLocaleString(),
-      ],
+      ['Price', '€ ' + item?.price],
+      ['Add. 1 Year (%)', `+${item?.oneYear?.toFixed(2)}%`],
+      ['Change (%)', `${item?.change?.toFixed(2)}%`],
+      ['Average Daily Volume', item?.volume?.toLocaleString()],
       [
         'Capitalization (m)',
-        '€ ' + ((item?.price * item?.shares) / 1000000).toFixed(2),
-        ,
         '€ ' + ((item?.price * item?.shares) / 1000000).toFixed(2),
       ],
     ];
   };
-
   const tableData = generateTableData(modalData);
 
   useFocusEffect(
@@ -225,57 +211,97 @@ export default function AllStacks() {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.tableContainer}>
-              <Table borderStyle={styles.tableBorder}>
-                <Row
-                  data={tableHead?.map((item, index) => (
-                    <Text
+            <View style={styles.modalMainContainer}>
+              <View style={styles.modalSubContainer}>
+                {portfolioData?.map((item, index) => {
+                  const isSelected = selectedItem?.rdsName === item?.rdsName;
+                  return (
+                    <TouchableOpacity
+                      style={{
+                        ...styles.modalGridStyles,
+                        backgroundColor: isSelected
+                          ? colors.blue
+                          : colors.theme,
+                      }}
                       key={index}
-                      style={[
-                        styles.headText,
-                        index === 0 && {...styles.headText, fontWeight: 'bold'},
-                      ]}>
-                      {item}
-                    </Text>
-                  ))}
-                  style={styles.head}
-                />
+                      onPress={() => {
+                        setSelectedItem(item);
+                        setModalData(item);
+                      }}>
+                      <Text
+                        style={{
+                          ...styles.gridNameText,
+                          color: isSelected ? colors.white : colors.black,
+                        }}>
+                        {item?.rdsName}
+                      </Text>
+                      <Text
+                        style={{
+                          ...styles.gridNameText,
+                          fontSize: textScale(13),
+                          color: isSelected ? colors.white : colors.black,
+                        }}>{`€ ${item?.price}`}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
 
-                <Rows
-                  data={tableData?.map(row =>
-                    row?.map((cell, cellIndex) => {
-                      let textStyle = [styles.text];
+              {/* here old code */}
+              <View style={styles.tableContainer}>
+                <Table borderStyle={styles.tableBorder}>
+                  <Row
+                    data={tableHead?.map((item, index) => (
+                      <Text
+                        key={index}
+                        style={[
+                          styles.headText,
+                          index === 0 && {
+                            ...styles.headText,
+                            fontWeight: 'bold',
+                          },
+                        ]}>
+                        {item}
+                      </Text>
+                    ))}
+                    style={styles.head}
+                  />
 
-                      if (row[0] === 'Add. 1 Year (%)' && cellIndex > 0) {
-                        textStyle?.push({
-                          color: cell.includes('+') ? 'green' : 'red',
-                        });
-                      }
-                      if (row[0] === 'Change (%)' && cellIndex > 0) {
-                        textStyle?.push({
-                          color: cell.includes('-') ? 'red' : 'green',
-                        });
-                      }
+                  <Rows
+                    data={tableData?.map(row =>
+                      row?.map((cell, cellIndex) => {
+                        let textStyle = [styles.text];
 
-                      return (
-                        <Text
-                          key={cellIndex}
-                          style={[
-                            ...textStyle,
-                            cellIndex === 0 && {fontWeight: 'bold'},
-                          ]}>
-                          {cell}
-                        </Text>
-                      );
-                    }),
-                  )}
-                />
-              </Table>
+                        if (row[0] === 'Add. 1 Year (%)' && cellIndex > 0) {
+                          textStyle?.push({
+                            color: cell.includes('+') ? 'green' : 'red',
+                          });
+                        }
+                        if (row[0] === 'Change (%)' && cellIndex > 0) {
+                          textStyle?.push({
+                            color: cell.includes('-') ? 'red' : 'green',
+                          });
+                        }
 
-              <Text style={styles.description}>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry...
-              </Text>
+                        return (
+                          <Text
+                            key={cellIndex}
+                            style={[
+                              ...textStyle,
+                              cellIndex === 0 && {fontWeight: 'bold'},
+                            ]}>
+                            {cell}
+                          </Text>
+                        );
+                      }),
+                    )}
+                  />
+                </Table>
+
+                <Text style={styles.description}>
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry...
+                </Text>
+              </View>
             </View>
           </View>
         </View>

@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {PieChart} from 'react-native-svg-charts';
+import PieChart from 'react-native-pie-chart';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {moderateScale, textScale, width} from '../styles/responsiveSize';
 import colors from '../styles/colors';
@@ -32,6 +32,7 @@ export default function StockVoteComp({tickerData, userData}) {
     del: false,
   });
   const [selectedColor, setSelectedColor] = useState();
+  const widthAndHeight = moderateScale(180);
 
   useEffect(() => {
     fetchData();
@@ -46,51 +47,50 @@ export default function StockVoteComp({tickerData, userData}) {
 
       if (tickerOptions) {
         const findTracker = tickerOptions?.find(
-          x => x.tickerName == `${tickerData?.ticker}.AT`,
+          x => x?.tickerName === `${tickerData?.ticker}.AT`,
         );
-
-        //   hide the chart and delete button
-        if (!findTracker) {
-          setIsDelete(false);
-        } else {
-          setIsDelete(true);
-        }
-      }
-
-      if (tickerOptions) {
+        setIsDelete(!!findTracker);
         setTickerOptions(tickerOptions);
       }
 
+      // Handle chart data
       if (chartData) {
-        let stateObject = {};
-        if (chartData?.buy === 1 || chartData?.buy === 2) {
+        let stateObject = {color: colors.white, id: 0, label: 'None'};
+        if (chartData.buy === 1 || chartData.buy === 2) {
           stateObject = {color: colors.green, id: 1, label: 'Buy'};
-        } else if (chartData?.hold === 1 || chartData?.hold === 2) {
+        } else if (chartData.hold === 1 || chartData.hold === 2) {
           stateObject = {color: colors.yellow, id: 2, label: 'Hold'};
-        } else if (chartData?.sell === 1 || chartData?.sell === 2) {
+        } else if (chartData.sell === 1 || chartData.sell === 2) {
           stateObject = {color: colors.red, id: 3, label: 'Sell'};
-        } else {
-          stateObject = {color: colors.white, id: 0, label: 'None'};
         }
         setSelectedColor(stateObject);
 
-        const formattedData = Object.keys(chartData)
+        const series = Object.keys(chartData)
           .filter(key => key !== 'tickerName')
           .map(key => ({
-            key,
-            amount: chartData[key],
-            svg: {
-              fill:
-                key === 'buy'
-                  ? colors.green
-                  : key === 'hold'
-                  ? colors.yellow
-                  : colors.red,
+            value: chartData[key],
+            color:
+              key === 'buy'
+                ? colors.green
+                : key === 'hold'
+                ? colors.yellow
+                : colors.red,
+            label: {
+              text: key === 'buy' ? 'Buy' : key === 'hold' ? 'Hold' : 'Sell',
+              fontWeight: 'bold',
+              fontSize: textScale(15),
+              offsetX: 0,
+              // offsetY: moderateScale(-35),
             },
-            arc: {outerRadius: '90%'},
           }));
 
-        setChartData(formattedData);
+        // Filter series data to exclude zero or negative values
+        const filteredSeriesData = series?.filter(item => item.value > 0);
+
+        setChartData(filteredSeriesData);
+      } else {
+        console.log('No chart data returned');
+        setChartData([]);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -157,11 +157,6 @@ export default function StockVoteComp({tickerData, userData}) {
       }));
     }
   };
-
-  const totalCount = chartData.reduce((total, item) => {
-    console.log('Current Item:', item);
-    return total + item.amount;
-  }, 0);
 
   return (
     <View
@@ -242,18 +237,9 @@ export default function StockVoteComp({tickerData, userData}) {
               </View>
             </View>
 
-            {isDeleted && (
+            {isDeleted && chartData?.length > 0 && (
               <View style={styles.chartContainer}>
-                <PieChart
-                  style={styles.pieChart}
-                  data={chartData}
-                  valueAccessor={({item}) => item.amount}
-                  innerRadius={moderateScale(1)}
-                  outerRadius="100%">
-                  <View style={styles.centerTextContainer}>
-                    <Text style={styles.centerText}>{totalCount}</Text>
-                  </View>
-                </PieChart>
+                <PieChart widthAndHeight={widthAndHeight} series={chartData} />
               </View>
             )}
 
@@ -281,16 +267,7 @@ export default function StockVoteComp({tickerData, userData}) {
 }
 
 const styles = StyleSheet.create({
-  chartContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 20,
-  },
-  pieChart: {
-    height: 200,
-    width: 200,
-  },
-
+  // main styles
   container: {
     width: width / 1.1,
     justifyContent: 'center',
@@ -390,7 +367,7 @@ const styles = StyleSheet.create({
     width: width / 1.05,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingBottom: moderateScale(15),
+    marginVertical: moderateScale(15),
   },
   button: {
     borderWidth: 1,
