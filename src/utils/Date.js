@@ -38,6 +38,14 @@ export const getCurrentWeekRange = () => {
   return {startDate, endDate};
 };
 
+export const getCurrentFullWeekRange = () => {
+  const today = moment();
+  const startDate = today.format('MM-DD-YYYY');
+  const endDate = today.clone().add(6, 'days').format('MM-DD-YYYY');
+
+  return {startDate, endDate};
+};
+
 // calculate percentages
 export const calcData = (value, price) => {
   if (value === 0) {

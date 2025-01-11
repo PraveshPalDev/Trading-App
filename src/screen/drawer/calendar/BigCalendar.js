@@ -1,24 +1,26 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {Calendar} from 'react-native-big-calendar';
 import {
   GetAllEventCategory,
   GetEventsBetweenDates,
 } from '../../../redux/actions/news';
-import {getCurrentWeekRange} from '../../../utils/Date';
+import {getCurrentFullWeekRange} from '../../../utils/Date';
+import colors from '../../../styles/colors';
+import {moderateScale} from '../../../styles/responsiveSize';
+import moment from 'moment';
 
 export default function BigCalendar() {
-  const today = new Date();
   const [events, setEvents] = useState([]);
-  const [startDate, setStartDate] = useState('12-31-2024');
-  const [endDate, setEndDate] = useState('01-15-2025');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [eventCategoryIds, setEventCategoryIds] = useState([]);
   const [eventLoading, setEventLoading] = useState(false);
 
   useEffect(() => {
-    const {startDate, endDate} = getCurrentWeekRange();
-    // setStartDate(startDate);
-    // setEndDate(endDate);
+    const {startDate, endDate} = getCurrentFullWeekRange();
+    setStartDate(startDate);
+    setEndDate(endDate);
 
     fetchAllEventCategory().catch(error =>
       console.error('Failed to fetch event categories:', error),
@@ -26,13 +28,13 @@ export default function BigCalendar() {
   }, []);
 
   useEffect(() => {
-    if (eventCategoryIds?.length > 0) {
-      fetchAllEvents(eventCategoryIds);
+    if (eventCategoryIds.length > 0) {
+      fetchAllEvents(eventCategoryIds, startDate, endDate);
     }
   }, [eventCategoryIds, startDate, endDate]);
 
   const fetchAllEvents = useCallback(
-    async eventCategoryIds => {
+    async (eventCategoryIds, startDate, endDate) => {
       const queryParams = {
         fromDate: startDate,
         toDate: endDate,
@@ -42,46 +44,36 @@ export default function BigCalendar() {
       try {
         setEventLoading(true);
         const events = await GetEventsBetweenDates(queryParams);
-        if (!events) {
+
+        // Validate and sort events
+        if (!events || events.length === 0) {
           throw new Error('No events returned');
         }
-        const sortedData = events?.sort(
-          (a, b) => new Date(a?.startDate) - new Date(b?.startDate),
+        const sortedData = events.sort(
+          (a, b) => new Date(a.startDate) - new Date(b.startDate),
         );
 
-        const eventTempDate = sortedData.map(event => {
+        const updatedEventTempDate = sortedData.map(event => {
           const start = new Date(event.startDate);
           const end = new Date(event.endDate);
 
           return {
-            title: event.title,
-            start: new Date(
-              start.getFullYear(),
-              start.getMonth(),
-              start.getDate(),
-              start.getHours(),
-              start.getMinutes(),
-            ),
-            end: new Date(
-              end.getFullYear(),
-              end.getMonth(),
-              end.getDate(),
-              end.getHours(),
-              end.getMinutes(),
-            ),
+            title: `${event.title}`,
+            start: start,
+            end: end,
             bgColor: event.color,
-            textColor: 'red',
+            textColor: colors.black,
           };
         });
 
-        setEvents(eventTempDate);
+        setEvents(updatedEventTempDate);
       } catch (error) {
         console.error('Failed to fetch events:', error);
       } finally {
         setEventLoading(false);
       }
     },
-    [startDate, endDate],
+    [],
   );
 
   const fetchAllEventCategory = async () => {
@@ -94,31 +86,40 @@ export default function BigCalendar() {
     }
   };
 
-  const renderCustomEvent = ({title, bgColor, textColor}) => (
-    <View style={[styles.eventContainer, {backgroundColor: bgColor}]}>
-      <Text style={[styles.eventText, {color: textColor}]}>{title}</Text>
-    </View>
+  const eventCellStyle = event => ({
+    backgroundColor: event?.bgColor || colors.blue,
+    color: event.textColor || '#000000',
+    borderRadius: moderateScale(8),
+    padding: moderateScale(4),
+  });
+
+  const handleDateChange = useCallback(
+    swapDate => {
+      const startDate = moment(swapDate);
+      const endDate = moment(startDate).add(6, 'days');
+      const formattedStartDate = startDate.format('MM-DD-YYYY');
+      const formattedEndDate = endDate.format('MM-DD-YYYY');
+
+      setStartDate(formattedStartDate);
+      setEndDate(formattedEndDate);
+      fetchAllEvents(eventCategoryIds, formattedStartDate, formattedEndDate);
+    },
+    [eventCategoryIds],
   );
 
   return (
-    <Calendar
-      events={events}
-      height={600}
-      date={today}
-      renderEvent={renderCustomEvent}
-      eventTextStyle={{fontSize: 14, fontWeight: 'bold'}}
-    />
+    <View style={{flex: 1}}>
+      {eventLoading && <ActivityIndicator size="large" color="#007AFF" />}
+
+      <Calendar
+        events={events}
+        height={600}
+        eventCellStyle={eventCellStyle}
+        onSwipeEnd={handleDateChange}
+        weekStartsOn={6}
+      />
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  eventContainer: {
-    padding: 5,
-    borderRadius: 5,
-    marginBottom: 5,
-  },
-  eventText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});
+const styles = StyleSheet.create({});
