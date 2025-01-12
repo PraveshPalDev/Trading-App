@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import {Calendar} from 'react-native-big-calendar';
 import {
   GetAllEventCategory,
@@ -7,8 +7,28 @@ import {
 } from '../../../redux/actions/news';
 import {getCurrentFullWeekRange} from '../../../utils/Date';
 import colors from '../../../styles/colors';
-import {moderateScale} from '../../../styles/responsiveSize';
+import {moderateScale, textScale} from '../../../styles/responsiveSize';
 import moment from 'moment';
+import CustomDropdown from '../../../components/CustomDropdown';
+import strings from '../../../constants/lang';
+
+const weekData = [
+  {
+    id: 1,
+    label: 'Μήνας',
+    value: 'month',
+  },
+  {
+    id: 2,
+    label: 'Εβδομάδα',
+    value: 'week',
+  },
+  {
+    id: 3,
+    label: 'Ημέρα',
+    value: 'day',
+  },
+];
 
 export default function BigCalendar() {
   const [events, setEvents] = useState([]);
@@ -16,16 +36,32 @@ export default function BigCalendar() {
   const [endDate, setEndDate] = useState('');
   const [eventCategoryIds, setEventCategoryIds] = useState([]);
   const [eventLoading, setEventLoading] = useState(false);
+  const [currentWeekRange, setCurrentWeekRange] = useState(null);
+  const [calenderType, setCalenderType] = useState('');
 
   useEffect(() => {
     const {startDate, endDate} = getCurrentFullWeekRange();
     setStartDate(startDate);
     setEndDate(endDate);
 
+    const today = new Date();
+    const initialRange = calculateWeekRange(today);
+    setCurrentWeekRange(initialRange);
+
     fetchAllEventCategory().catch(error =>
       console.error('Failed to fetch event categories:', error),
     );
   }, []);
+
+  const calculateWeekRange = swapDate => {
+    const startOfWeek = moment(swapDate).isoWeekday(6);
+    const endOfWeek = moment(swapDate).isoWeekday(5 + 7);
+    const formattedRange = `${startOfWeek.format('DD')}-${endOfWeek.format(
+      'DD',
+    )} ${endOfWeek.format('MMM YYYY')}`;
+
+    return formattedRange;
+  };
 
   useEffect(() => {
     if (eventCategoryIds.length > 0) {
@@ -108,11 +144,20 @@ export default function BigCalendar() {
 
   const calendarCellStyle = {
     color: colors.red,
-    fontSize: 20,
+    fontSize: moderateScale(24),
   };
 
   const handleDateChange = useCallback(
     swapDate => {
+      // here set the date
+      const startOfWeek = moment(swapDate).isoWeekday(6);
+      const endOfWeek = moment(swapDate).isoWeekday(5 + 7);
+      const formattedRange = `${startOfWeek.format('DD')}-${endOfWeek.format(
+        'DD',
+      )} ${endOfWeek.format('MMM YYYY')}`;
+      setCurrentWeekRange(formattedRange);
+
+      // here to set date start and end date
       const startDate = moment(swapDate);
       const endDate = moment(startDate).add(6, 'days');
       const formattedStartDate = startDate.format('MM-DD-YYYY');
@@ -125,8 +170,26 @@ export default function BigCalendar() {
     [eventCategoryIds],
   );
 
+  const handleChangeDropdown = item => {
+    setCalenderType(item.value);
+  };
+
   return (
     <View style={{flex: 1}}>
+      <View style={styles.dateContainer}>
+        <View style={styles.date}>
+          <Text style={styles.dateText}>{currentWeekRange}</Text>
+        </View>
+
+        <CustomDropdown
+          data={weekData}
+          placeholder={strings.SearchText}
+          onChange={handleChangeDropdown}
+          value={weekData[1]}
+          dropdownStyle={styles.dropdownStyles}
+        />
+      </View>
+
       {eventLoading && <ActivityIndicator size="large" color="#007AFF" />}
 
       <Calendar
@@ -137,9 +200,35 @@ export default function BigCalendar() {
         onSwipeEnd={handleDateChange}
         weekStartsOn={6}
         showTime={false}
+        mode={calenderType || 'week'}
       />
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  dateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.grayOpacity30,
+    marginBottom: moderateScale(10),
+  },
+  date: {
+    marginHorizontal: moderateScale(5),
+    borderRadius: moderateScale(8),
+    padding: moderateScale(12),
+  },
+  dateText: {
+    fontSize: textScale(16),
+    color: colors.black,
+    textAlign: 'center',
+    fontWeight: '700',
+  },
+  dropdownStyles: {
+    width: moderateScale(160),
+    alignSelf: 'flex-end',
+    height: moderateScale(40),
+    borderRadius: moderateScale(12),
+  },
+});
