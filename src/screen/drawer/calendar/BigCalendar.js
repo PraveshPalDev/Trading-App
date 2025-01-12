@@ -53,12 +53,25 @@ export default function BigCalendar() {
           (a, b) => new Date(a.startDate) - new Date(b.startDate),
         );
 
+        // Helper function to format Date object to AM/PM time
+        const formatTimeAMPM = date => {
+          const hours = date.getHours();
+          const minutes = date.getMinutes();
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          const formattedHours = hours % 12 || 12;
+          const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+          return `${formattedHours}:${formattedMinutes} ${ampm}`;
+        };
+
+        // Map and update event data
         const updatedEventTempDate = sortedData.map(event => {
           const start = new Date(event.startDate);
           const end = new Date(event.endDate);
 
           return {
-            title: `${event.title}`,
+            title: `${event.title} (${formatTimeAMPM(start)} - ${formatTimeAMPM(
+              end,
+            )})`,
             start: start,
             end: end,
             bgColor: event.color,
@@ -68,7 +81,7 @@ export default function BigCalendar() {
 
         setEvents(updatedEventTempDate);
       } catch (error) {
-        console.error('Failed to fetch events:', error);
+        console.log('Failed to fetch events:', error);
       } finally {
         setEventLoading(false);
       }
@@ -93,6 +106,11 @@ export default function BigCalendar() {
     padding: moderateScale(4),
   });
 
+  const calendarCellStyle = {
+    color: colors.red,
+    fontSize: 20,
+  };
+
   const handleDateChange = useCallback(
     swapDate => {
       const startDate = moment(swapDate);
@@ -115,8 +133,10 @@ export default function BigCalendar() {
         events={events}
         height={600}
         eventCellStyle={eventCellStyle}
+        calendarCellStyle={calendarCellStyle}
         onSwipeEnd={handleDateChange}
         weekStartsOn={6}
+        showTime={false}
       />
     </View>
   );
