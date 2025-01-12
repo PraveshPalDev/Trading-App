@@ -38,6 +38,9 @@ export default function BigCalendar() {
   const [eventLoading, setEventLoading] = useState(false);
   const [currentWeekRange, setCurrentWeekRange] = useState(null);
   const [calenderType, setCalenderType] = useState('');
+  const [dropdownData, setDropdownData] = useState([]);
+  const [dropdownColor, setDropdownColor] = useState('');
+  const [selectedDropdownData, setSelectedDropdownData] = useState();
 
   useEffect(() => {
     const {startDate, endDate} = getCurrentFullWeekRange();
@@ -104,13 +107,17 @@ export default function BigCalendar() {
           const start = new Date(event.startDate);
           const end = new Date(event.endDate);
 
+          const eventCategoryColor = dropdownData?.find(
+            category => category?.id === event?.category,
+          )?.dropdownBgColor;
+
           return {
             title: `${event.title} (${formatTimeAMPM(start)} - ${formatTimeAMPM(
               end,
             )})`,
             start: start,
             end: end,
-            bgColor: event.color,
+            bgColor: eventCategoryColor,
             textColor: colors.black,
           };
         });
@@ -128,23 +135,45 @@ export default function BigCalendar() {
   const fetchAllEventCategory = async () => {
     try {
       const response = await GetAllEventCategory();
+      const temp = [];
+
+      const color = [
+        colors.red,
+        colors.blue,
+        colors.lightGreen2,
+        colors.yellow,
+      ];
+
+      response?.forEach((x, index) => {
+        temp.push({
+          label: x.eventCategoryName,
+          value: x.eventCategoryName,
+          color: x.color,
+          id: x?.eventCategoryId,
+          dropdownBgColor: color[index % color.length],
+          textColor: colors.white,
+        });
+      });
+
       const categoryIds = response?.map(x => x?.eventCategoryId) || [];
       setEventCategoryIds(categoryIds);
+
+      // Add the default "All" option at the beginning
+      temp.unshift({
+        label: 'All',
+        value: 'All',
+        color: colors.white,
+        id: categoryIds,
+        dropdownBgColor: colors.grayOpacity70,
+        textColor: colors.white,
+      });
+
+      if (response) {
+        setDropdownData(temp);
+      }
     } catch (error) {
       console.error('Error fetching event categories:', error);
     }
-  };
-
-  const eventCellStyle = event => ({
-    backgroundColor: event?.bgColor || colors.blue,
-    color: event.textColor || '#000000',
-    borderRadius: moderateScale(8),
-    padding: moderateScale(4),
-  });
-
-  const calendarCellStyle = {
-    color: colors.red,
-    fontSize: moderateScale(24),
   };
 
   const handleDateChange = useCallback(
@@ -170,12 +199,47 @@ export default function BigCalendar() {
     [eventCategoryIds],
   );
 
-  const handleChangeDropdown = item => {
+  const handleChangeDropdownForWeek = item => {
     setCalenderType(item.value);
+  };
+
+  const handleChangeDropdown = item => {
+    setDropdownColor(item.dropdownBgColor);
+    setSelectedDropdownData(item);
+  };
+
+  // here calendar cell style
+  const eventCellStyle = event => ({
+    backgroundColor: event?.bgColor || colors.blue,
+    color: event.textColor || '#000000',
+    borderRadius: moderateScale(8),
+    padding: moderateScale(4),
+  });
+
+  const calendarCellStyle = {
+    color: colors.red,
+    fontSize: moderateScale(24),
   };
 
   return (
     <View style={{flex: 1}}>
+      <View
+        style={{
+          marginBottom: moderateScale(70),
+        }}>
+        <CustomDropdown
+          data={dropdownData}
+          placeholder={strings.SearchText}
+          onChange={handleChangeDropdown}
+          value={dropdownData[0]}
+          dropdownStyle={{
+            backgroundColor: dropdownColor || dropdownData[0]?.dropdownBgColor,
+          }}
+          selectedTextColor={colors.white}
+          arrowIconColor={colors.white}
+        />
+      </View>
+
       <View style={styles.dateContainer}>
         <View style={styles.date}>
           <Text style={styles.dateText}>{currentWeekRange}</Text>
@@ -184,7 +248,7 @@ export default function BigCalendar() {
         <CustomDropdown
           data={weekData}
           placeholder={strings.SearchText}
-          onChange={handleChangeDropdown}
+          onChange={handleChangeDropdownForWeek}
           value={weekData[1]}
           dropdownStyle={styles.dropdownStyles}
         />
