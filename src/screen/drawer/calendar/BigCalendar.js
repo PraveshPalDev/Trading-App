@@ -7,7 +7,7 @@ import {
 } from '../../../redux/actions/news';
 import {getCurrentFullWeekRange} from '../../../utils/Date';
 import colors from '../../../styles/colors';
-import {moderateScale, textScale} from '../../../styles/responsiveSize';
+import {moderateScale, textScale, width} from '../../../styles/responsiveSize';
 import moment from 'moment';
 import CustomDropdown from '../../../components/CustomDropdown';
 import strings from '../../../constants/lang';
@@ -40,7 +40,6 @@ export default function BigCalendar() {
   const [calenderType, setCalenderType] = useState('');
   const [dropdownData, setDropdownData] = useState([]);
   const [dropdownColor, setDropdownColor] = useState('');
-  const [selectedDropdownData, setSelectedDropdownData] = useState();
 
   useEffect(() => {
     const {startDate, endDate} = getCurrentFullWeekRange();
@@ -74,107 +73,92 @@ export default function BigCalendar() {
 
   const fetchAllEvents = useCallback(
     async (eventCategoryIds, startDate, endDate) => {
-      const queryParams = {
-        fromDate: startDate,
-        toDate: endDate,
-        eventCategories: eventCategoryIds,
-      };
-
+      setEventLoading(true);
       try {
-        setEventLoading(true);
+        const queryParams = {
+          fromDate: startDate,
+          toDate: endDate,
+          eventCategories: eventCategoryIds,
+        };
         const events = await GetEventsBetweenDates(queryParams);
 
-        // Validate and sort events
-        if (!events || events.length === 0) {
-          throw new Error('No events returned');
-        }
-        const sortedData = events.sort(
+        if (!events?.length) throw new Error('No events returned');
+
+        const sortedEvents = events.sort(
           (a, b) => new Date(a.startDate) - new Date(b.startDate),
         );
 
-        // Helper function to format Date object to AM/PM time
-        const formatTimeAMPM = date => {
-          const hours = date.getHours();
-          const minutes = date.getMinutes();
+        // Helper to format time as AM/PM
+        const formatTime = date => {
+          const [hours, minutes] = [date.getHours(), date.getMinutes()];
           const ampm = hours >= 12 ? 'PM' : 'AM';
-          const formattedHours = hours % 12 || 12;
-          const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-          return `${formattedHours}:${formattedMinutes} ${ampm}`;
+          return `${hours % 12 || 12}:${minutes
+            .toString()
+            .padStart(2, '0')} ${ampm}`;
         };
 
-        // Map and update event data
-        const updatedEventTempDate = sortedData.map(event => {
+        const updatedEvents = sortedEvents.map(event => {
           const start = new Date(event.startDate);
           const end = new Date(event.endDate);
-
-          const eventCategoryColor = dropdownData?.find(
+          const categoryColor = dropdownData?.find(
             category => category?.id === event?.category,
           )?.dropdownBgColor;
 
           return {
-            title: `${event.title} (${formatTimeAMPM(start)} - ${formatTimeAMPM(
-              end,
-            )})`,
-            start: start,
-            end: end,
-            bgColor: eventCategoryColor,
+            title: `${event.title} (${formatTime(start)} - ${formatTime(end)})`,
+            start,
+            end,
+            bgColor: categoryColor,
             textColor: colors.black,
           };
         });
 
-        setEvents(updatedEventTempDate);
+        setEvents(updatedEvents);
       } catch (error) {
-        console.log('Failed to fetch events:', error);
+        console.error('Error fetching events:', error);
       } finally {
         setEventLoading(false);
       }
     },
-    [],
+    [dropdownData],
   );
 
-  const fetchAllEventCategory = async () => {
+  const fetchAllEventCategory = useCallback(async () => {
     try {
       const response = await GetAllEventCategory();
-      const temp = [];
+      if (!response) return;
 
-      const color = [
+      const categoryColors = [
         colors.red,
         colors.blue,
         colors.lightGreen2,
         colors.yellow,
       ];
+      const eventCategories = response.map((category, index) => ({
+        label: category.eventCategoryName,
+        value: category.eventCategoryName,
+        color: category.color,
+        id: category.eventCategoryId,
+        dropdownBgColor: categoryColors[index % categoryColors.length],
+        textColor: colors.white,
+      }));
 
-      response?.forEach((x, index) => {
-        temp.push({
-          label: x.eventCategoryName,
-          value: x.eventCategoryName,
-          color: x.color,
-          id: x?.eventCategoryId,
-          dropdownBgColor: color[index % color.length],
-          textColor: colors.white,
-        });
-      });
-
-      const categoryIds = response?.map(x => x?.eventCategoryId) || [];
-      setEventCategoryIds(categoryIds);
-
-      // Add the default "All" option at the beginning
-      temp.unshift({
+      // Add "All" option
+      eventCategories.unshift({
         label: 'All',
         value: 'All',
         color: colors.white,
-        id: categoryIds,
+        id: response.map(x => x.eventCategoryId),
         dropdownBgColor: colors.grayOpacity70,
         textColor: colors.white,
       });
 
-      if (response) {
-        setDropdownData(temp);
-      }
+      setDropdownData(eventCategories);
+      setEventCategoryIds(eventCategories.map(cat => cat.id));
     } catch (error) {
       console.error('Error fetching event categories:', error);
     }
-  };
+  }, []);
 
   const handleDateChange = useCallback(
     swapDate => {
@@ -205,7 +189,7 @@ export default function BigCalendar() {
 
   const handleChangeDropdown = item => {
     setDropdownColor(item.dropdownBgColor);
-    setSelectedDropdownData(item);
+    setEventCategoryIds([item.id]);
   };
 
   // here calendar cell style
@@ -223,16 +207,17 @@ export default function BigCalendar() {
 
   return (
     <View style={{flex: 1}}>
-      <View
-        style={{
-          marginBottom: moderateScale(70),
-        }}>
+      <View style={styles.eventContainer}>
+        <Text style={{...styles.dateText, ...styles.eventText}}>
+          {strings.Events}
+        </Text>
         <CustomDropdown
           data={dropdownData}
           placeholder={strings.SearchText}
           onChange={handleChangeDropdown}
           value={dropdownData[0]}
           dropdownStyle={{
+            ...styles.eventDropdownStyles,
             backgroundColor: dropdownColor || dropdownData[0]?.dropdownBgColor,
           }}
           selectedTextColor={colors.white}
@@ -294,5 +279,21 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     height: moderateScale(40),
     borderRadius: moderateScale(12),
+  },
+  eventContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: moderateScale(10),
+  },
+  eventText: {
+    fontSize: textScale(18),
+    fontWeight: '700',
+  },
+  eventDropdownStyles: {
+    borderRadius: moderateScale(16),
+    alignSelf: 'flex-end',
+    width: width / 1.4,
+    height: moderateScale(50),
   },
 });
