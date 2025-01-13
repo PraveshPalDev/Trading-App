@@ -184,7 +184,9 @@ export default function BigCalendar() {
   );
 
   const handleChangeDropdownForWeek = item => {
-    setCalenderType(item.value);
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setCalenderType(item?.value);
   };
 
   const handleChangeDropdown = item => {
