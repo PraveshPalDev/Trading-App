@@ -19,6 +19,7 @@ export default function EventCalendarComp({
   rightMapIcon,
   rightMapIconHandler,
   selectedOptionItem,
+  maxHeight = true,
 }) {
   return (
     <View style={{...styles.container, marginTop: moderateScale(10)}}>
@@ -57,7 +58,10 @@ export default function EventCalendarComp({
         ) : (
           <View style={{marginBottom: moderateScale(20)}}>
             <ScrollView
-              style={styles.scrollContainer}
+              style={{
+                ...styles.scrollContainer,
+                ...(maxHeight ? {maxHeight: moderateScale(300)} : {}),
+              }}
               nestedScrollEnabled={true}>
               <FlashListComp
                 DATA={selectedDropdownData}
@@ -86,7 +90,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContainer: {
-    maxHeight: moderateScale(300),
     borderRadius: moderateScale(20),
   },
   header: {

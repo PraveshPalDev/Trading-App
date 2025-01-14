@@ -36,6 +36,7 @@ import {modalAllButton} from '../../../../constants/static/staticData';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NewsCard from '../../../../components/NewsCard';
 import CustomDropdown from '../../../../components/CustomDropdown';
+import navigationStrings from '../../../../navigation/navigationStrings';
 const data = [
   {city: 'San Francisco', offset: -8},
   {city: 'New York', offset: -5},
@@ -45,7 +46,7 @@ const data = [
   {city: 'Tokyo', offset: 9},
   {city: 'Sydney', offset: 11},
 ];
-export default function Research() {
+export default function Research({navigation}) {
   const [isLocked, setIsLocked] = useState(false);
   const [eventCategories, setEventCategories] = useState([]);
   const [eventCategoryIds, setEventCategoryIds] = useState([]);
@@ -270,7 +271,7 @@ export default function Research() {
   };
 
   const rightMapIconHandler = () => {
-    alert('map');
+    navigation.navigate(navigationStrings.News);
   };
 
   const renderTableData = ({item, index}) => {
@@ -298,6 +299,7 @@ export default function Research() {
       </View>
     );
   };
+
   const getColorByCategory = categoryId => {
     const filterColor = eventCategories.find(
       x => x.id === categoryId,
@@ -359,10 +361,6 @@ export default function Research() {
   };
 
   const PurchaseCalendar = ({isLocked, setIsLocked}) => {
-    const filterData = selectedDropdownData?.filter(
-      x => x.symbol === tickerData?.ticker,
-    );
-
     return (
       <TouchableOpacity
         style={[
@@ -397,6 +395,7 @@ export default function Research() {
             renderHeader={renderHeader}
             rightMapIcon={'zoom-out-map'}
             rightMapIconHandler={rightMapIconHandler}
+            maxHeight={false}
           />
         )}
       </TouchableOpacity>
@@ -404,6 +403,8 @@ export default function Research() {
   };
 
   const newsCardHandler = item => {
+    return;
+
     Linking.openURL(item?.link).catch(err =>
       console.log('An error occurred', err),
     );
@@ -461,12 +462,18 @@ export default function Research() {
               eventLoading={eventLoading}
             />
 
-            <View style={{marginHorizontal: moderateScale(12)}}>
-              <CustomNewsTabs
-                showSearchBar={true}
-                tickerData={tickerData}
-                defaultData={false}
-              />
+            <View
+              style={{
+                marginHorizontal: moderateScale(12),
+                height: moderateScale(560),
+              }}>
+              <ScrollView nestedScrollEnabled={true}>
+                <CustomNewsTabs
+                  showSearchBar={true}
+                  tickerData={tickerData}
+                  defaultData={false}
+                />
+              </ScrollView>
             </View>
           </>
         )}

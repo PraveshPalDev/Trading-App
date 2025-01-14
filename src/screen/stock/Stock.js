@@ -115,12 +115,11 @@ export default function Stock() {
   };
 
   const stocksHandler = async item => {
-    navigation.navigate(navigationStrings.CompanyProfile, { 
-      item, 
-      isHeader: true, 
+    navigation.navigate(navigationStrings.CompanyProfile, {
+      item,
+      isHeader: true,
     });
   };
-  
 
   const settingHandler = () => {};
 
@@ -131,6 +130,7 @@ export default function Stock() {
         rightBellIconVisible={false}
         settingHandler={settingHandler}
         notificationIcon
+        rightSettingIconVisible={false}
       />
 
       <SearchComp

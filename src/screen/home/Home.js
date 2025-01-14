@@ -246,6 +246,7 @@ export default function Home() {
           settingHandler={settingHandler}
           notificationIcon
           rightBellIconVisible={false}
+          rightSettingIconVisible={false}
         />
         <UserInformation />
 

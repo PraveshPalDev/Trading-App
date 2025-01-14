@@ -495,11 +495,16 @@ export default function CompanyProfile() {
                   />
                 </View>
               ) : (
-                <FlashListComp
-                  DATA={allTickerNews}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={renderNewsFeed}
-                />
+                <ScrollView
+                  style={{maxHeight: moderateScale(500)}}
+                  nestedScrollEnabled={true}>
+                  <FlashListComp
+                    DATA={allTickerNews}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={renderNewsFeed}
+                    nestedScrollEnabled={true}
+                  />
+                </ScrollView>
               )}
             </View>
           </>

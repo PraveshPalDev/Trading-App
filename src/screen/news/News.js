@@ -314,6 +314,7 @@ export default function News() {
           rightBellIconVisible={false}
           settingHandler={settingHandler}
           notificationIcon
+          rightSettingIconVisible={false}
         />
 
         <CustomDropdown

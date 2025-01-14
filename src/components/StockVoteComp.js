@@ -236,12 +236,43 @@ export default function StockVoteComp({tickerData, userData}) {
                 )}
               </View>
             </View>
-
             {isDeleted && chartData?.length > 0 && (
               <View style={styles.chartContainer}>
                 <PieChart widthAndHeight={widthAndHeight} series={chartData} />
               </View>
             )}
+
+            {/* Inside the main return statement */}
+            <View style={styles.voteSummaryContainer}>
+              <View style={styles.voteSummaryItem}>
+                <View
+                  style={[styles.voteDot, {backgroundColor: colors.green}]}
+                />
+                <Text style={styles.voteLabel}>
+                  Buy:{' '}
+                  {chartData?.find(item => item.label.text === 'Buy')?.value ||
+                    0}
+                </Text>
+              </View>
+              <View style={styles.voteSummaryItem}>
+                <View
+                  style={[styles.voteDot, {backgroundColor: colors.yellow}]}
+                />
+                <Text style={styles.voteLabel}>
+                  Hold:{' '}
+                  {chartData?.find(item => item.label.text === 'Hold')?.value ||
+                    0}
+                </Text>
+              </View>
+              <View style={styles.voteSummaryItem}>
+                <View style={[styles.voteDot, {backgroundColor: colors.red}]} />
+                <Text style={styles.voteLabel}>
+                  Sell:{' '}
+                  {chartData?.find(item => item.label.text === 'Sell')?.value ||
+                    0}
+                </Text>
+              </View>
+            </View>
 
             <View style={styles.buttonsContainer}>
               {buttonSell?.map(type => (
@@ -460,5 +491,27 @@ const styles = StyleSheet.create({
     fontSize: textScale(24),
     fontWeight: 'bold',
     color: colors.gray,
+  },
+
+  voteSummaryContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: moderateScale(25),
+    marginTop: moderateScale(9),
+  },
+  voteSummaryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  voteDot: {
+    width: moderateScale(13),
+    height: moderateScale(13),
+    borderRadius: moderateScale(10),
+    marginRight: moderateScale(5),
+  },
+  voteLabel: {
+    fontSize: textScale(15),
+    color: colors.black,
+    fontWeight: '500',
   },
 });
