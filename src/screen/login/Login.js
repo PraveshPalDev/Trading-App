@@ -1,4 +1,4 @@
-import {View, TouchableOpacity, Image} from 'react-native';
+import {View, TouchableOpacity, Image, Text} from 'react-native';
 import React, {useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import TextComp from '../../components/TextComp';
@@ -12,12 +12,16 @@ import ButtonComp from '../../components/ButtonCom';
 import imagePath from '../../constants/imagePath';
 import {showError, showSuccess} from '../../utils/helperFunctions';
 import {userLogin} from '../../redux/actions/auth';
+import {saveUserData} from '../../redux/reducers/auth';
+import {useDispatch} from 'react-redux';
 
 export default function Login({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('sandip@gmail.com');
+  const [password, setPassword] = useState('sandip@123');
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   const toggleSecureEntryHandler = () => {
     setPasswordVisible(prevState => !prevState);
@@ -53,13 +57,23 @@ export default function Login({navigation}) {
     navigation.navigate(navigationStrings.SignUp);
   };
 
+  const skipHandler = () => {
+    const skipData = {isSkipped: true};
+    dispatch(saveUserData(skipData));
+  };
+
   return (
     <WrapperContainer>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         style={{flex: 1}}>
         <View style={styles.container}>
-          <TextComp text={strings.WelcomeBack} style={styles.welcomeText} />
+          <View style={styles.wlcContainer}>
+            <TextComp text={strings.WelcomeBack} style={styles.welcomeText} />
+            <Text style={styles.skipContainer} onPress={skipHandler}>
+              {strings.SKIP}
+            </Text>
+          </View>
           <TextComp text={strings.SignInText} style={styles.signInText} />
 
           <View style={styles.inputContainer}>

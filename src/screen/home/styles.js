@@ -10,7 +10,14 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     marginBottom: moderateScale(20),
   },
-
+  imageStyles: {
+    width: moderateScale(75),
+    height: moderateScale(75),
+    borderWidth: 1,
+    borderColor: colors.black,
+    borderRadius: moderateScale(75),
+    marginTop: moderateScale(5),
+  },
   container: {
     flex: 1,
     marginHorizontal: moderateScale(12),

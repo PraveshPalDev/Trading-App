@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Linking,
+  Image,
 } from 'react-native';
 import TextComp from '../../components/TextComp';
 import styles from './styles';
-import {moderateScale, textScale} from '../../styles/responsiveSize';
+import {height, moderateScale, textScale} from '../../styles/responsiveSize';
 import colors from '../../styles/colors';
 import {useSelector} from 'react-redux';
 import {
@@ -209,24 +210,41 @@ export default function Home() {
   const UserInformation = () => (
     <View style={styles.userInformationContainer}>
       <View style={styles.imageContainer}>
-        <TextComp
-          text={` ${userData.firstName?.charAt(0)}.${userData.lastName?.charAt(
-            0,
-          )}.`}
-          style={{
-            ...styles.stylesTextName,
-            fontSize: textScale(28),
-            textAlign: 'center',
-          }}
-        />
+        {userData?.firstName ? (
+          <TextComp
+            text={` ${userData.firstName?.charAt(
+              0,
+            )}.${userData.lastName?.charAt(0)}.`}
+            style={{
+              ...styles.stylesTextName,
+              fontSize: textScale(28),
+              textAlign: 'center',
+            }}
+          />
+        ) : (
+          <Image
+            source={{
+              uri: 'https://www.shutterstock.com/image-vector/avatar-photo-default-user-icon-260nw-2558759029.jpg',
+            }}
+            style={styles.imageStyles}
+            resizeMode="center"
+          />
+        )}
       </View>
 
       <View style={styles.userInfoNameContainer}>
         <TextComp text={strings.WelcomeBack} style={styles.stylesText} />
-        <TextComp
-          text={`${userData.firstName}${userData.lastName}`}
-          style={{...styles.stylesTextName}}
-        />
+        {userData?.firstName ? (
+          <TextComp
+            text={`${userData.firstName}${userData.lastName}`}
+            style={{...styles.stylesTextName}}
+          />
+        ) : (
+          <TextComp
+            text={`${'Doe'} ${'Jhon'}`}
+            style={{...styles.stylesTextName}}
+          />
+        )}
       </View>
     </View>
   );

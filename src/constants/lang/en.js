@@ -47,6 +47,7 @@ export default {
   Calendar: 'Calendars',
   ContactUs: 'ContactUs',
   TradeLinkTable: 'TradeLinkTable',
+  SKIP: 'Skip',
 
   // login page content
   WelcomeBack: 'Welcome Back',

@@ -13,6 +13,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: moderateScale(25),
   },
+  wlcContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  skipContainer: {
+    paddingVertical: moderateScale(8),
+    paddingHorizontal: moderateScale(12),
+    backgroundColor: colors.blueOpacity50,
+    borderRadius: moderateScale(22),
+    borderWidth: 1,
+    borderColor: colors.white,
+    textAlign: 'center',
+    fontSize: textScale(16),
+    color: colors.white,
+    fontWeight: '500',
+  },
   welcomeText: {
     fontSize: textScale(28),
     fontWeight: 'bold',
@@ -22,7 +39,7 @@ const styles = StyleSheet.create({
   signInText: {
     fontSize: textScale(16),
     color: colors.gray,
-    marginBottom: moderateScale(20),
+    marginBottom: moderateScale(22),
   },
   inputContainer: {
     flexDirection: 'row',

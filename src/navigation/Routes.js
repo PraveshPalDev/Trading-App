@@ -11,10 +11,8 @@ export default function Routes() {
 
   return (
     <NavigationContainer>
-      {!!userData?.token ? (
-        <Stack.Navigator>
-          {MainStack(Stack)}
-        </Stack.Navigator>
+      {!!userData?.token || userData?.isSkipped ? (
+        <Stack.Navigator>{MainStack(Stack)}</Stack.Navigator>
       ) : (
         <Stack.Navigator initialRouteName="Login">
           {AuthStack(Stack)}
