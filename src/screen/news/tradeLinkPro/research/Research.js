@@ -37,6 +37,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import NewsCard from '../../../../components/NewsCard';
 import CustomDropdown from '../../../../components/CustomDropdown';
 import navigationStrings from '../../../../navigation/navigationStrings';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 const data = [
   {city: 'San Francisco', offset: -8},
   {city: 'New York', offset: -5},
@@ -395,7 +396,7 @@ export default function Research({navigation}) {
             renderHeader={renderHeader}
             rightMapIcon={'zoom-out-map'}
             rightMapIconHandler={rightMapIconHandler}
-            maxHeight={false}
+            maxHeight={true}
           />
         )}
       </TouchableOpacity>
@@ -428,7 +429,7 @@ export default function Research({navigation}) {
       <ScrollView
         style={{marginBottom: moderateScale(25)}}
         showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}>
+        keyboardShouldPersistTaps="handled">
         {/* added the ticker dropdown */}
         <CustomDropdown
           data={dropdownData}
