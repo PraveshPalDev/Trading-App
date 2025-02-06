@@ -2,10 +2,12 @@ import {combineReducers} from 'redux';
 import auth from './auth';
 import types from '../types';
 import appSettings from './appSettings';
+import registerSlice from './registerSlice';
 
 const appReducer = combineReducers({
   auth,
   appSettings,
+  registerSlice,
 });
 
 const rootReducer = (state, action) => {

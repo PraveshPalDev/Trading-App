@@ -17,8 +17,8 @@ export default function HeaderComp({
   backBtn = false,
   style = {},
   titleStyle = {},
-  rightBellIconVisible = true,
-  rightSettingIconVisible = true,
+  rightBellIconVisible = false,
+  rightSettingIconVisible = false,
 }) {
   const navigation = useNavigation();
   return (

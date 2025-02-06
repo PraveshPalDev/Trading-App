@@ -59,6 +59,7 @@ import CustomDropdown from '../../../../components/CustomDropdown';
 import HeaderComp from '../../../../components/HeaderComp';
 import StockVoteComp from '../../../../components/StockVoteComp';
 import CustomNewsTabs from '../../../../components/CustomNewsTabs';
+import SubscriptionModal from '../../../../components/SubscriptionModal';
 
 export default function CompanyProfile() {
   const route = useRoute();
@@ -92,6 +93,13 @@ export default function CompanyProfile() {
   const [selectedOptionItem, setSelectedOptionItem] = useState(null);
   const [selectedValue, setSelectedValue] = useState();
   const [data, setData] = useState([]);
+  const [isSubscription, setIsSubscription] = useState(false);
+
+  useEffect(() => {
+    if (userData.isSkipped) {
+      setIsLocked(true);
+    }
+  }, [userData]);
 
   useEffect(() => {
     const {startDate, endDate} = getCurrentWeekRange();
@@ -318,7 +326,7 @@ export default function CompanyProfile() {
     return filterColor;
   };
 
-  const PurchaseCalendar = ({isLocked, setIsLocked}) => {
+  const PurchaseCalendar = ({isLocked}) => {
     const filterData = selectedDropdownData?.filter(
       x => x.symbol === tickerData?.ticker,
     );
@@ -328,11 +336,11 @@ export default function CompanyProfile() {
         style={[
           styles.container,
           isLocked ? styles.lockedCard : styles.unlockedCard,
-          isLocked ? {backgroundColor: 'rgba(206, 204, 204, 0.7)'} : null,
+          isLocked ? {backgroundColor: colors.white} : null,
           {padding: 0},
         ]}
-        onPress={() => setIsLocked(!isLocked)}
-        activeOpacity={0.9}>
+        activeOpacity={0.9}
+        onPress={onSubscriptionModalHandler}>
         {isLocked ? (
           <View style={styles.lockedContent}>
             <Icon
@@ -432,7 +440,7 @@ export default function CompanyProfile() {
   };
 
   // render news feed components
-  const NewsFeed = ({isLocked, setIsLocked}) => {
+  const NewsFeed = ({isLocked}) => {
     return (
       <TouchableOpacity
         style={[
@@ -441,8 +449,8 @@ export default function CompanyProfile() {
           isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
           {padding: 0},
         ]}
-        onPress={() => setIsLocked(!isLocked)}
-        activeOpacity={0.9}>
+        activeOpacity={0.9}
+        onPress={onSubscriptionModalHandler}>
         {isLocked ? (
           <View style={styles.lockedContent}>
             <Icon
@@ -668,6 +676,10 @@ export default function CompanyProfile() {
     }
   };
 
+  const onSubscriptionModalHandler = () => {
+    setIsSubscription(true);
+  };
+
   return (
     <WrapperContainer>
       <ScrollView
@@ -679,9 +691,9 @@ export default function CompanyProfile() {
           <HeaderComp
             title={strings.CompanyProfile}
             rightBellIconVisible={false}
+            backBtn
           />
         )}
-
         <CustomDropdown
           data={dropdownData}
           placeholder={strings.SearchText}
@@ -689,60 +701,92 @@ export default function CompanyProfile() {
           enableSearch={true}
           value={selectedOption}
         />
-
         <StockCard
           allQuotes={allQuotes}
           rds={allRds}
           dailyQuotes={dailyQuotes}
           tickerName={tickerData?.ticker}
           isLocked={isLocked}
-          setIsLocked={setIsLocked}
+          onSubscriptionModalHandler={onSubscriptionModalHandler}
         />
 
-        <View style={styles.stockContainer}>
-          <StockChart ticker={tickerData?.ticker} backColor="#000000" />
-        </View>
+        <TouchableOpacity
+          style={[
+            styles.container,
+            isLocked ? styles.lockedCard : styles.unlockedCard,
+            isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
+          ]}
+          activeOpacity={0.9}
+          onPress={onSubscriptionModalHandler}>
+          {isLocked ? (
+            <LockedState />
+          ) : (
+            <View style={styles.stockContainer}>
+              <StockChart ticker={tickerData?.ticker} backColor="#000000" />
+            </View>
+          )}
+        </TouchableOpacity>
 
         <CompanyDescription
           rds={allRds}
           isLocked={isLocked}
           tickerName={tickerData?.ticker}
-          setIsLocked={setIsLocked}
+          onSubscriptionModalHandler={onSubscriptionModalHandler}
         />
-
         <PurchaseCalendar
           isLocked={isLocked}
-          setIsLocked={setIsLocked}
           tickerName={tickerData?.ticker}
           eventCategories={eventCategories}
           eventLoading={eventLoading}
         />
-
-        <StockVoteComp userData={userData} tickerData={tickerData} />
-
+        <StockVoteComp
+          userData={userData}
+          tickerData={tickerData}
+          isLocked={isLocked}
+          onSubscriptionModalHandler={onSubscriptionModalHandler}
+        />
         <SpeedoMeterComponents
           data={signal}
           userData={userData}
           isLocked={isLocked}
-          setIsLocked={setIsLocked}
           navigation={navigation}
           signal={signal}
           apiData={data}
           tickerName={tickerData?.ticker}
+          onSubscriptionModalHandler={onSubscriptionModalHandler}
         />
-        <NewsFeed isLocked={isLocked} setIsLocked={setIsLocked} />
-        <View style={{marginHorizontal: moderateScale(12)}}>
-          <CustomNewsTabs tickerData={tickerData} defaultData={true} />
-        </View>
+
+        <NewsFeed isLocked={isLocked} />
+
+        <TouchableOpacity
+          style={[
+            styles.container,
+            isLocked ? styles.lockedCard : styles.unlockedCard,
+            isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
+          ]}
+          onPress={onSubscriptionModalHandler}>
+          {isLocked ? (
+            <LockedState />
+          ) : (
+            <CustomNewsTabs tickerData={tickerData} defaultData={true} />
+          )}
+        </TouchableOpacity>
       </ScrollView>
 
       {/* floating button comp */}
-      <FloatingButtonComp
-        data={actions}
-        onPressItem={handlePressItem}
-        IconColor={colors.blue}
-        overlayColor="rgba(0, 0, 0, 0.5)"
-        containerStyles={styles.floatingButtonContainer}
+      {!isLocked && (
+        <FloatingButtonComp
+          data={actions}
+          onPressItem={handlePressItem}
+          IconColor={colors.blue}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+          containerStyles={styles.floatingButtonContainer}
+        />
+      )}
+
+      <SubscriptionModal
+        isVisible={isSubscription}
+        setIsVisible={setIsSubscription}
       />
 
       <ModalComp
@@ -932,7 +976,7 @@ const StockCard = ({
   dailyQuotes,
   tickerName = null,
   isLocked,
-  setIsLocked,
+  onSubscriptionModalHandler,
 }) => {
   const labels = {
     day: '1 Ημέρα (%)',
@@ -973,8 +1017,8 @@ const StockCard = ({
         isLocked ? styles.lockedCard : styles.unlockedCard,
         isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
       ]}
-      onPress={() => setIsLocked(!isLocked)}
-      activeOpacity={0.9}>
+      activeOpacity={0.9}
+      onPress={onSubscriptionModalHandler}>
       {isLocked ? (
         <LockedState />
       ) : (
@@ -1005,7 +1049,12 @@ const StockCard = ({
   );
 };
 
-const CompanyDescription = ({rds, isLocked, setIsLocked, tickerName}) => {
+const CompanyDescription = ({
+  rds,
+  isLocked,
+  tickerName,
+  onSubscriptionModalHandler,
+}) => {
   const selectedRds = tickerName
     ? rds.find(quote => quote.ticker === `${tickerName}`)
     : rds[0];
@@ -1017,8 +1066,8 @@ const CompanyDescription = ({rds, isLocked, setIsLocked, tickerName}) => {
         isLocked ? styles.lockedCard : styles.unlockedCard,
         isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
       ]}
-      onPress={() => setIsLocked(!isLocked)}
-      activeOpacity={0.9}>
+      activeOpacity={0.9}
+      onPress={onSubscriptionModalHandler}>
       {isLocked ? (
         <View style={styles.lockedContent}>
           <Icon
@@ -1044,11 +1093,11 @@ const CompanyDescription = ({rds, isLocked, setIsLocked, tickerName}) => {
 const SpeedoMeterComponents = ({
   data,
   isLocked,
-  setIsLocked,
   navigation,
   signal,
   apiData,
   tickerName,
+  onSubscriptionModalHandler,
 }) => {
   // Helper function to determine Speedometer value based on signal
   const getSignalValue = signal => {
@@ -1122,8 +1171,8 @@ const SpeedoMeterComponents = ({
         isLocked ? {backgroundColor: 'rgba(255, 255, 255, 0.7)'} : null,
         {padding: 0},
       ]}
-      onPress={() => setIsLocked(!isLocked)}
-      activeOpacity={0.9}>
+      activeOpacity={0.9}
+      onPress={onSubscriptionModalHandler}>
       {isLocked ? (
         <View style={styles.lockedContent}>
           <Icon

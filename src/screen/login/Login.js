@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Image, Text} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import WrapperContainer from '../../components/WrapperContainer';
 import TextComp from '../../components/TextComp';
 import TextInputComp from '../../components/TextInputComp';
@@ -13,15 +13,21 @@ import imagePath from '../../constants/imagePath';
 import {showError, showSuccess} from '../../utils/helperFunctions';
 import {userLogin} from '../../redux/actions/auth';
 import {saveUserData} from '../../redux/reducers/auth';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 export default function Login({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState('sandip@gmail.com');
   const [password, setPassword] = useState('sandip@123');
   const [loading, setLoading] = useState(false);
-
   const dispatch = useDispatch();
+  const {isRegister} = useSelector(state => state.registerSlice);
+
+  useEffect(() => {
+    if (isRegister) {
+      SignUpHandler();
+    }
+  }, [isRegister]);
 
   const toggleSecureEntryHandler = () => {
     setPasswordVisible(prevState => !prevState);

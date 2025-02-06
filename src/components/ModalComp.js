@@ -16,6 +16,7 @@ const ModalComp = ({
       isVisible={isVisible}
       onBackdropPress={onBackdropPress}
       style={{...styles.style, ...style}}
+      avoidKeyboard
       {...props}>
       {children}
     </Modal>

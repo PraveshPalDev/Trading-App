@@ -10,6 +10,7 @@ import {
   GET_ALL_News_Sources,
   GET_ALL_NEWS_TYPES,
   GET_ALL_STOCKS,
+  Get_CouponCode,
   Get_DailyQuotes,
   GET_EVENT,
   Get_Events_Announcement,
@@ -111,4 +112,7 @@ export const GetAnalysisImageMappings = async () => {
 };
 export const ContactUsHandler = async payload => {
   return apiPost(`${ContactUsUser}`, payload);
+};
+export const CheckCouponCode = async couponCode => {
+  return apiGet(`${Get_CouponCode}/${couponCode}`);
 };

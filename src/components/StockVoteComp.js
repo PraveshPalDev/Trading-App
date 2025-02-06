@@ -20,10 +20,14 @@ import {
 import {showSuccess} from '../utils/helperFunctions';
 import {buttonSell} from '../constants/static/staticData';
 
-export default function StockVoteComp({tickerData, userData}) {
+export default function StockVoteComp({
+  tickerData,
+  userData,
+  isLocked,
+  onSubscriptionModalHandler,
+}) {
   const [tickerOptions, setTickerOptions] = useState([]);
   const [chartData, setChartData] = useState([]);
-  const [isLocked, setIsLocked] = useState(false);
   const [isDeleted, setIsDelete] = useState(false);
   const [voteLoadingState, setVoteLoadingState] = useState({
     buy: false,
@@ -173,8 +177,8 @@ export default function StockVoteComp({tickerData, userData}) {
             elevation: moderateScale(0.5),
           },
         ]}
-        onPress={() => setIsLocked(!isLocked)}
-        activeOpacity={0.9}>
+        activeOpacity={0.9}
+        onPress={onSubscriptionModalHandler}>
         {isLocked ? (
           <View style={styles.lockedContent}>
             <Icon name="lock" size={moderateScale(40)} color="#555" />
@@ -301,7 +305,9 @@ const styles = StyleSheet.create({
   // main styles
   container: {
     width: width / 1.1,
+    height: moderateScale(300),
     justifyContent: 'center',
+    alignSelf: 'center',
     alignItems: 'center',
     borderRadius: moderateScale(5),
     shadowColor: colors.black,
